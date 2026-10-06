@@ -1,0 +1,1298 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta
+  name="viewport"
+  content="width=device-width, initial-scale=1.0"
+>
+
+<title>Create Account - Gustodigits</title>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<style>
+
+*{
+  box-sizing:border-box;
+}
+
+html,
+body{
+  margin:0;
+  padding:0;
+}
+
+:root{
+  --green:#0f6b4f;
+  --green-dark:#084735;
+  --green-deep:#031c15;
+  --green-light:#19a875;
+  --green-soft:#dff8ee;
+  --white:#ffffff;
+  --text:#10251e;
+  --muted:#718078;
+  --border:#dce9e4;
+  --bg:#f5faf8;
+  --card:#ffffff;
+}
+
+body{
+
+  font-family:
+    Arial,
+    Helvetica,
+    sans-serif;
+
+  background:
+    linear-gradient(
+      145deg,
+      #f7fbf9 0%,
+      #eef8f4 55%,
+      #e4f4ee 100%
+    );
+
+  color:var(--text);
+
+  min-height:100vh;
+
+  overflow-x:hidden;
+
+}
+
+
+/* BACKGROUND */
+
+body::before{
+
+  content:"";
+
+  position:fixed;
+
+  width:360px;
+
+  height:360px;
+
+  top:-170px;
+
+  right:-130px;
+
+  border-radius:50%;
+
+  background:
+    rgba(25,168,117,.12);
+
+  filter:blur(10px);
+
+  pointer-events:none;
+
+  z-index:-1;
+
+}
+
+body::after{
+
+  content:"";
+
+  position:fixed;
+
+  width:300px;
+
+  height:300px;
+
+  bottom:-150px;
+
+  left:-120px;
+
+  border-radius:50%;
+
+  background:
+    rgba(15,107,79,.09);
+
+  filter:blur(15px);
+
+  pointer-events:none;
+
+  z-index:-1;
+
+}
+
+
+/* MAIN */
+
+.page{
+
+  width:100%;
+
+  max-width:620px;
+
+  margin:0 auto;
+
+  padding:38px 25px 50px;
+
+}
+
+
+/* TOP BRAND */
+
+.brand{
+
+  display:flex;
+
+  align-items:center;
+
+  justify-content:space-between;
+
+  margin-bottom:48px;
+
+}
+
+.brand-left{
+
+  display:flex;
+
+  align-items:center;
+
+  gap:12px;
+
+}
+
+.brand-mark{
+
+  width:45px;
+
+  height:45px;
+
+  display:flex;
+
+  align-items:center;
+
+  justify-content:center;
+
+  border-radius:13px;
+
+  background:
+    linear-gradient(
+      145deg,
+      var(--green),
+      var(--green-dark)
+    );
+
+  color:#fff;
+
+  font-size:21px;
+
+  font-weight:900;
+
+  box-shadow:
+    0 8px 20px rgba(15,107,79,.18);
+
+}
+
+.brand-name{
+
+  color:var(--green-dark);
+
+  font-size:19px;
+
+  font-weight:900;
+
+  letter-spacing:-.3px;
+
+}
+
+.brand-dot{
+
+  width:8px;
+
+  height:8px;
+
+  border-radius:50%;
+
+  background:var(--green-light);
+
+  box-shadow:
+    0 0 0 5px rgba(25,168,117,.10);
+
+}
+
+
+/* INTRO */
+
+.heading{
+
+  margin-bottom:35px;
+
+}
+
+.heading .eyebrow{
+
+  display:inline-flex;
+
+  align-items:center;
+
+  gap:8px;
+
+  padding:8px 13px;
+
+  margin-bottom:17px;
+
+  border-radius:30px;
+
+  background:#e5f6ef;
+
+  color:var(--green);
+
+  font-size:13px;
+
+  font-weight:800;
+
+  letter-spacing:.5px;
+
+}
+
+.heading .eyebrow::before{
+
+  content:"";
+
+  width:7px;
+
+  height:7px;
+
+  border-radius:50%;
+
+  background:var(--green-light);
+
+}
+
+.heading h1{
+
+  margin:0;
+
+  font-size:39px;
+
+  line-height:1.12;
+
+  font-weight:900;
+
+  letter-spacing:-1.4px;
+
+  color:#09291f;
+
+}
+
+.heading h1 span{
+
+  color:var(--green);
+
+}
+
+.heading p{
+
+  margin:14px 0 0;
+
+  max-width:520px;
+
+  font-size:17px;
+
+  line-height:1.6;
+
+  color:var(--muted);
+
+}
+
+
+/* FORM CARD */
+
+.form-card{
+
+  background:rgba(255,255,255,.92);
+
+  border:1px solid rgba(15,107,79,.10);
+
+  border-radius:25px;
+
+  padding:27px 24px 26px;
+
+  box-shadow:
+    0 18px 50px rgba(7,62,45,.08);
+
+  backdrop-filter:blur(8px);
+
+}
+
+
+/* SECTION */
+
+.section{
+
+  margin-bottom:27px;
+
+}
+
+.section:last-of-type{
+
+  margin-bottom:24px;
+
+}
+
+.section-title{
+
+  display:flex;
+
+  align-items:center;
+
+  gap:11px;
+
+  margin-bottom:21px;
+
+}
+
+.section-title .number{
+
+  width:29px;
+
+  height:29px;
+
+  display:flex;
+
+  align-items:center;
+
+  justify-content:center;
+
+  border-radius:9px;
+
+  background:#e5f6ef;
+
+  color:var(--green);
+
+  font-size:12px;
+
+  font-weight:900;
+
+}
+
+.section-title span{
+
+  font-size:13px;
+
+  font-weight:900;
+
+  color:#587068;
+
+  letter-spacing:1px;
+
+}
+
+
+/* FIELD */
+
+.field{
+
+  margin-bottom:20px;
+
+}
+
+.field:last-child{
+
+  margin-bottom:0;
+
+}
+
+.field label{
+
+  display:block;
+
+  margin-bottom:9px;
+
+  font-size:15px;
+
+  font-weight:800;
+
+  color:#18382e;
+
+}
+
+.input-wrap{
+
+  position:relative;
+
+}
+
+.input-icon{
+
+  position:absolute;
+
+  left:17px;
+
+  top:50%;
+
+  transform:translateY(-50%);
+
+  color:var(--green);
+
+  font-size:17px;
+
+  pointer-events:none;
+
+}
+
+.input-wrap input{
+
+  width:100%;
+
+  height:62px;
+
+  border:1px solid var(--border);
+
+  background:#fbfdfc;
+
+  border-radius:14px;
+
+  outline:none;
+
+  padding:0 17px 0 50px;
+
+  font-size:16px;
+
+  color:#15372d;
+
+  transition:
+    border-color .2s,
+    box-shadow .2s,
+    background .2s;
+
+}
+
+.input-wrap input::placeholder{
+
+  color:#9ba9a4;
+
+}
+
+.input-wrap input:focus{
+
+  border-color:var(--green-light);
+
+  background:#fff;
+
+  box-shadow:
+    0 0 0 4px rgba(25,168,117,.10);
+
+}
+
+
+/* PASSWORD */
+
+.password-toggle{
+
+  position:absolute;
+
+  right:12px;
+
+  top:50%;
+
+  transform:translateY(-50%);
+
+  border:0;
+
+  background:#edf8f4;
+
+  color:var(--green);
+
+  width:38px;
+
+  height:38px;
+
+  border-radius:10px;
+
+  font-size:17px;
+
+  cursor:pointer;
+
+}
+
+.password-toggle:hover{
+
+  background:#dff3eb;
+
+}
+
+.password-input{
+
+  padding-right:58px !important;
+
+}
+
+
+/* CREATE BUTTON */
+
+.create-btn{
+
+  width:100%;
+
+  height:62px;
+
+  border:0;
+
+  border-radius:15px;
+
+  background:
+    linear-gradient(
+      135deg,
+      var(--green),
+      var(--green-dark)
+    );
+
+  color:#fff;
+
+  font-size:17px;
+
+  font-weight:900;
+
+  cursor:pointer;
+
+  box-shadow:
+    0 10px 24px rgba(15,107,79,.20);
+
+  transition:
+    transform .2s,
+    box-shadow .2s,
+    opacity .2s;
+
+}
+
+.create-btn:hover{
+
+  transform:translateY(-2px);
+
+  box-shadow:
+    0 14px 30px rgba(15,107,79,.25);
+
+}
+
+.create-btn:active{
+
+  transform:scale(.99);
+
+}
+
+.create-btn:disabled{
+
+  opacity:.65;
+
+  cursor:not-allowed;
+
+  transform:none;
+
+}
+
+
+/* MESSAGE */
+
+#message{
+
+  margin:17px 4px 0;
+
+  text-align:center;
+
+  font-size:14px;
+
+  line-height:1.5;
+
+  color:#63736d;
+
+}
+
+
+/* LOGIN */
+
+.account-link{
+
+  text-align:center;
+
+  margin-top:25px;
+
+  font-size:15px;
+
+  color:#718078;
+
+}
+
+.account-link a{
+
+  color:var(--green);
+
+  text-decoration:none;
+
+  font-weight:900;
+
+}
+
+.account-link a:hover{
+
+  color:var(--green-dark);
+
+  text-decoration:underline;
+
+}
+
+
+/* FOOTER NOTE */
+
+.security-note{
+
+  display:flex;
+
+  align-items:center;
+
+  justify-content:center;
+
+  gap:7px;
+
+  margin-top:25px;
+
+  color:#84918c;
+
+  font-size:12px;
+
+}
+
+.security-note span{
+
+  color:var(--green);
+
+}
+
+
+/* MOBILE */
+
+@media(max-width:600px){
+
+  .page{
+
+    padding:
+      28px
+      18px
+      40px;
+
+  }
+
+  .brand{
+
+    margin-bottom:40px;
+
+  }
+
+  .brand-name{
+
+    font-size:18px;
+
+  }
+
+  .heading{
+
+    margin-bottom:28px;
+
+  }
+
+  .heading h1{
+
+    font-size:34px;
+
+  }
+
+  .heading p{
+
+    font-size:16px;
+
+  }
+
+  .form-card{
+
+    padding:
+      23px
+      18px
+      22px;
+
+    border-radius:21px;
+
+  }
+
+  .input-wrap input{
+
+    height:59px;
+
+    font-size:16px;
+
+  }
+
+  .create-btn{
+
+    height:60px;
+
+  }
+
+}
+
+@media(max-width:380px){
+
+  .page{
+
+    padding-left:14px;
+
+    padding-right:14px;
+
+  }
+
+  .brand-name{
+
+    font-size:16px;
+
+  }
+
+  .heading h1{
+
+    font-size:30px;
+
+  }
+
+}
+
+
+/* REDUCED MOTION */
+
+@media(prefers-reduced-motion:reduce){
+
+  *{
+
+    transition:none !important;
+
+  }
+
+}
+
+</style>
+
+</head>
+
+
+<body>
+
+
+<div class="page">
+
+
+  <!-- BRAND -->
+
+  <div class="brand">
+
+    <div class="brand-left">
+
+      <div class="brand-mark">
+        G
+      </div>
+
+      <div class="brand-name">
+        Gustodigits
+      </div>
+
+    </div>
+
+    <div class="brand-dot"></div>
+
+  </div>
+
+
+  <!-- INTRO -->
+
+  <div class="heading">
+
+    <div class="eyebrow">
+      VIRTUAL NUMBERS
+    </div>
+
+    <h1>
+      Create your <span>Gustodigits</span> account
+    </h1>
+
+    <p>
+      Sign up in a few seconds and get access to virtual phone numbers
+      for your verification needs.
+    </p>
+
+  </div>
+
+
+  <!-- FORM -->
+
+  <div class="form-card">
+
+
+    <!-- PERSONAL INFORMATION -->
+
+    <section class="section">
+
+
+      <div class="section-title">
+
+        <div class="number">
+          01
+        </div>
+
+        <span>
+          PERSONAL INFORMATION
+        </span>
+
+      </div>
+
+
+      <!-- FIRST NAME -->
+
+      <div class="field">
+
+        <label for="firstName">
+          First Name
+        </label>
+
+        <div class="input-wrap">
+
+          <span class="input-icon">
+            👤
+          </span>
+
+          <input
+            id="firstName"
+            type="text"
+            placeholder="John"
+            autocomplete="given-name"
+            required
+          >
+
+        </div>
+
+      </div>
+
+
+      <!-- LAST NAME -->
+
+      <div class="field">
+
+        <label for="lastName">
+          Last Name
+        </label>
+
+        <div class="input-wrap">
+
+          <span class="input-icon">
+            👤
+          </span>
+
+          <input
+            id="lastName"
+            type="text"
+            placeholder="Doe"
+            autocomplete="family-name"
+            required
+          >
+
+        </div>
+
+      </div>
+
+
+      <!-- EMAIL -->
+
+      <div class="field">
+
+        <label for="email">
+          Email Address
+        </label>
+
+        <div class="input-wrap">
+
+          <span class="input-icon">
+            ✉
+          </span>
+
+          <input
+            id="email"
+            type="email"
+            placeholder="you@example.com"
+            autocomplete="email"
+            required
+          >
+
+        </div>
+
+      </div>
+
+
+    </section>
+
+
+    <!-- ACCOUNT SECURITY -->
+
+    <section class="section">
+
+
+      <div class="section-title">
+
+        <div class="number">
+          02
+        </div>
+
+        <span>
+          ACCOUNT SECURITY
+        </span>
+
+      </div>
+
+
+      <!-- PASSWORD -->
+
+      <div class="field">
+
+        <label for="password">
+          Password
+        </label>
+
+        <div class="input-wrap">
+
+          <span class="input-icon">
+            🔒
+          </span>
+
+          <input
+            id="password"
+            class="password-input"
+            type="password"
+            placeholder="Create a password"
+            autocomplete="new-password"
+            required
+          >
+
+          <button
+            type="button"
+            class="password-toggle"
+            onclick="togglePassword()"
+            aria-label="Show password"
+          >
+            👁
+          </button>
+
+        </div>
+
+      </div>
+
+
+    </section>
+
+
+    <!-- CREATE ACCOUNT -->
+
+    <button
+      id="createButton"
+      class="create-btn"
+      type="button"
+      onclick="createAccount()"
+    >
+      Create Account
+    </button>
+
+
+    <p id="message"></p>
+
+
+    <!-- LOGIN -->
+
+    <div class="account-link">
+
+      Already have an account?
+
+      <a href="login.html">
+        Sign In
+      </a>
+
+    </div>
+
+
+  </div>
+
+
+  <!-- SECURITY NOTE -->
+
+  <div class="security-note">
+
+    <span>🔒</span>
+
+    Your account information is securely protected
+
+  </div>
+
+
+</div>
+
+
+<script>
+
+
+/* SUPABASE */
+
+const SUPABASE_URL =
+  "https://gvuaxtsdpmrragkkjowv.supabase.co";
+
+
+const SUPABASE_KEY =
+  "sb_publishable_oDAsADaZzLDiFX0cXogUyw_tTQYCa2k";
+
+
+const supabaseClient =
+  window.supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_KEY
+  );
+
+
+/* PASSWORD TOGGLE */
+
+function togglePassword(){
+
+  const password =
+    document.getElementById(
+      "password"
+    );
+
+  const button =
+    document.querySelector(
+      ".password-toggle"
+    );
+
+
+  if(
+    password.type === "password"
+  ){
+
+    password.type = "text";
+
+    button.textContent = "🙈";
+
+    button.setAttribute(
+      "aria-label",
+      "Hide password"
+    );
+
+  }else{
+
+    password.type = "password";
+
+    button.textContent = "👁";
+
+    button.setAttribute(
+      "aria-label",
+      "Show password"
+    );
+
+  }
+
+}
+
+
+/* CREATE ACCOUNT */
+
+async function createAccount(){
+
+  const firstName =
+    document
+      .getElementById("firstName")
+      .value
+      .trim();
+
+
+  const lastName =
+    document
+      .getElementById("lastName")
+      .value
+      .trim();
+
+
+  const email =
+    document
+      .getElementById("email")
+      .value
+      .trim();
+
+
+  const password =
+    document
+      .getElementById("password")
+      .value;
+
+
+  const message =
+    document
+      .getElementById("message");
+
+
+  const button =
+    document
+      .getElementById("createButton");
+
+
+  message.textContent = "";
+
+
+  if(
+    !firstName ||
+    !lastName ||
+    !email ||
+    !password
+  ){
+
+    message.textContent =
+      "Please fill in all fields.";
+
+    return;
+
+  }
+
+
+  if(password.length < 6){
+
+    message.textContent =
+      "Password must be at least 6 characters.";
+
+    return;
+
+  }
+
+
+  button.disabled = true;
+
+  button.textContent =
+    "Creating Account...";
+
+
+  message.textContent =
+    "Creating your account...";
+
+
+  try{
+
+    const fullName =
+      firstName +
+      " " +
+      lastName;
+
+
+    const {
+      data,
+      error
+    } =
+      await supabaseClient.auth.signUp({
+
+        email:email,
+
+        password:password,
+
+        options:{
+
+          data:{
+
+            name:fullName,
+
+            first_name:firstName,
+
+            last_name:lastName
+
+          }
+
+        }
+
+      });
+
+
+    if(error){
+
+      console.error(error);
+
+      message.textContent =
+        error.message;
+
+      button.disabled = false;
+
+      button.textContent =
+        "Create Account";
+
+      return;
+
+    }
+
+
+    /*
+      If email confirmation is disabled,
+      Supabase returns a session and the
+      user can continue directly to the dashboard.
+
+      If email confirmation is enabled,
+      the user is sent to the login page.
+    */
+
+    if(
+      data &&
+      data.session
+    ){
+
+      message.textContent =
+        "Account created successfully!";
+
+
+      setTimeout(function(){
+
+        window.location.href =
+          "dashboard.html";
+
+      },700);
+
+
+    }else{
+
+      message.textContent =
+        "Account created successfully. Please check your email or log in.";
+
+
+      setTimeout(function(){
+
+        window.location.href =
+          "login.html";
+
+      },1500);
+
+    }
+
+
+  }catch(error){
+
+    console.error(error);
+
+    message.textContent =
+      "Something went wrong. Please try again.";
+
+    button.disabled = false;
+
+    button.textContent =
+      "Create Account";
+
+  }
+
+}
+
+</script>
+
+
+</body>
+
+</html>
