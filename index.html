@@ -42,8 +42,9 @@ body{
         Arial,
         sans-serif;
 
-    background:#06110b;
-    color:#fff;
+    background:#f5fbff;
+
+    color:#102536;
 
     overflow-x:hidden;
 }
@@ -55,22 +56,31 @@ body{
 
 :root{
 
-    --green:#0d5c35;
-    --green-light:#16a05a;
-    --green-bright:#20c66d;
-    --green-dark:#06341f;
+    --blue:#1677b8;
 
-    --black:#06110b;
-    --black2:#091810;
+    --blue-light:#2fa8ee;
 
-    --card:#0b1b12;
-    --card2:#10251a;
+    --blue-bright:#38bdf8;
+
+    --blue-dark:#0c4f7d;
+
+    --blue-deep:#073552;
+
+    --sky:#e9f7ff;
+
+    --sky2:#dff3ff;
 
     --white:#ffffff;
-    --muted:#9eaaa3;
-    --muted2:#718078;
 
-    --border:rgba(32,198,109,.20);
+    --text:#102536;
+
+    --muted:#607786;
+
+    --muted2:#8498a5;
+
+    --border:rgba(22,119,184,.16);
+
+    --card:#ffffff;
 
 }
 
@@ -92,20 +102,20 @@ body::before{
     background:
 
         radial-gradient(
-            circle at 10% 10%,
-            rgba(22,160,90,.16),
+            circle at 10% 5%,
+            rgba(56,189,248,.18),
             transparent 28%
         ),
 
         radial-gradient(
-            circle at 90% 20%,
-            rgba(32,198,109,.10),
+            circle at 90% 18%,
+            rgba(47,168,238,.13),
             transparent 30%
         ),
 
         radial-gradient(
-            circle at 50% 85%,
-            rgba(13,92,53,.12),
+            circle at 50% 90%,
+            rgba(22,119,184,.08),
             transparent 35%
         );
 
@@ -123,18 +133,18 @@ body::after{
 
     pointer-events:none;
 
-    opacity:.025;
+    opacity:.018;
 
     background-image:
 
         linear-gradient(
-            rgba(255,255,255,.8) 1px,
+            rgba(22,119,184,.8) 1px,
             transparent 1px
         ),
 
         linear-gradient(
             90deg,
-            rgba(255,255,255,.8) 1px,
+            rgba(22,119,184,.8) 1px,
             transparent 1px
         );
 
@@ -155,6 +165,13 @@ header{
     position:relative;
 
     z-index:20;
+
+    background:
+        rgba(255,255,255,.82);
+
+    backdrop-filter:blur(14px);
+
+    -webkit-backdrop-filter:blur(14px);
 }
 
 
@@ -173,7 +190,8 @@ header{
     justify-content:space-between;
 
     border-bottom:
-        1px solid rgba(32,198,109,.12);
+        1px solid
+        rgba(22,119,184,.10);
 }
 
 
@@ -191,7 +209,7 @@ header{
 
     text-decoration:none;
 
-    color:#fff;
+    color:var(--text);
 }
 
 
@@ -208,28 +226,31 @@ header{
     justify-content:center;
 
     border:
-
         1px solid
-        rgba(32,198,109,.75);
+        rgba(22,119,184,.35);
 
     border-radius:12px;
 
-    color:var(--green-bright);
+    color:var(--blue);
 
     font-size:20px;
 
     font-weight:900;
 
     background:
-        rgba(32,198,109,.06);
+        linear-gradient(
+            145deg,
+            #effaff,
+            #dff3ff
+        );
 
     box-shadow:
 
-        0 0 25px
-        rgba(32,198,109,.10),
+        0 5px 20px
+        rgba(22,119,184,.10),
 
         inset 0 0 15px
-        rgba(32,198,109,.05);
+        rgba(56,189,248,.08);
 }
 
 
@@ -240,12 +261,14 @@ header{
     font-weight:850;
 
     letter-spacing:-.5px;
+
+    color:#173246;
 }
 
 
 .logo-text span{
 
-    color:var(--green-bright);
+    color:var(--blue);
 }
 
 
@@ -291,54 +314,54 @@ header{
 
 .btn-login{
 
-    color:#fff;
+    color:var(--blue-dark);
 
     border:
         1px solid
-        rgba(255,255,255,.17);
+        rgba(22,119,184,.18);
 
     background:
-        rgba(255,255,255,.035);
+        #ffffff;
 }
 
 
 .btn-login:hover{
 
     background:
-        rgba(255,255,255,.08);
+        #edf8ff;
 
     border-color:
-        rgba(255,255,255,.30);
+        rgba(22,119,184,.35);
 
     transform:
         translateY(-1px);
 }
 
 
-.btn-green{
+.btn-blue{
 
-    color:#031109;
+    color:#fff;
 
     background:
 
         linear-gradient(
             135deg,
-            #24d776,
-            #12a657
+            #39b9f5,
+            #1677b8
         );
 
     border:
         1px solid
-        rgba(32,198,109,.75);
+        rgba(22,119,184,.35);
 
     box-shadow:
 
         0 9px 30px
-        rgba(22,160,90,.18);
+        rgba(22,119,184,.17);
 }
 
 
-.btn-green:hover{
+.btn-blue:hover{
 
     transform:
         translateY(-2px);
@@ -346,7 +369,7 @@ header{
     box-shadow:
 
         0 13px 36px
-        rgba(22,160,90,.27);
+        rgba(22,119,184,.24);
 }
 
 
@@ -392,14 +415,14 @@ header{
 
     border:
         1px solid
-        rgba(32,198,109,.25);
+        rgba(22,119,184,.18);
 
     background:
-        rgba(32,198,109,.055);
+        rgba(56,189,248,.08);
 
     border-radius:999px;
 
-    color:#75e7a5;
+    color:#1677b8;
 
     font-size:11px;
 
@@ -422,11 +445,11 @@ header{
     border-radius:50%;
 
     background:
-        var(--green-bright);
+        var(--blue-light);
 
     box-shadow:
         0 0 12px
-        var(--green-bright);
+        rgba(47,168,238,.65);
 }
 
 
@@ -442,13 +465,15 @@ header{
     font-weight:900;
 
     max-width:850px;
+
+    color:#102b3d;
 }
 
 
-.hero h1 .green{
+.hero h1 .blue{
 
     color:
-        var(--green-bright);
+        var(--blue);
 }
 
 
@@ -458,7 +483,7 @@ header{
 
     margin-top:28px;
 
-    color:#aab5af;
+    color:#617887;
 
     font-size:18px;
 
@@ -496,7 +521,7 @@ header{
 
     margin-top:24px;
 
-    color:#6f7c75;
+    color:#7a8e9a;
 
     font-size:12px;
 }
@@ -505,7 +530,7 @@ header{
 .hero-note span{
 
     color:
-        var(--green-bright);
+        var(--blue-light);
 
     font-size:15px;
 }
@@ -548,17 +573,17 @@ header{
 
         linear-gradient(
             145deg,
-            #0d2116,
-            #09150e
+            #ffffff,
+            #f0f9ff
         );
 
     border:
         1px solid
-        rgba(32,198,109,.15);
+        rgba(22,119,184,.13);
 
     box-shadow:
         0 18px 55px
-        rgba(0,0,0,.18);
+        rgba(20,84,116,.08);
 }
 
 
@@ -579,7 +604,7 @@ header{
     border-radius:50%;
 
     background:
-        rgba(32,198,109,.08);
+        rgba(56,189,248,.12);
 
     filter:blur(10px);
 }
@@ -595,14 +620,14 @@ header{
 
     letter-spacing:-1px;
 
-    color:#fff;
+    color:#14354a;
 }
 
 
 .stat-number span{
 
     color:
-        var(--green-bright);
+        var(--blue);
 }
 
 
@@ -612,7 +637,7 @@ header{
 
     margin-top:7px;
 
-    color:#7f8d85;
+    color:#78909e;
 
     font-size:13px;
 }
@@ -650,19 +675,19 @@ header{
 
         linear-gradient(
             120deg,
-            #0d2618,
-            #08140d
+            #e9f8ff,
+            #ffffff
         );
 
     border:
         1px solid
-        rgba(32,198,109,.28);
+        rgba(22,119,184,.18);
 
     border-radius:24px;
 
     box-shadow:
         0 25px 80px
-        rgba(0,0,0,.30);
+        rgba(20,84,116,.10);
 }
 
 
@@ -683,7 +708,7 @@ header{
     border-radius:50%;
 
     background:
-        rgba(32,198,109,.13);
+        rgba(56,189,248,.17);
 
     filter:blur(35px);
 }
@@ -700,7 +725,7 @@ header{
 .number-label{
 
     color:
-        var(--green-bright);
+        var(--blue);
 
     font-size:11px;
 
@@ -722,12 +747,14 @@ header{
     letter-spacing:-1.4px;
 
     margin-bottom:10px;
+
+    color:#123249;
 }
 
 
 .number-card p{
 
-    color:#89968f;
+    color:#68808f;
 
     line-height:1.65;
 
@@ -755,10 +782,14 @@ header{
 
     border-radius:11px;
 
-    color:#031109;
+    color:#fff;
 
     background:
-        var(--green-bright);
+        linear-gradient(
+            135deg,
+            #39b9f5,
+            #1677b8
+        );
 
     text-decoration:none;
 
@@ -767,6 +798,10 @@ header{
     font-weight:850;
 
     transition:.25s ease;
+
+    box-shadow:
+        0 9px 25px
+        rgba(22,119,184,.16);
 }
 
 
@@ -775,11 +810,12 @@ header{
     transform:
         translateY(-2px);
 
-    background:#4be58c;
+    background:
+        #1677b8;
 
     box-shadow:
         0 10px 30px
-        rgba(32,198,109,.20);
+        rgba(22,119,184,.22);
 }
 
 
@@ -806,7 +842,7 @@ header{
 .section-heading .small{
 
     color:
-        var(--green-bright);
+        var(--blue);
 
     font-size:11px;
 
@@ -828,12 +864,14 @@ header{
     letter-spacing:-2px;
 
     line-height:1.05;
+
+    color:#122f42;
 }
 
 
 .section-heading p{
 
-    color:#7f8c85;
+    color:#758b98;
 
     margin-top:14px;
 
@@ -861,15 +899,15 @@ header{
     border-radius:17px;
 
     background:
-        linear-gradient(
-            145deg,
-            #0d1d14,
-            #09130d
-        );
+        #ffffff;
 
     border:
         1px solid
-        rgba(255,255,255,.06);
+        rgba(22,119,184,.10);
+
+    box-shadow:
+        0 12px 40px
+        rgba(20,84,116,.06);
 
     transition:.25s ease;
 }
@@ -881,7 +919,11 @@ header{
         translateY(-3px);
 
     border-color:
-        rgba(32,198,109,.25);
+        rgba(22,119,184,.25);
+
+    box-shadow:
+        0 18px 50px
+        rgba(20,84,116,.09);
 }
 
 
@@ -900,14 +942,14 @@ header{
     border-radius:11px;
 
     color:
-        var(--green-bright);
+        var(--blue);
 
     background:
-        rgba(32,198,109,.08);
+        #e9f7ff;
 
     border:
         1px solid
-        rgba(32,198,109,.18);
+        rgba(22,119,184,.15);
 
     font-size:13px;
 
@@ -922,12 +964,14 @@ header{
     font-size:16px;
 
     margin-bottom:8px;
+
+    color:#17364a;
 }
 
 
 .step p{
 
-    color:#748078;
+    color:#748995;
 
     font-size:13px;
 
@@ -957,15 +1001,19 @@ header{
 
         linear-gradient(
             145deg,
-            #0d2116,
-            #07120c
+            #eaf8ff,
+            #ffffff
         );
 
     border:
         1px solid
-        rgba(32,198,109,.15);
+        rgba(22,119,184,.13);
 
     text-align:center;
+
+    box-shadow:
+        0 20px 65px
+        rgba(20,84,116,.07);
 }
 
 
@@ -977,13 +1025,15 @@ header{
     letter-spacing:-1.8px;
 
     line-height:1.05;
+
+    color:#123249;
 }
 
 
 .feature-box h2 span{
 
     color:
-        var(--green-bright);
+        var(--blue);
 }
 
 
@@ -993,7 +1043,7 @@ header{
 
     margin:17px auto 38px;
 
-    color:#7f8c85;
+    color:#718692;
 
     line-height:1.7;
 }
@@ -1018,18 +1068,22 @@ header{
 
     border-radius:16px;
 
-    background:#08140d;
+    background:#ffffff;
 
     border:
         1px solid
-        rgba(255,255,255,.06);
+        rgba(22,119,184,.09);
+
+    box-shadow:
+        0 10px 30px
+        rgba(20,84,116,.05);
 }
 
 
 .feature-number{
 
     color:
-        var(--green-bright);
+        var(--blue);
 
     font-size:12px;
 
@@ -1044,12 +1098,14 @@ header{
     font-size:15px;
 
     margin-bottom:8px;
+
+    color:#18394d;
 }
 
 
 .feature p{
 
-    color:#707d75;
+    color:#718692;
 
     font-size:12px;
 
@@ -1076,7 +1132,7 @@ header{
 .cta-section .small{
 
     color:
-        var(--green-bright);
+        var(--blue);
 
     font-size:11px;
 
@@ -1098,13 +1154,15 @@ header{
     letter-spacing:-2.8px;
 
     line-height:1;
+
+    color:#122f42;
 }
 
 
 .cta-section h2 span{
 
     color:
-        var(--green-bright);
+        var(--blue);
 }
 
 
@@ -1114,7 +1172,7 @@ header{
 
     margin:20px auto 30px;
 
-    color:#7f8c85;
+    color:#758b98;
 
     line-height:1.7;
 }
@@ -1146,7 +1204,7 @@ footer{
 
     border-top:
         1px solid
-        rgba(255,255,255,.07);
+        rgba(22,119,184,.10);
 
     display:flex;
 
@@ -1156,7 +1214,7 @@ footer{
 
     gap:20px;
 
-    color:#4f5c54;
+    color:#8296a1;
 
     font-size:12px;
 }
@@ -1164,13 +1222,13 @@ footer{
 
 .footer-brand{
 
-    color:#657169;
+    color:#718692;
 }
 
 
 .footer-brand strong{
 
-    color:#a9b5ae;
+    color:#34576c;
 }
 
 
@@ -1382,7 +1440,7 @@ a:focus-visible{
 
     outline:
         2px solid
-        var(--green-bright);
+        var(--blue-light);
 
     outline-offset:4px;
 }
@@ -1435,7 +1493,7 @@ a:focus-visible{
 
             <a
                 href="register.html"
-                class="btn btn-green"
+                class="btn btn-blue"
             >
                 Create Account
             </a>
@@ -1476,7 +1534,7 @@ a:focus-visible{
 
             Get the number
 
-            <span class="green">
+            <span class="blue">
                 you need.
             </span>
 
@@ -1499,7 +1557,7 @@ a:focus-visible{
 
             <a
                 href="register.html"
-                class="btn btn-green"
+                class="btn btn-blue"
             >
                 Create Account
             </a>
@@ -1884,7 +1942,7 @@ a:focus-visible{
 
         <a
             href="register.html"
-            class="btn btn-green"
+            class="btn btn-blue"
         >
             Create Account
         </a>
