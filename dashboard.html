@@ -1,0 +1,4541 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+<title>Dashboard - Gustodigits</title>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<style>
+*{
+    box-sizing:border-box;
+    margin:0;
+    padding:0;
+}
+
+:root{
+    --primary:#2388e8;
+    --primary-dark:#176fc3;
+    --primary-soft:#eaf5ff;
+    --blue:#1687e8;
+    --green:#20b26b;
+    --green-soft:#e8f9f1;
+    --red:#e94b55;
+    --red-soft:#fff0f1;
+    --text:#172334;
+    --muted:#718096;
+    --border:#e4edf5;
+    --white:#ffffff;
+    --bg:#f4f9fd;
+    --shadow:0 8px 25px rgba(32,111,175,.08);
+}
+
+html,
+body{
+    width:100%;
+    min-height:100%;
+}
+
+body{
+    font-family:
+        Inter,
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        Roboto,
+        Arial,
+        sans-serif;
+    background:var(--bg);
+    color:var(--text);
+    overflow-x:hidden;
+}
+
+button,
+input,
+select{
+    font:inherit;
+}
+
+button{
+    border:none;
+    cursor:pointer;
+}
+
+a{
+    text-decoration:none;
+    color:inherit;
+}
+
+/* =========================
+   APP
+========================= */
+
+.app{
+    width:100%;
+    max-width:620px;
+    margin:0 auto;
+    min-height:100vh;
+    padding-bottom:90px;
+}
+
+/* =========================
+   HEADER
+========================= */
+
+.header{
+    position:sticky;
+    top:0;
+    z-index:100;
+    background:rgba(244,249,253,.94);
+    backdrop-filter:blur(12px);
+    border-bottom:1px solid rgba(228,237,245,.8);
+}
+
+.header-inner{
+    height:68px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:0 17px;
+}
+
+.header-left{
+    display:flex;
+    align-items:center;
+    gap:11px;
+    min-width:0;
+}
+
+.menu-btn,
+.icon-btn{
+    width:40px;
+    height:40px;
+    border-radius:13px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background:#fff;
+    color:var(--text);
+    border:1px solid var(--border);
+    box-shadow:0 3px 12px rgba(25,105,160,.05);
+}
+
+.menu-btn{
+    font-size:21px;
+}
+
+.brand{
+    min-width:0;
+}
+
+.brand-name{
+    font-size:18px;
+    font-weight:800;
+    letter-spacing:-.3px;
+    white-space:nowrap;
+}
+
+.brand-sub{
+    font-size:10px;
+    color:var(--muted);
+    font-weight:700;
+    letter-spacing:.7px;
+    text-transform:uppercase;
+}
+
+.header-right{
+    display:flex;
+    align-items:center;
+    gap:8px;
+}
+
+/* =========================
+   MAIN
+========================= */
+
+.main{
+    padding:16px;
+}
+
+.welcome{
+    margin:2px 2px 15px;
+}
+
+.welcome-small{
+    font-size:12px;
+    color:var(--muted);
+    font-weight:600;
+    margin-bottom:3px;
+}
+
+.welcome h1{
+    font-size:23px;
+    line-height:1.2;
+    font-weight:850;
+    letter-spacing:-.6px;
+}
+
+/* =========================
+   WALLET
+========================= */
+
+.wallet-card{
+    background:linear-gradient(135deg,#2388e8,#4aa9f2);
+    color:white;
+    border-radius:22px;
+    padding:18px;
+    box-shadow:0 12px 28px rgba(35,136,232,.20);
+    margin-bottom:16px;
+}
+
+.wallet-top{
+    display:flex;
+    align-items:flex-start;
+    justify-content:space-between;
+    gap:10px;
+}
+
+.wallet-label{
+    font-size:12px;
+    opacity:.86;
+    font-weight:600;
+}
+
+.wallet-balance{
+    margin-top:5px;
+    font-size:28px;
+    line-height:1.1;
+    font-weight:850;
+    letter-spacing:-.7px;
+}
+
+.wallet-icon{
+    width:42px;
+    height:42px;
+    border-radius:14px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background:rgba(255,255,255,.16);
+    font-size:21px;
+}
+
+.wallet-bottom{
+    margin-top:16px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:10px;
+}
+
+.wallet-note{
+    font-size:11px;
+    opacity:.86;
+}
+
+.fund-btn{
+    background:#fff;
+    color:#1774c6;
+    padding:10px 15px;
+    border-radius:11px;
+    font-size:12px;
+    font-weight:800;
+}
+
+/* =========================
+   VERIFICATION POPUP
+========================= */
+
+.verification-overlay{
+    position:fixed;
+    inset:0;
+    z-index:10000;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:14px;
+    background:rgba(5,15,25,.72);
+    backdrop-filter:blur(5px);
+}
+
+.verification-modal{
+    width:min(660px, calc(100vw - 28px));
+    max-height:calc(100vh - 28px);
+    overflow:hidden;
+    display:flex;
+    flex-direction:column;
+    background:#fff;
+    border:1px solid #dbe8f2;
+    border-radius:23px;
+    box-shadow:0 24px 70px rgba(0,0,0,.28);
+}
+
+.verification-head{
+    min-height:62px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:10px;
+    padding:11px 14px;
+    border-bottom:1px solid #e8eef3;
+    flex-shrink:0;
+}
+
+.verification-title{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    min-width:0;
+}
+
+.verification-title-icon{
+    width:39px;
+    height:39px;
+    border-radius:12px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background:#eaf5ff;
+    border:1px solid #d8ecfb;
+    font-size:21px;
+    flex-shrink:0;
+}
+
+.verification-title strong{
+    font-size:18px;
+    font-weight:850;
+    letter-spacing:-.3px;
+}
+
+.verification-close{
+    width:38px;
+    height:38px;
+    border-radius:50%;
+    background:#f4f8fb;
+    color:#6d7882;
+    border:1px solid #e2e9ee;
+    font-size:22px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    flex-shrink:0;
+}
+
+.verification-body{
+    padding:14px 14px 13px;
+    overflow-y:auto;
+    min-height:0;
+}
+
+.shield-wrap{
+    display:flex;
+    justify-content:center;
+    margin:2px 0 12px;
+}
+
+.shield{
+    width:64px;
+    height:64px;
+    border-radius:18px;
+    background:#eaf5ff;
+    border:1px solid #d4eafb;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:35px;
+}
+
+.verification-section-title{
+    display:flex;
+    align-items:center;
+    gap:9px;
+    margin-bottom:9px;
+}
+
+.verification-section-icon{
+    width:34px;
+    height:34px;
+    border-radius:10px;
+    background:#eaf5ff;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:17px;
+    flex-shrink:0;
+}
+
+.verification-section-title strong{
+    font-size:16px;
+    font-weight:850;
+}
+
+.verification-items{
+    display:flex;
+    flex-direction:column;
+    gap:7px;
+}
+
+.verification-item{
+    border:1px solid #e3eaf0;
+    border-radius:15px;
+    padding:10px 11px;
+    display:flex;
+    gap:10px;
+    background:#fff;
+}
+
+.verification-item-icon{
+    width:34px;
+    height:34px;
+    border-radius:10px;
+    background:#f3f7fa;
+    border:1px solid #e8eef2;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:17px;
+    flex-shrink:0;
+}
+
+.verification-item-text{
+    min-width:0;
+}
+
+.verification-item-title{
+    font-size:13px;
+    font-weight:850;
+    margin-bottom:3px;
+}
+
+.verification-item-description{
+    font-size:11.5px;
+    line-height:1.42;
+    color:#697680;
+}
+
+.provider-tip{
+    margin-top:8px;
+    border:1px solid #cfe5f8;
+    border-radius:15px;
+    padding:10px 11px;
+    display:flex;
+    gap:10px;
+    background:#f0f8ff;
+}
+
+.provider-tip .verification-item-title{
+    color:#1777c8;
+}
+
+.verification-action{
+    padding:0 14px 14px;
+    flex-shrink:0;
+}
+
+.understand-btn{
+    width:100%;
+    min-height:49px;
+    border-radius:13px;
+    background:var(--primary);
+    color:#fff;
+    font-size:14px;
+    font-weight:850;
+    box-shadow:0 7px 17px rgba(35,136,232,.20);
+}
+
+@media(max-height:700px){
+    .verification-modal{
+        border-radius:19px;
+    }
+
+    .verification-head{
+        min-height:54px;
+        padding:8px 11px;
+    }
+
+    .verification-title-icon{
+        width:34px;
+        height:34px;
+        font-size:18px;
+    }
+
+    .verification-title strong{
+        font-size:15px;
+    }
+
+    .verification-close{
+        width:33px;
+        height:33px;
+        font-size:19px;
+    }
+
+    .verification-body{
+        padding:9px 11px;
+    }
+
+    .shield{
+        width:49px;
+        height:49px;
+        font-size:27px;
+        border-radius:14px;
+    }
+
+    .shield-wrap{
+        margin:0 0 8px;
+    }
+
+    .verification-section-title{
+        margin-bottom:6px;
+    }
+
+    .verification-section-icon{
+        width:29px;
+        height:29px;
+        font-size:15px;
+    }
+
+    .verification-section-title strong{
+        font-size:14px;
+    }
+
+    .verification-item{
+        padding:7px 8px;
+        border-radius:12px;
+    }
+
+    .verification-item-icon{
+        width:29px;
+        height:29px;
+        font-size:14px;
+    }
+
+    .verification-item-title{
+        font-size:11.5px;
+    }
+
+    .verification-item-description{
+        font-size:10px;
+        line-height:1.32;
+    }
+
+    .provider-tip{
+        padding:7px 8px;
+        border-radius:12px;
+    }
+
+    .verification-action{
+        padding:0 11px 11px;
+    }
+
+    .understand-btn{
+        min-height:43px;
+        font-size:12px;
+    }
+}
+
+/* =========================
+   STEP CARD
+========================= */
+
+.flow-card{
+    background:#fff;
+    border:1px solid var(--border);
+    border-radius:20px;
+    box-shadow:var(--shadow);
+    overflow:hidden;
+}
+
+.flow-header{
+    padding:16px 16px 12px;
+}
+
+.flow-title{
+    font-size:16px;
+    font-weight:850;
+}
+
+.flow-subtitle{
+    color:var(--muted);
+    font-size:11px;
+    margin-top:4px;
+}
+
+/* =========================
+   STEPPER
+========================= */
+
+.stepper{
+    display:grid;
+    grid-template-columns:1fr 1fr 1fr;
+    gap:5px;
+    padding:10px 12px 14px;
+    border-bottom:1px solid #edf2f6;
+}
+
+.step{
+    min-width:0;
+    cursor:pointer;
+}
+
+.step-line{
+    height:3px;
+    background:#e8eef3;
+    border-radius:10px;
+    margin-bottom:7px;
+}
+
+.step.active .step-line{
+    background:var(--primary);
+}
+
+.step.complete .step-line{
+    background:var(--green);
+}
+
+.step-content{
+    display:flex;
+    align-items:center;
+    gap:6px;
+    min-width:0;
+}
+
+.step-number{
+    width:24px;
+    height:24px;
+    border-radius:50%;
+    background:#eef3f7;
+    color:#758391;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:10px;
+    font-weight:850;
+    flex-shrink:0;
+}
+
+.step.active .step-number{
+    background:var(--primary);
+    color:#fff;
+}
+
+.step.complete .step-number{
+    background:var(--green);
+    color:#fff;
+}
+
+.step-name{
+    font-size:10px;
+    font-weight:800;
+    color:#7b8791;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+}
+
+.step.active .step-name{
+    color:var(--primary-dark);
+}
+
+.step.complete .step-name{
+    color:var(--green);
+}
+
+/* =========================
+   STEP CONTENT
+========================= */
+
+.step-panel{
+    padding:14px;
+}
+
+.step-panel.hidden{
+    display:none;
+}
+
+.selection-label{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:8px;
+    margin-bottom:7px;
+}
+
+.selection-label strong{
+    font-size:12px;
+}
+
+.selection-label span{
+    font-size:10px;
+    color:var(--muted);
+}
+
+/* =========================
+   SEARCH
+========================= */
+
+.search-box{
+    position:relative;
+    margin-bottom:9px;
+}
+
+.search-box input{
+    width:100%;
+    height:45px;
+    border:1px solid #dfe9f1;
+    border-radius:13px;
+    padding:0 13px 0 39px;
+    outline:none;
+    background:#fbfdff;
+    color:var(--text);
+    font-size:12px;
+}
+
+.search-box input:focus{
+    border-color:#8dc6ef;
+    box-shadow:0 0 0 3px rgba(35,136,232,.08);
+}
+
+.search-icon{
+    position:absolute;
+    left:13px;
+    top:50%;
+    transform:translateY(-50%);
+    color:#82909c;
+    font-size:15px;
+}
+
+/* =========================
+   OPTIONS
+========================= */
+
+.options-box{
+    border:1px solid #e3ebf2;
+    border-radius:14px;
+    background:#fbfdff;
+    max-height:240px;
+    overflow-y:auto;
+}
+
+.option{
+    width:100%;
+    min-height:45px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:8px;
+    padding:9px 11px;
+    background:transparent;
+    color:var(--text);
+    border-bottom:1px solid #edf2f6;
+    text-align:left;
+}
+
+.option:last-child{
+    border-bottom:none;
+}
+
+.option:hover{
+    background:#f2f8fd;
+}
+
+.option.selected{
+    background:var(--green-soft);
+}
+
+.option-left{
+    display:flex;
+    align-items:center;
+    gap:9px;
+    min-width:0;
+}
+
+.option-icon{
+    width:30px;
+    height:30px;
+    border-radius:9px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background:#edf6fd;
+    color:#2786cb;
+    font-size:14px;
+    flex-shrink:0;
+}
+
+.option-name{
+    font-size:12px;
+    font-weight:750;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    white-space:nowrap;
+}
+
+.option-meta{
+    font-size:9px;
+    color:var(--muted);
+    margin-top:2px;
+}
+
+.option-check{
+    width:23px;
+    height:23px;
+    border-radius:50%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    color:#fff;
+    background:var(--green);
+    font-size:11px;
+    flex-shrink:0;
+}
+
+.empty-state{
+    padding:24px 14px;
+    text-align:center;
+    color:var(--muted);
+    font-size:11px;
+}
+
+.loading-state{
+    padding:22px;
+    text-align:center;
+    color:var(--muted);
+    font-size:11px;
+}
+
+.error-state{
+    padding:18px;
+    text-align:center;
+    color:var(--red);
+    font-size:11px;
+}
+
+/* =========================
+   BACK BUTTON
+========================= */
+
+.back-row{
+    margin-bottom:10px;
+}
+
+.back-btn{
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+    height:34px;
+    padding:0 11px;
+    border-radius:10px;
+    background:#f0f6fb;
+    color:#3379a9;
+    border:1px solid #deebf4;
+    font-size:11px;
+    font-weight:800;
+}
+
+.back-btn:hover{
+    background:#e7f2fa;
+}
+
+/* =========================
+   SERVER CARDS
+========================= */
+
+.server-list{
+    display:flex;
+    flex-direction:column;
+    gap:8px;
+}
+
+.server-card{
+    border:1px solid #e1eaf1;
+    border-radius:15px;
+    padding:11px;
+    background:#fff;
+    transition:.18s ease;
+}
+
+.server-card.selected{
+    border-color:#7bd1a8;
+    background:#f1fbf6;
+}
+
+.server-top{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:10px;
+}
+
+.server-left{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    min-width:0;
+}
+
+.server-icon{
+    width:37px;
+    height:37px;
+    border-radius:11px;
+    background:#eaf5ff;
+    color:#2184cb;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:17px;
+    flex-shrink:0;
+}
+
+.server-name{
+    font-size:12px;
+    font-weight:850;
+}
+
+.server-status{
+    font-size:9px;
+    color:var(--green);
+    margin-top:2px;
+    font-weight:700;
+}
+
+.server-price{
+    font-size:13px;
+    font-weight:850;
+    color:var(--primary-dark);
+    white-space:nowrap;
+}
+
+.server-bottom{
+    display:flex;
+    justify-content:flex-end;
+    margin-top:9px;
+}
+
+.select-server-btn{
+    height:33px;
+    padding:0 12px;
+    border-radius:9px;
+    background:#edf6fd;
+    color:#2079b9;
+    font-size:10px;
+    font-weight:800;
+}
+
+.server-card.selected .select-server-btn{
+    background:var(--green);
+    color:#fff;
+}
+
+/* =========================
+   BUY AREA
+========================= */
+
+.buy-area{
+    margin-top:12px;
+    padding-top:12px;
+    border-top:1px solid #e8eef3;
+}
+
+.selected-summary{
+    display:flex;
+    justify-content:space-between;
+    gap:10px;
+    margin-bottom:10px;
+    font-size:11px;
+}
+
+.selected-summary span{
+    color:var(--muted);
+}
+
+.selected-summary strong{
+    font-weight:850;
+}
+
+.buy-btn{
+    width:100%;
+    height:46px;
+    border-radius:12px;
+    background:var(--primary);
+    color:#fff;
+    font-size:13px;
+    font-weight:850;
+    box-shadow:0 7px 17px rgba(35,136,232,.16);
+}
+
+.buy-btn:disabled{
+    opacity:.55;
+    cursor:not-allowed;
+}
+
+/* =========================
+   RECENT PURCHASES
+========================= */
+
+.section{
+    margin-top:17px;
+}
+
+.section-head{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:10px;
+    margin-bottom:9px;
+}
+
+.section-title{
+    font-size:15px;
+    font-weight:850;
+}
+
+.see-more{
+    color:var(--primary-dark);
+    font-size:10px;
+    font-weight:800;
+}
+
+.purchase-list{
+    display:flex;
+    flex-direction:column;
+    gap:8px;
+}
+
+.purchase-card{
+    background:#fff;
+    border:1px solid var(--border);
+    border-radius:15px;
+    padding:12px;
+    box-shadow:0 4px 14px rgba(30,100,150,.04);
+}
+
+.purchase-top{
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-start;
+    gap:10px;
+}
+
+.purchase-service{
+    font-size:12px;
+    font-weight:850;
+}
+
+.purchase-country{
+    color:var(--muted);
+    font-size:9px;
+    margin-top:3px;
+}
+
+.status{
+    padding:4px 8px;
+    border-radius:8px;
+    font-size:9px;
+    font-weight:850;
+    white-space:nowrap;
+}
+
+.status.received,
+.status.completed{
+    background:var(--green-soft);
+    color:#15945a;
+}
+
+.status.pending,
+.status.waiting{
+    background:#fff5e7;
+    color:#c77b18;
+}
+
+.status.cancelled{
+    background:var(--red-soft);
+    color:#d73845;
+}
+
+.purchase-number{
+    margin-top:9px;
+    font-size:14px;
+    font-weight:850;
+    letter-spacing:.3px;
+}
+
+.purchase-code{
+    margin-top:4px;
+    font-size:11px;
+    color:var(--muted);
+}
+
+.purchase-actions{
+    display:flex;
+    gap:7px;
+    margin-top:10px;
+}
+
+.small-action{
+    flex:1;
+    height:34px;
+    border-radius:9px;
+    font-size:10px;
+    font-weight:800;
+}
+
+.get-code-btn{
+    background:#eaf5ff;
+    color:#1c79bd;
+}
+
+.cancel-order-btn{
+    background:var(--red-soft);
+    color:#d33d49;
+}
+
+.no-purchases{
+    background:#fff;
+    border:1px dashed #dbe7ef;
+    border-radius:15px;
+    padding:20px;
+    text-align:center;
+    color:var(--muted);
+    font-size:11px;
+}
+
+/* =========================
+   BOTTOM NAV
+========================= */
+
+.bottom-nav{
+    position:fixed;
+    left:50%;
+    bottom:0;
+    transform:translateX(-50%);
+    width:min(620px,100%);
+    height:72px;
+    z-index:500;
+    background:rgba(255,255,255,.96);
+    backdrop-filter:blur(14px);
+    border-top:1px solid #e2ebf2;
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    padding:7px 8px max(7px,env(safe-area-inset-bottom));
+}
+
+.nav-item{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    gap:3px;
+    color:#8794a0;
+    font-size:9px;
+    font-weight:750;
+    border-radius:12px;
+    background:transparent;
+}
+
+.nav-icon{
+    font-size:18px;
+    line-height:1;
+}
+
+.nav-item.active{
+    color:var(--primary);
+    background:#eef7ff;
+}
+
+/* =========================
+   MENU
+========================= */
+
+.menu-overlay{
+    position:fixed;
+    inset:0;
+    background:rgba(8,24,39,.42);
+    z-index:1000;
+    display:none;
+}
+
+.menu-overlay.show{
+    display:block;
+}
+
+.side-menu{
+    position:absolute;
+    left:0;
+    top:0;
+    bottom:0;
+    width:min(310px,88vw);
+    background:#fff;
+    box-shadow:14px 0 35px rgba(0,0,0,.12);
+    padding:18px;
+    overflow-y:auto;
+}
+
+.menu-brand{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    margin-bottom:18px;
+}
+
+.menu-brand-name{
+    font-size:19px;
+    font-weight:850;
+}
+
+.menu-close{
+    width:37px;
+    height:37px;
+    border-radius:11px;
+    background:#f3f7fa;
+    color:#687581;
+    font-size:19px;
+}
+
+.menu-user{
+    padding:14px;
+    border-radius:16px;
+    background:#eef7ff;
+    margin-bottom:15px;
+}
+
+.menu-user-name{
+    font-size:13px;
+    font-weight:850;
+}
+
+.menu-user-email{
+    font-size:10px;
+    color:var(--muted);
+    margin-top:4px;
+    overflow:hidden;
+    text-overflow:ellipsis;
+}
+
+.menu-item{
+    width:100%;
+    display:flex;
+    align-items:center;
+    gap:12px;
+    min-height:46px;
+    padding:0 11px;
+    border-radius:11px;
+    background:transparent;
+    color:var(--text);
+    font-size:12px;
+    font-weight:750;
+    text-align:left;
+}
+
+.menu-item:hover{
+    background:#f3f8fc;
+}
+
+.menu-item-icon{
+    width:30px;
+    height:30px;
+    border-radius:9px;
+    background:#edf6fd;
+    color:#237fb9;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    flex-shrink:0;
+}
+
+.menu-divider{
+    height:1px;
+    background:#edf1f4;
+    margin:10px 0;
+}
+
+.menu-logout{
+    color:#dc404c;
+}
+
+.menu-logout .menu-item-icon{
+    background:#fff0f1;
+    color:#dc404c;
+}
+
+/* =========================
+   ALERT MODAL
+========================= */
+
+.alert-overlay{
+    position:fixed;
+    inset:0;
+    z-index:9000;
+    display:none;
+    align-items:center;
+    justify-content:center;
+    padding:18px;
+    background:rgba(10,24,37,.48);
+    backdrop-filter:blur(4px);
+}
+
+.alert-overlay.show{
+    display:flex;
+}
+
+.alert-modal{
+    width:min(390px,100%);
+    background:#fff;
+    border-radius:20px;
+    border:1px solid var(--border);
+    padding:20px;
+    box-shadow:0 20px 55px rgba(0,0,0,.2);
+}
+
+.alert-icon{
+    width:45px;
+    height:45px;
+    border-radius:13px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background:#eaf5ff;
+    font-size:22px;
+    margin-bottom:10px;
+}
+
+.alert-modal h3{
+    font-size:17px;
+    font-weight:850;
+}
+
+.alert-modal p{
+    margin-top:7px;
+    color:var(--muted);
+    font-size:12px;
+    line-height:1.5;
+}
+
+.alert-buttons{
+    display:flex;
+    gap:8px;
+    margin-top:16px;
+}
+
+.alert-buttons button{
+    flex:1;
+    height:42px;
+    border-radius:10px;
+    font-size:11px;
+    font-weight:800;
+}
+
+.alert-ok{
+    background:var(--primary);
+    color:#fff;
+}
+
+.alert-cancel{
+    background:#f0f5f8;
+    color:#63717c;
+}
+
+/* =========================
+   LOADING
+========================= */
+
+.full-loading{
+    position:fixed;
+    inset:0;
+    z-index:11000;
+    display:none;
+    align-items:center;
+    justify-content:center;
+    background:rgba(255,255,255,.7);
+    backdrop-filter:blur(4px);
+}
+
+.full-loading.show{
+    display:flex;
+}
+
+.loader-card{
+    padding:18px 23px;
+    border-radius:17px;
+    background:#fff;
+    border:1px solid var(--border);
+    box-shadow:0 15px 40px rgba(20,90,130,.14);
+    text-align:center;
+}
+
+.spinner{
+    width:30px;
+    height:30px;
+    border:3px solid #dcecf8;
+    border-top-color:var(--primary);
+    border-radius:50%;
+    animation:spin .8s linear infinite;
+    margin:0 auto 9px;
+}
+
+@keyframes spin{
+    to{transform:rotate(360deg)}
+}
+
+.loader-text{
+    font-size:11px;
+    color:var(--muted);
+    font-weight:700;
+}
+
+/* =========================
+   RESPONSIVE
+========================= */
+
+@media(max-width:380px){
+    .main{
+        padding:12px;
+    }
+
+    .header-inner{
+        padding:0 12px;
+    }
+
+    .wallet-card{
+        padding:15px;
+    }
+
+    .wallet-balance{
+        font-size:25px;
+    }
+
+    .step-name{
+        font-size:9px;
+    }
+
+    .step-number{
+        width:22px;
+        height:22px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div class="app">
+
+    <!-- HEADER -->
+    <header class="header">
+        <div class="header-inner">
+
+            <div class="header-left">
+
+                <button
+                    class="menu-btn"
+                    id="menuBtn"
+                    type="button"
+                    aria-label="Open menu"
+                >
+                    ☰
+                </button>
+
+                <div class="brand">
+                    <div class="brand-name">Gustodigits</div>
+                    <div class="brand-sub">Virtual Numbers</div>
+                </div>
+
+            </div>
+
+            <div class="header-right">
+
+                <button
+                    class="icon-btn"
+                    id="refreshBtn"
+                    type="button"
+                    aria-label="Refresh"
+                >
+                    ↻
+                </button>
+
+            </div>
+
+        </div>
+    </header>
+
+
+    <!-- MAIN -->
+    <main class="main">
+
+        <div class="welcome">
+            <div class="welcome-small">Welcome back</div>
+            <h1 id="welcomeName">Hello 👋</h1>
+        </div>
+
+
+        <!-- WALLET -->
+        <section class="wallet-card">
+
+            <div class="wallet-top">
+
+                <div>
+                    <div class="wallet-label">Wallet Balance</div>
+                    <div class="wallet-balance" id="walletBalance">
+                        ₦0.00
+                    </div>
+                </div>
+
+                <div class="wallet-icon">
+                    💳
+                </div>
+
+            </div>
+
+            <div class="wallet-bottom">
+
+                <div class="wallet-note">
+                    Use your wallet to purchase numbers
+                </div>
+
+                <a
+                    href="wallet.html"
+                    class="fund-btn"
+                >
+                    + Fund Wallet
+                </a>
+
+            </div>
+
+        </section>
+
+
+        <!-- NUMBER FLOW -->
+        <section class="flow-card">
+
+            <div class="flow-header">
+
+                <div class="flow-title">
+                    Get a Virtual Number
+                </div>
+
+                <div class="flow-subtitle">
+                    Select a country, service and server to continue.
+                </div>
+
+            </div>
+
+
+            <!-- STEPS -->
+            <div class="stepper">
+
+                <div
+                    class="step active"
+                    id="stepIndicator1"
+                    onclick="editStep(1)"
+                >
+
+                    <div class="step-line"></div>
+
+                    <div class="step-content">
+
+                        <div
+                            class="step-number"
+                            id="stepNumber1"
+                        >
+                            1
+                        </div>
+
+                        <div
+                            class="step-name"
+                            id="stepName1"
+                        >
+                            Country
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <div
+                    class="step"
+                    id="stepIndicator2"
+                    onclick="editStep(2)"
+                >
+
+                    <div class="step-line"></div>
+
+                    <div class="step-content">
+
+                        <div
+                            class="step-number"
+                            id="stepNumber2"
+                        >
+                            2
+                        </div>
+
+                        <div
+                            class="step-name"
+                            id="stepName2"
+                        >
+                            Service
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <div
+                    class="step"
+                    id="stepIndicator3"
+                    onclick="editStep(3)"
+                >
+
+                    <div class="step-line"></div>
+
+                    <div class="step-content">
+
+                        <div
+                            class="step-number"
+                            id="stepNumber3"
+                        >
+                            3
+                        </div>
+
+                        <div
+                            class="step-name"
+                            id="stepName3"
+                        >
+                            Server
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- COUNTRY -->
+            <div
+                class="step-panel"
+                id="countryPanel"
+            >
+
+                <div class="selection-label">
+
+                    <strong>Country</strong>
+
+                    <span id="countryCount">
+                        Loading...
+                    </span>
+
+                </div>
+
+                <div class="search-box">
+
+                    <span class="search-icon">⌕</span>
+
+                    <input
+                        type="search"
+                        id="countrySearch"
+                        placeholder="Search country"
+                        autocomplete="off"
+                    >
+
+                </div>
+
+                <div
+                    class="options-box"
+                    id="countryOptions"
+                >
+
+                    <div class="loading-state">
+                        Loading countries...
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- SERVICE -->
+            <div
+                class="step-panel hidden"
+                id="servicePanel"
+            >
+
+                <div class="back-row">
+
+                    <button
+                        class="back-btn"
+                        type="button"
+                        onclick="goBackToCountry()"
+                    >
+                        ← Back
+                    </button>
+
+                </div>
+
+                <div class="selection-label">
+
+                    <strong>Service</strong>
+
+                    <span id="serviceCount">
+                        Select service
+                    </span>
+
+                </div>
+
+                <div class="search-box">
+
+                    <span class="search-icon">⌕</span>
+
+                    <input
+                        type="search"
+                        id="serviceSearch"
+                        placeholder="Search service"
+                        autocomplete="off"
+                    >
+
+                </div>
+
+                <div
+                    class="options-box"
+                    id="serviceOptions"
+                >
+
+                    <div class="empty-state">
+                        Select a country first.
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- SERVER -->
+            <div
+                class="step-panel hidden"
+                id="serverPanel"
+            >
+
+                <div class="back-row">
+
+                    <button
+                        class="back-btn"
+                        type="button"
+                        onclick="goBackToService()"
+                    >
+                        ← Back
+                    </button>
+
+                </div>
+
+                <div class="selection-label">
+
+                    <strong>Server</strong>
+
+                    <span id="serverCount">
+                        Select server
+                    </span>
+
+                </div>
+
+                <div
+                    class="server-list"
+                    id="serverOptions"
+                >
+
+                    <div class="empty-state">
+                        Select a service first.
+                    </div>
+
+                </div>
+
+                <div
+                    class="buy-area"
+                    id="buyArea"
+                    style="display:none;"
+                >
+
+                    <div class="selected-summary">
+
+                        <span>
+                            Selected server
+                        </span>
+
+                        <strong id="selectedServerName">
+                            —
+                        </strong>
+
+                    </div>
+
+                    <div class="selected-summary">
+
+                        <span>
+                            Price
+                        </span>
+
+                        <strong id="selectedServerPrice">
+                            —
+                        </strong>
+
+                    </div>
+
+                    <button
+                        class="buy-btn"
+                        id="buyBtn"
+                        type="button"
+                        disabled
+                    >
+                        Buy Number
+                    </button>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- RECENT PURCHASES -->
+        <section class="section">
+
+            <div class="section-head">
+
+                <div class="section-title">
+                    Recent Purchases
+                </div>
+
+                <a
+                    href="orders.html"
+                    class="see-more"
+                >
+                    See more →
+                </a>
+
+            </div>
+
+            <div
+                class="purchase-list"
+                id="recentPurchases"
+            >
+
+                <div class="no-purchases">
+                    Loading recent purchases...
+                </div>
+
+            </div>
+
+        </section>
+
+    </main>
+
+</div>
+
+
+<!-- WHATSAPP -->
+<a
+    href="https://wa.me/2347038064570?text=Hello%20Gustodigits%20Support"
+    target="_blank"
+    rel="noopener"
+    id="whatsappFloat"
+    style="
+        position:fixed;
+        right:16px;
+        bottom:84px;
+        z-index:600;
+        width:50px;
+        height:50px;
+        border-radius:50%;
+        display:flex;
+        align-items:center;
+        justify-content:center;
+        background:#25D366;
+        color:#fff;
+        font-size:25px;
+        box-shadow:0 8px 22px rgba(37,211,102,.28);
+    "
+    aria-label="WhatsApp Support"
+>
+    ☎
+</a>
+
+
+<!-- BOTTOM NAV -->
+<nav class="bottom-nav">
+
+    <a
+        href="dashboard.html"
+        class="nav-item active"
+    >
+        <span class="nav-icon">⌂</span>
+        <span>Dashboard</span>
+    </a>
+
+    <a
+        href="orders.html"
+        class="nav-item"
+    >
+        <span class="nav-icon">▤</span>
+        <span>Orders</span>
+    </a>
+
+    <a
+        href="transactions.html"
+        class="nav-item"
+    >
+        <span class="nav-icon">₦</span>
+        <span>Transactions</span>
+    </a>
+
+    <a
+        href="https://wa.me/2347038064570?text=Hello%20Gustodigits%20Support"
+        target="_blank"
+        rel="noopener"
+        class="nav-item"
+    >
+        <span class="nav-icon">◉</span>
+        <span>Support</span>
+    </a>
+
+</nav>
+
+
+<!-- SIDE MENU -->
+<div
+    class="menu-overlay"
+    id="menuOverlay"
+>
+
+    <aside class="side-menu">
+
+        <div class="menu-brand">
+
+            <div class="menu-brand-name">
+                Gustodigits
+            </div>
+
+            <button
+                class="menu-close"
+                id="menuClose"
+                type="button"
+            >
+                ×
+            </button>
+
+        </div>
+
+
+        <div class="menu-user">
+
+            <div
+                class="menu-user-name"
+                id="menuUserName"
+            >
+                User
+            </div>
+
+            <div
+                class="menu-user-email"
+                id="menuUserEmail"
+            >
+                —
+            </div>
+
+        </div>
+
+
+        <button
+            class="menu-item"
+            onclick="location.href='profile.html'"
+        >
+
+            <span class="menu-item-icon">
+                👤
+            </span>
+
+            Profile
+
+        </button>
+
+
+        <button
+            class="menu-item"
+            onclick="location.href='orders.html'"
+        >
+
+            <span class="menu-item-icon">
+                ▤
+            </span>
+
+            Orders
+
+        </button>
+
+
+        <button
+            class="menu-item"
+            onclick="location.href='transactions.html'"
+        >
+
+            <span class="menu-item-icon">
+                ₦
+            </span>
+
+            Transactions
+
+        </button>
+
+
+        <button
+            class="menu-item"
+            onclick="location.href='wallet.html'"
+        >
+
+            <span class="menu-item-icon">
+                💳
+            </span>
+
+            Fund Wallet
+
+        </button>
+
+
+        <button
+            class="menu-item"
+            onclick="window.open('https://wa.me/2347038064570?text=Hello%20Gustodigits%20Support','_blank')"
+        >
+
+            <span class="menu-item-icon">
+                💬
+            </span>
+
+            Contact Support
+
+        </button>
+
+
+        <div class="menu-divider"></div>
+
+
+        <button
+            class="menu-item menu-logout"
+            id="logoutBtn"
+            type="button"
+        >
+
+            <span class="menu-item-icon">
+                ↪
+            </span>
+
+            Logout
+
+        </button>
+
+    </aside>
+
+</div>
+
+
+<!-- VERIFICATION POPUP -->
+<div
+    class="verification-overlay"
+    id="verificationOverlay"
+>
+
+    <div
+        class="verification-modal"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="verificationTitle"
+    >
+
+        <div class="verification-head">
+
+            <div class="verification-title">
+
+                <div class="verification-title-icon">
+                    📢
+                </div>
+
+                <strong id="verificationTitle">
+                    Important Verification
+                </strong>
+
+            </div>
+
+            <button
+                class="verification-close"
+                id="verificationClose"
+                type="button"
+                aria-label="Close"
+            >
+                ×
+            </button>
+
+        </div>
+
+
+        <div class="verification-body">
+
+            <div class="shield-wrap">
+
+                <div class="shield">
+                    🛡️
+                </div>
+
+            </div>
+
+
+            <div class="verification-section-title">
+
+                <div class="verification-section-icon">
+                    ✨
+                </div>
+
+                <strong>
+                    Best Practices for Success
+                </strong>
+
+            </div>
+
+
+            <div class="verification-items">
+
+                <div class="verification-item">
+
+                    <div class="verification-item-icon">
+                        🔄
+                    </div>
+
+                    <div class="verification-item-text">
+
+                        <div class="verification-item-title">
+                            Fresh Installation
+                        </div>
+
+                        <div class="verification-item-description">
+                            Uninstall the app and clear its cache before requesting a new number.
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <div class="verification-item">
+
+                    <div class="verification-item-icon">
+                        📱
+                    </div>
+
+                    <div class="verification-item-text">
+
+                        <div class="verification-item-title">
+                            Official Apps Only
+                        </div>
+
+                        <div class="verification-item-description">
+                            Use the standard official app version. Modified versions often fail verification.
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <div class="verification-item">
+
+                    <div class="verification-item-icon">
+                        🌐
+                    </div>
+
+                    <div class="verification-item-text">
+
+                        <div class="verification-item-title">
+                            Location Match
+                        </div>
+
+                        <div class="verification-item-description">
+                            Keep your device settings and connection consistent with the selected country while waiting.
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <div class="verification-item">
+
+                    <div class="verification-item-icon">
+                        📊
+                    </div>
+
+                    <div class="verification-item-text">
+
+                        <div class="verification-item-title">
+                            Stay Connected
+                        </div>
+
+                        <div class="verification-item-description">
+                            Keep the app open and maintain a stable connection.
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <div class="provider-tip">
+
+                    <div class="verification-item-icon">
+                        💡
+                    </div>
+
+                    <div class="verification-item-text">
+
+                        <div class="verification-item-title">
+                            Provider Tip
+                        </div>
+
+                        <div class="verification-item-description">
+                            If a server does not receive a code, please try another server. Each server shows its availability. Cancel when cancellation is available to receive your refund.
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="verification-action">
+
+            <button
+                class="understand-btn"
+                id="understandBtn"
+                type="button"
+            >
+                I Understand
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- ALERT -->
+<div
+    class="alert-overlay"
+    id="alertOverlay"
+>
+
+    <div class="alert-modal">
+
+        <div
+            class="alert-icon"
+            id="alertIcon"
+        >
+            ℹ️
+        </div>
+
+        <h3 id="alertTitle">
+            Notice
+        </h3>
+
+        <p id="alertMessage">
+            —
+        </p>
+
+        <div
+            class="alert-buttons"
+            id="alertButtons"
+        >
+
+            <button
+                class="alert-ok"
+                id="alertOk"
+                type="button"
+            >
+                OK
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- CONFIRM CANCEL -->
+<div
+    class="alert-overlay"
+    id="cancelConfirmOverlay"
+>
+
+    <div class="alert-modal">
+
+        <div class="alert-icon">
+            ⚠️
+        </div>
+
+        <h3>
+            Cancel Number?
+        </h3>
+
+        <p>
+            Are you sure you want to cancel this number? If cancellation is available, your payment will be refunded.
+        </p>
+
+        <div class="alert-buttons">
+
+            <button
+                class="alert-cancel"
+                id="cancelNo"
+                type="button"
+            >
+                No
+            </button>
+
+            <button
+                class="alert-ok"
+                id="cancelYes"
+                type="button"
+            >
+                Yes, Cancel
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- LOADING -->
+<div
+    class="full-loading"
+    id="fullLoading"
+>
+
+    <div class="loader-card">
+
+        <div class="spinner"></div>
+
+        <div
+            class="loader-text"
+            id="loaderText"
+        >
+            Please wait...
+        </div>
+
+    </div>
+
+</div>
+
+
+<script>
+/* =========================================================
+   SUPABASE
+========================================================= */
+
+const SUPABASE_URL =
+    "https://gvuaxtsdpmrragkkjowv.supabase.co";
+
+const SUPABASE_PUBLISHABLE_KEY =
+    "sb_publishable_oDAsADaZzLDiFX0cXogUyw_tTQYCa2k";
+
+const supabaseClient =
+    window.supabase.createClient(
+        SUPABASE_URL,
+        SUPABASE_PUBLISHABLE_KEY
+    );
+
+
+/* =========================================================
+   EDGE FUNCTION
+========================================================= */
+
+const GRIZZLY_FUNCTION_URL =
+    `${SUPABASE_URL}/functions/v1/grizzly`;
+
+
+/* =========================================================
+   STATE
+========================================================= */
+
+let currentUser = null;
+let currentSession = null;
+
+let countries = [];
+let services = [];
+let servers = [];
+
+let selectedCountry = null;
+let selectedService = null;
+let selectedServer = null;
+
+let currentStep = 1;
+
+let pendingCancelOrder = null;
+
+let countryRequestId = 0;
+let serviceRequestId = 0;
+let serverRequestId = 0;
+
+
+/* =========================================================
+   DOM HELPERS
+========================================================= */
+
+const $ = id => document.getElementById(id);
+
+
+/* =========================================================
+   LOADING
+========================================================= */
+
+function showLoading(text = "Please wait..."){
+    $("loaderText").textContent = text;
+    $("fullLoading").classList.add("show");
+}
+
+function hideLoading(){
+    $("fullLoading").classList.remove("show");
+}
+
+
+/* =========================================================
+   ALERT
+========================================================= */
+
+function showAlert(
+    title,
+    message,
+    icon = "ℹ️"
+){
+    $("alertTitle").textContent = title;
+    $("alertMessage").textContent = message;
+    $("alertIcon").textContent = icon;
+    $("alertOverlay").classList.add("show");
+}
+
+function hideAlert(){
+    $("alertOverlay").classList.remove("show");
+}
+
+$("alertOk").addEventListener(
+    "click",
+    hideAlert
+);
+
+
+/* =========================================================
+   SAFE TEXT
+========================================================= */
+
+function cleanErrorMessage(error){
+
+    const raw =
+        error?.message ||
+        error?.error ||
+        error?.msg ||
+        "";
+
+    const text =
+        String(raw).trim();
+
+    if(!text){
+        return "Something went wrong. Please try again.";
+    }
+
+    const lower =
+        text.toLowerCase();
+
+    if(
+        lower.includes("provider") ||
+        lower.includes("grizzly") ||
+        lower.includes("server not available") ||
+        lower.includes("no stock") ||
+        lower.includes("no number") ||
+        lower.includes("stock unavailable") ||
+        lower.includes("cannot fulfill")
+    ){
+        return "Insufficient funds. Please contact support.";
+    }
+
+    return text;
+}
+
+
+/* =========================================================
+   EDGE FUNCTION REQUEST
+========================================================= */
+
+async function callGrizzly(
+    action,
+    payload = {}
+){
+
+    if(!currentSession?.access_token){
+        throw new Error(
+            "Your session has expired. Please log in again."
+        );
+    }
+
+    const response =
+        await fetch(
+            GRIZZLY_FUNCTION_URL,
+            {
+                method:"POST",
+
+                headers:{
+                    "Content-Type":"application/json",
+                    "Authorization":
+                        `Bearer ${currentSession.access_token}`,
+                    "apikey":
+                        SUPABASE_PUBLISHABLE_KEY
+                },
+
+                body:JSON.stringify({
+                    action,
+                    ...payload
+                })
+            }
+        );
+
+    let data = null;
+
+    try{
+        data = await response.json();
+    }catch{
+        data = {
+            ok:false,
+            error:"Invalid server response."
+        };
+    }
+
+    if(!response.ok || data?.ok === false){
+
+        const error =
+            data?.message ||
+            data?.error ||
+            data?.msg ||
+            "Request failed.";
+
+        const err =
+            new Error(String(error));
+
+        Object.assign(err, data || {});
+
+        throw err;
+    }
+
+    return data;
+}
+
+
+/* =========================================================
+   AUTH
+========================================================= */
+
+async function initialize(){
+
+    const {
+        data,
+        error
+    } =
+        await supabaseClient.auth.getSession();
+
+    if(error || !data?.session){
+        location.replace("login.html");
+        return;
+    }
+
+    currentSession =
+        data.session;
+
+    currentUser =
+        data.session.user;
+
+    updateUserUI();
+
+    await Promise.allSettled([
+        loadWalletBalance(),
+        loadCountries(),
+        loadRecentPurchases()
+    ]);
+}
+
+
+supabaseClient.auth.onAuthStateChange(
+    async(event, session) => {
+
+        if(
+            event === "SIGNED_OUT"
+        ){
+            location.replace("login.html");
+            return;
+        }
+
+        if(session){
+            currentSession = session;
+            currentUser = session.user;
+            updateUserUI();
+        }
+    }
+);
+
+
+/* =========================================================
+   USER UI
+========================================================= */
+
+function updateUserUI(){
+
+    if(!currentUser){
+        return;
+    }
+
+    const metadata =
+        currentUser.user_metadata || {};
+
+    const firstName =
+        metadata.first_name ||
+        metadata.firstName ||
+        "";
+
+    const lastName =
+        metadata.last_name ||
+        metadata.lastName ||
+        "";
+
+    const fullName =
+        metadata.name ||
+        `${firstName} ${lastName}`.trim() ||
+        "User";
+
+    $("welcomeName").textContent =
+        `Hello, ${fullName.split(" ")[0]} 👋`;
+
+    $("menuUserName").textContent =
+        fullName;
+
+    $("menuUserEmail").textContent =
+        currentUser.email || "—";
+}
+
+
+/* =========================================================
+   WALLET
+========================================================= */
+
+async function loadWalletBalance(){
+
+    if(!currentUser){
+        return;
+    }
+
+    let balance = 0;
+
+    try{
+
+        let result =
+            await supabaseClient
+                .from("profiles")
+                .select("balance")
+                .eq("id", currentUser.id)
+                .maybeSingle();
+
+        if(
+            !result.error &&
+            result.data
+        ){
+            balance =
+                Number(result.data.balance || 0);
+        }else{
+
+            result =
+                await supabaseClient
+                    .from("profiles")
+                    .select("balance")
+                    .eq("user_id", currentUser.id)
+                    .maybeSingle();
+
+            if(
+                !result.error &&
+                result.data
+            ){
+                balance =
+                    Number(result.data.balance || 0);
+            }
+        }
+
+    }catch{
+        balance = 0;
+    }
+
+    $("walletBalance").textContent =
+        formatNaira(balance);
+
+    window.currentWalletBalance =
+        balance;
+}
+
+
+function formatNaira(amount){
+
+    const value =
+        Number(amount || 0);
+
+    return "₦" +
+        value.toLocaleString(
+            "en-NG",
+            {
+                minimumFractionDigits:2,
+                maximumFractionDigits:2
+            }
+        );
+}
+
+
+/* =========================================================
+   COUNTRIES
+========================================================= */
+
+async function loadCountries(){
+
+    const request =
+        ++countryRequestId;
+
+    $("countryOptions").innerHTML =
+        `<div class="loading-state">
+            Loading countries...
+         </div>`;
+
+    try{
+
+        const data =
+            await callGrizzly(
+                "countries"
+            );
+
+        if(request !== countryRequestId){
+            return;
+        }
+
+        const raw =
+            Array.isArray(data?.countries)
+                ? data.countries
+                : Array.isArray(data?.data)
+                    ? data.data
+                    : [];
+
+        countries =
+            raw
+                .map(normalizeCountry)
+                .filter(Boolean)
+                .sort(
+                    (a,b) =>
+                        a.name.localeCompare(b.name)
+                );
+
+        $("countryCount").textContent =
+            `${countries.length} available`;
+
+        renderCountries();
+
+    }catch(error){
+
+        $("countryOptions").innerHTML =
+            `<div class="error-state">
+                ${escapeHtml(cleanErrorMessage(error))}
+             </div>`;
+
+        $("countryCount").textContent =
+            "Unavailable";
+    }
+}
+
+
+function normalizeCountry(item){
+
+    if(
+        item === null ||
+        item === undefined
+    ){
+        return null;
+    }
+
+    if(typeof item === "string"){
+
+        return {
+            name:item,
+            code:item,
+            id:item,
+            raw:item
+        };
+    }
+
+    const name =
+        item.name ||
+        item.country_name ||
+        item.countryName ||
+        item.title ||
+        item.country ||
+        item.code ||
+        "";
+
+    const code =
+        item.code ||
+        item.country_code ||
+        item.countryCode ||
+        item.iso ||
+        item.id ||
+        name;
+
+    const id =
+        item.id ||
+        item.country_id ||
+        item.countryId ||
+        code;
+
+    if(!name){
+        return null;
+    }
+
+    return {
+        name:String(name),
+        code:String(code),
+        id:String(id),
+        raw:item
+    };
+}
+
+
+function renderCountries(){
+
+    const search =
+        $("countrySearch")
+            .value
+            .trim()
+            .toLowerCase();
+
+    const filtered =
+        countries.filter(country =>
+            country.name
+                .toLowerCase()
+                .includes(search) ||
+            country.code
+                .toLowerCase()
+                .includes(search)
+        );
+
+    if(!filtered.length){
+
+        $("countryOptions").innerHTML =
+            `<div class="empty-state">
+                No country found.
+             </div>`;
+
+        return;
+    }
+
+    $("countryOptions").innerHTML =
+        filtered
+            .map(country => {
+
+                const selected =
+                    selectedCountry &&
+                    String(selectedCountry.id) ===
+                    String(country.id);
+
+                return `
+                    <button
+                        type="button"
+                        class="option ${selected ? "selected" : ""}"
+                        onclick="selectCountry(${escapeAttribute(JSON.stringify(country))})"
+                    >
+
+                        <span class="option-left">
+
+                            <span class="option-icon">
+                                🌐
+                            </span>
+
+                            <span>
+                                <span class="option-name">
+                                    ${escapeHtml(country.name)}
+                                </span>
+
+                                <span class="option-meta">
+                                    ${escapeHtml(country.code)}
+                                </span>
+                            </span>
+
+                        </span>
+
+                        ${
+                            selected
+                                ? `<span class="option-check">✓</span>`
+                                : ""
+                        }
+
+                    </button>
+                `;
+            })
+            .join("");
+}
+
+
+$("countrySearch")
+    .addEventListener(
+        "input",
+        renderCountries
+    );
+
+
+/* =========================================================
+   SELECT COUNTRY
+========================================================= */
+
+async function selectCountry(country){
+
+    selectedCountry =
+        country;
+
+    selectedService =
+        null;
+
+    selectedServer =
+        null;
+
+    services = [];
+    servers = [];
+
+    $("serviceSearch").value = "";
+
+    markCountryComplete();
+
+    currentStep = 2;
+
+    updateStepper();
+
+    showStepPanel(2);
+
+    await loadServices();
+}
+
+
+/* =========================================================
+   SERVICES
+========================================================= */
+
+async function loadServices(){
+
+    const request =
+        ++serviceRequestId;
+
+    $("serviceOptions").innerHTML =
+        `<div class="loading-state">
+            Loading services...
+         </div>`;
+
+    $("serviceCount").textContent =
+        "Loading...";
+
+    try{
+
+        const data =
+            await callGrizzly(
+                "services",
+                {
+                    country:
+                        selectedCountry?.code ||
+                        selectedCountry?.id ||
+                        selectedCountry?.name
+                }
+            );
+
+        if(request !== serviceRequestId){
+            return;
+        }
+
+        const raw =
+            Array.isArray(data?.services)
+                ? data.services
+                : Array.isArray(data?.data)
+                    ? data.data
+                    : [];
+
+        services =
+            raw
+                .map(normalizeService)
+                .filter(Boolean)
+                .sort(
+                    (a,b) =>
+                        a.name.localeCompare(b.name)
+                );
+
+        $("serviceCount").textContent =
+            `${services.length} available`;
+
+        renderServices();
+
+    }catch(error){
+
+        $("serviceOptions").innerHTML =
+            `<div class="error-state">
+                ${escapeHtml(cleanErrorMessage(error))}
+             </div>`;
+
+        $("serviceCount").textContent =
+            "Unavailable";
+    }
+}
+
+
+function normalizeService(item){
+
+    if(
+        item === null ||
+        item === undefined
+    ){
+        return null;
+    }
+
+    if(typeof item === "string"){
+
+        return {
+            name:item,
+            id:item,
+            code:item,
+            raw:item
+        };
+    }
+
+    const name =
+        item.name ||
+        item.service_name ||
+        item.serviceName ||
+        item.title ||
+        item.service ||
+        item.code ||
+        "";
+
+    const code =
+        item.code ||
+        item.service_code ||
+        item.serviceCode ||
+        item.id ||
+        name;
+
+    const id =
+        item.id ||
+        item.service_id ||
+        item.serviceId ||
+        code;
+
+    if(!name){
+        return null;
+    }
+
+    return {
+        name:String(name),
+        id:String(id),
+        code:String(code),
+        raw:item
+    };
+}
+
+
+function renderServices(){
+
+    const search =
+        $("serviceSearch")
+            .value
+            .trim()
+            .toLowerCase();
+
+    const filtered =
+        services.filter(service =>
+            service.name
+                .toLowerCase()
+                .includes(search) ||
+            service.code
+                .toLowerCase()
+                .includes(search)
+        );
+
+    if(!filtered.length){
+
+        $("serviceOptions").innerHTML =
+            `<div class="empty-state">
+                No service found.
+             </div>`;
+
+        return;
+    }
+
+    $("serviceOptions").innerHTML =
+        filtered
+            .map(service => {
+
+                const selected =
+                    selectedService &&
+                    String(selectedService.id) ===
+                    String(service.id);
+
+                return `
+                    <button
+                        type="button"
+                        class="option ${selected ? "selected" : ""}"
+                        onclick="selectService(${escapeAttribute(JSON.stringify(service))})"
+                    >
+
+                        <span class="option-left">
+
+                            <span class="option-icon">
+                                📱
+                            </span>
+
+                            <span>
+
+                                <span class="option-name">
+                                    ${escapeHtml(service.name)}
+                                </span>
+
+                                <span class="option-meta">
+                                    Select this service
+                                </span>
+
+                            </span>
+
+                        </span>
+
+                        ${
+                            selected
+                                ? `<span class="option-check">✓</span>`
+                                : ""
+                        }
+
+                    </button>
+                `;
+            })
+            .join("");
+}
+
+
+$("serviceSearch")
+    .addEventListener(
+        "input",
+        renderServices
+    );
+
+
+/* =========================================================
+   SELECT SERVICE
+========================================================= */
+
+async function selectService(service){
+
+    selectedService =
+        service;
+
+    selectedServer =
+        null;
+
+    servers = [];
+
+    markServiceComplete();
+
+    currentStep = 3;
+
+    updateStepper();
+
+    showStepPanel(3);
+
+    await loadServers();
+}
+
+
+/* =========================================================
+   SERVERS
+========================================================= */
+
+async function loadServers(){
+
+    const request =
+        ++serverRequestId;
+
+    $("serverOptions").innerHTML =
+        `<div class="loading-state">
+            Loading available servers...
+         </div>`;
+
+    $("serverCount").textContent =
+        "Loading...";
+
+    $("buyArea").style.display =
+        "none";
+
+    try{
+
+        const data =
+            await callGrizzly(
+                "servers",
+                {
+                    country:
+                        selectedCountry?.code ||
+                        selectedCountry?.id ||
+                        selectedCountry?.name,
+
+                    service:
+                        selectedService?.code ||
+                        selectedService?.id ||
+                        selectedService?.name
+                }
+            );
+
+        if(request !== serverRequestId){
+            return;
+        }
+
+        const raw =
+            Array.isArray(data?.servers)
+                ? data.servers
+                : Array.isArray(data?.providers)
+                    ? data.providers
+                    : Array.isArray(data?.data)
+                        ? data.data
+                        : [];
+
+        servers =
+            raw
+                .map(normalizeServer)
+                .filter(Boolean)
+                .slice(0,5);
+
+        $("serverCount").textContent =
+            `${servers.length} available`;
+
+        renderServers();
+
+    }catch(error){
+
+        $("serverOptions").innerHTML =
+            `<div class="error-state">
+                ${escapeHtml(cleanErrorMessage(error))}
+             </div>`;
+
+        $("serverCount").textContent =
+            "Unavailable";
+    }
+}
+
+
+function normalizeServer(item){
+
+    if(
+        item === null ||
+        item === undefined
+    ){
+        return null;
+    }
+
+    if(typeof item === "string"){
+
+        return {
+            id:item,
+            name:"Server",
+            price:null,
+            raw:item
+        };
+    }
+
+    const id =
+        item.server_id ??
+        item.serverId ??
+        item.provider_id ??
+        item.providerId ??
+        item.operator_id ??
+        item.operatorId ??
+        item.id;
+
+    if(
+        id === undefined ||
+        id === null
+    ){
+        return null;
+    }
+
+    const name =
+        item.server_name ||
+        item.serverName ||
+        item.operator_name ||
+        item.operatorName ||
+        item.name ||
+        item.title ||
+        `Server ${id}`;
+
+    const price =
+        item.customer_price_ngn ??
+        item.customerPriceNgn ??
+        item.price_ngn ??
+        item.priceNgn ??
+        item.price ??
+        item.amount ??
+        null;
+
+    return {
+        id:String(id),
+        name:String(name),
+        price:
+            price === null
+                ? null
+                : Number(price),
+        raw:item
+    };
+}
+
+
+function renderServers(){
+
+    if(!servers.length){
+
+        $("serverOptions").innerHTML =
+            `<div class="empty-state">
+                No available servers at the moment.
+             </div>`;
+
+        $("buyArea").style.display =
+            "none";
+
+        return;
+    }
+
+    $("serverOptions").innerHTML =
+        servers
+            .map(server => {
+
+                const selected =
+                    selectedServer &&
+                    String(selectedServer.id) ===
+                    String(server.id);
+
+                return `
+                    <div
+                        class="server-card ${selected ? "selected" : ""}"
+                    >
+
+                        <div class="server-top">
+
+                            <div class="server-left">
+
+                                <div class="server-icon">
+                                    ☎
+                                </div>
+
+                                <div>
+
+                                    <div class="server-name">
+                                        ${escapeHtml(server.name)}
+                                    </div>
+
+                                    <div class="server-status">
+                                        Available
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                            <div class="server-price">
+                                ${
+                                    server.price !== null
+                                        ? formatNaira(server.price)
+                                        : "Available"
+                                }
+                            </div>
+
+                        </div>
+
+                        <div class="server-bottom">
+
+                            <button
+                                type="button"
+                                class="select-server-btn"
+                                onclick="selectServer(${escapeAttribute(JSON.stringify(server))})"
+                            >
+                                ${
+                                    selected
+                                        ? "✓ Selected"
+                                        : "Select Server"
+                                }
+                            </button>
+
+                        </div>
+
+                    </div>
+                `;
+            })
+            .join("");
+}
+
+
+/* =========================================================
+   SELECT SERVER
+========================================================= */
+
+function selectServer(server){
+
+    selectedServer =
+        server;
+
+    renderServers();
+
+    $("selectedServerName").textContent =
+        server.name;
+
+    $("selectedServerPrice").textContent =
+        server.price !== null
+            ? formatNaira(server.price)
+            : "Price confirmed at purchase";
+
+    $("buyArea").style.display =
+        "block";
+
+    $("buyBtn").disabled =
+        false;
+
+    markServerComplete();
+
+    updateStepper();
+}
+
+
+/* =========================================================
+   STEP STATE
+========================================================= */
+
+function markCountryComplete(){
+
+    $("stepIndicator1")
+        .classList
+        .add("complete");
+
+    $("stepNumber1").textContent =
+        "✓";
+}
+
+
+function markServiceComplete(){
+
+    $("stepIndicator1")
+        .classList
+        .add("complete");
+
+    $("stepIndicator2")
+        .classList
+        .add("complete");
+
+    $("stepNumber1").textContent =
+        "✓";
+
+    $("stepNumber2").textContent =
+        "✓";
+}
+
+
+function markServerComplete(){
+
+    $("stepIndicator1")
+        .classList
+        .add("complete");
+
+    $("stepIndicator2")
+        .classList
+        .add("complete");
+
+    $("stepIndicator3")
+        .classList
+        .add("complete");
+
+    $("stepNumber1").textContent =
+        "✓";
+
+    $("stepNumber2").textContent =
+        "✓";
+
+    $("stepNumber3").textContent =
+        "✓";
+}
+
+
+function updateStepper(){
+
+    const indicators = [
+        $("stepIndicator1"),
+        $("stepIndicator2"),
+        $("stepIndicator3")
+    ];
+
+    indicators.forEach(
+        (indicator,index) => {
+
+            const number =
+                index + 1;
+
+            indicator.classList
+                .remove("active");
+
+            if(number === currentStep){
+                indicator.classList
+                    .add("active");
+            }
+        }
+    );
+
+    if(selectedCountry){
+        markCountryComplete();
+    }
+
+    if(selectedService){
+        markServiceComplete();
+    }
+
+    if(selectedServer){
+        markServerComplete();
+    }
+}
+
+
+/* =========================================================
+   STEP NAVIGATION
+========================================================= */
+
+function showStepPanel(step){
+
+    $("countryPanel")
+        .classList
+        .toggle(
+            "hidden",
+            step !== 1
+        );
+
+    $("servicePanel")
+        .classList
+        .toggle(
+            "hidden",
+            step !== 2
+        );
+
+    $("serverPanel")
+        .classList
+        .toggle(
+            "hidden",
+            step !== 3
+        );
+
+    currentStep =
+        step;
+
+    updateStepper();
+}
+
+
+function editStep(step){
+
+    if(step === 1){
+        showStepPanel(1);
+        return;
+    }
+
+    if(step === 2 && selectedCountry){
+        showStepPanel(2);
+        return;
+    }
+
+    if(step === 3 && selectedService){
+        showStepPanel(3);
+        return;
+    }
+}
+
+
+function goBackToCountry(){
+
+    showStepPanel(1);
+}
+
+
+function goBackToService(){
+
+    showStepPanel(2);
+}
+
+
+/* =========================================================
+   BUY
+========================================================= */
+
+$("buyBtn").addEventListener(
+    "click",
+    purchaseNumber
+);
+
+
+async function purchaseNumber(){
+
+    if(!selectedCountry){
+
+        showAlert(
+            "Select Country",
+            "Please select a country first.",
+            "🌐"
+        );
+
+        return;
+    }
+
+    if(!selectedService){
+
+        showAlert(
+            "Select Service",
+            "Please select a service first.",
+            "📱"
+        );
+
+        return;
+    }
+
+    if(!selectedServer){
+
+        showAlert(
+            "Select Server",
+            "Please select a server first.",
+            "☎"
+        );
+
+        return;
+    }
+
+
+    const price =
+        Number(
+            selectedServer.price || 0
+        );
+
+    const balance =
+        Number(
+            window.currentWalletBalance || 0
+        );
+
+
+    if(
+        price > 0 &&
+        balance < price
+    ){
+
+        const needed =
+            Math.max(
+                0,
+                price - balance
+            );
+
+        const message =
+            balance <= 0
+                ? `Insufficient balance. Please add ${formatNaira(needed)} to your wallet.`
+                : `Insufficient funds. Please add ${formatNaira(needed)} to your wallet.`;
+
+        showAlert(
+            "Insufficient Balance",
+            message,
+            "💳"
+        );
+
+        return;
+    }
+
+
+    $("buyBtn").disabled =
+        true;
+
+    showLoading(
+        "Purchasing number..."
+    );
+
+
+    try{
+
+        const data =
+            await callGrizzly(
+                "buy",
+                {
+                    country:
+                        selectedCountry.code ||
+                        selectedCountry.id ||
+                        selectedCountry.name,
+
+                    service:
+                        selectedService.code ||
+                        selectedService.id ||
+                        selectedService.name,
+
+                    server_id:
+                        selectedServer.id,
+
+                    operator:
+                        selectedServer.id
+                }
+            );
+
+
+        hideLoading();
+
+        const activationId =
+            data?.activation_id ??
+            data?.activationId ??
+            data?.id ??
+            data?.order_id ??
+            data?.orderId;
+
+        const number =
+            data?.phone_number ??
+            data?.phoneNumber ??
+            data?.phone ??
+            data?.number ??
+            data?.data?.phone_number ??
+            data?.data?.phone ??
+            data?.data?.number ??
+            "Number purchased";
+
+
+        if(
+            data?.balance !== undefined
+        ){
+
+            window.currentWalletBalance =
+                Number(data.balance || 0);
+
+            $("walletBalance").textContent =
+                formatNaira(
+                    window.currentWalletBalance
+                );
+        }else{
+
+            await loadWalletBalance();
+        }
+
+
+        showAlert(
+            "Number Successfully Purchased",
+            `Your number ${number} has been successfully purchased.${activationId ? " You can now get the verification code." : ""}`,
+            "✅"
+        );
+
+
+        await loadRecentPurchases();
+
+
+        if(activationId){
+
+            setTimeout(
+                () => {
+
+                    getOrderStatus({
+                        activation_id:
+                            activationId,
+
+                        activationId:
+                            activationId,
+
+                        phone_number:
+                            number,
+
+                        phone:
+                            number,
+
+                        country:
+                            selectedCountry.name,
+
+                        service:
+                            selectedService.name
+                    });
+
+                },
+                500
+            );
+        }
+
+
+    }catch(error){
+
+        hideLoading();
+
+        $("buyBtn").disabled =
+            false;
+
+
+        const data =
+            error || {};
+
+        const balanceValue =
+            Number(
+                data.balance ??
+                window.currentWalletBalance ??
+                0
+            );
+
+        const priceValue =
+            Number(
+                data.price ??
+                data.customer_price_ngn ??
+                selectedServer.price ??
+                0
+            );
+
+        const neededValue =
+            Number(
+                data.needed ??
+                Math.max(
+                    0,
+                    priceValue - balanceValue
+                )
+            );
+
+
+        if(
+            data.error ===
+                "INSUFFICIENT_WALLET" ||
+            String(
+                data.message || ""
+            ).toLowerCase()
+                .includes("insufficient")
+        ){
+
+            if(
+                balanceValue <= 0
+            ){
+
+                showAlert(
+                    "Insufficient Balance",
+                    `Insufficient balance. Please add ${formatNaira(neededValue || priceValue)} to your wallet.`,
+                    "💳"
+                );
+
+            }else{
+
+                showAlert(
+                    "Insufficient Funds",
+                    `Insufficient funds. Please add ${formatNaira(neededValue)} to your wallet.`,
+                    "💳"
+                );
+            }
+
+            return;
+        }
+
+
+        showAlert(
+            "Purchase Unavailable",
+            "Insufficient funds. Please contact support.",
+            "⚠️"
+        );
+
+    }
+}
+
+
+/* =========================================================
+   RECENT PURCHASES
+========================================================= */
+
+async function loadRecentPurchases(){
+
+    try{
+
+        const data =
+            await callGrizzly(
+                "orders"
+            );
+
+        const raw =
+            Array.isArray(data?.orders)
+                ? data.orders
+                : Array.isArray(data?.data)
+                    ? data.data
+                    : [];
+
+        const orders =
+            raw
+                .map(normalizeOrder)
+                .sort(
+                    (a,b) =>
+                        b.timestamp - a.timestamp
+                )
+                .slice(0,3);
+
+        renderRecentPurchases(
+            orders
+        );
+
+    }catch(error){
+
+        $("recentPurchases").innerHTML =
+            `<div class="no-purchases">
+                Unable to load recent purchases.
+             </div>`;
+    }
+}
+
+
+function normalizeOrder(order){
+
+    const timestamp =
+        new Date(
+            order.created_at ||
+            order.createdAt ||
+            order.updated_at ||
+            order.updatedAt ||
+            order.purchased_at ||
+            order.purchasedAt ||
+            0
+        ).getTime() || 0;
+
+
+    const statusRaw =
+        String(
+            order.status ||
+            order.order_status ||
+            order.orderStatus ||
+            "pending"
+        ).toLowerCase();
+
+
+    let status =
+        statusRaw;
+
+
+    if(
+        statusRaw.includes("receive") ||
+        statusRaw.includes("success") ||
+        statusRaw.includes("complete") ||
+        statusRaw === "ok"
+    ){
+        status = "received";
+    }else if(
+        statusRaw.includes("cancel")
+    ){
+        status = "cancelled";
+    }else if(
+        statusRaw.includes("finish")
+    ){
+        status = "completed";
+    }else{
+        status = "pending";
+    }
+
+
+    return {
+
+        raw:order,
+
+        timestamp,
+
+        id:
+            order.id ||
+            order.order_id ||
+            order.orderId ||
+            order.activation_id ||
+            order.activationId,
+
+        activationId:
+            order.activation_id ||
+            order.activationId ||
+            order.activation_id,
+
+        country:
+            order.country_name ||
+            order.countryName ||
+            order.country ||
+            "Unknown country",
+
+        service:
+            order.service_name ||
+            order.serviceName ||
+            order.service ||
+            "Virtual Number",
+
+        number:
+            order.phone_number ||
+            order.phoneNumber ||
+            order.phone ||
+            order.number ||
+            "—",
+
+        code:
+            order.otp_code ||
+            order.otpCode ||
+            order.sms_code ||
+            order.smsCode ||
+            order.code ||
+            "",
+
+        status
+    };
+}
+
+
+function renderRecentPurchases(
+    orders
+){
+
+    if(!orders.length){
+
+        $("recentPurchases").innerHTML =
+            `<div class="no-purchases">
+                No purchases yet.
+             </div>`;
+
+        return;
+    }
+
+
+    $("recentPurchases").innerHTML =
+        orders
+            .map(
+                order =>
+                    renderPurchaseCard(
+                        order
+                    )
+            )
+            .join("");
+}
+
+
+function renderPurchaseCard(
+    order
+){
+
+    const statusClass =
+        order.status;
+
+    const statusText =
+        order.status === "received"
+            ? "Received"
+            : order.status === "cancelled"
+                ? "Cancelled"
+                : order.status === "completed"
+                    ? "Received"
+                    : "Pending";
+
+
+    const codeText =
+        order.code
+            ? `Code: ${escapeHtml(order.code)}`
+            : "Code: Waiting for SMS";
+
+
+    const actionButtons =
+        order.status === "pending"
+            ? `
+                <div class="purchase-actions">
+
+                    <button
+                        type="button"
+                        class="small-action get-code-btn"
+                        onclick="getOrderStatus(${escapeAttribute(JSON.stringify(order))})"
+                    >
+                        Get Code
+                    </button>
+
+                    <button
+                        type="button"
+                        class="small-action cancel-order-btn"
+                        onclick="askCancelOrder(${escapeAttribute(JSON.stringify(order))})"
+                    >
+                        Cancel
+                    </button>
+
+                </div>
+            `
+            : "";
+
+
+    return `
+        <div class="purchase-card">
+
+            <div class="purchase-top">
+
+                <div>
+
+                    <div class="purchase-service">
+                        ${escapeHtml(order.service)}
+                    </div>
+
+                    <div class="purchase-country">
+                        ${escapeHtml(order.country)}
+                    </div>
+
+                </div>
+
+                <span
+                    class="status ${statusClass}"
+                >
+                    ${statusText}
+                </span>
+
+            </div>
+
+
+            <div class="purchase-number">
+                ${escapeHtml(order.number)}
+            </div>
+
+
+            <div class="purchase-code">
+                ${codeText}
+            </div>
+
+
+            ${actionButtons}
+
+        </div>
+    `;
+}
+
+
+/* =========================================================
+   GET CODE / STATUS
+========================================================= */
+
+async function getOrderStatus(
+    order
+){
+
+    const activationId =
+        order.activation_id ||
+        order.activationId ||
+        order.id;
+
+
+    if(!activationId){
+
+        showAlert(
+            "Unable to Check",
+            "The activation information for this order could not be found.",
+            "⚠️"
+        );
+
+        return;
+    }
+
+
+    showLoading(
+        "Checking verification code..."
+    );
+
+
+    try{
+
+        const data =
+            await callGrizzly(
+                "status",
+                {
+                    activation_id:
+                        activationId,
+
+                    activationId:
+                        activationId
+                }
+            );
+
+
+        hideLoading();
+
+
+        const status =
+            String(
+                data?.status ||
+                data?.data?.status ||
+                ""
+            ).toLowerCase();
+
+
+        const code =
+            data?.otp_code ||
+            data?.sms_code ||
+            data?.code ||
+            data?.data?.otp_code ||
+            data?.data?.sms_code ||
+            data?.data?.code ||
+            "";
+
+
+        if(
+            code ||
+            status === "received"
+        ){
+
+            showAlert(
+                "Verification Code Received",
+                `Your verification code is ${code || "available in your order."}`,
+                "🔐"
+            );
+
+            await loadRecentPurchases();
+
+            return;
+        }
+
+
+        if(
+            status === "cancelled"
+        ){
+
+            showAlert(
+                "Number Cancelled",
+                "This number has been cancelled and the refund has been processed when cancellation was available.",
+                "↩️"
+            );
+
+            await loadRecentPurchases();
+            await loadWalletBalance();
+
+            return;
+        }
+
+
+        showAlert(
+            "Code Not Received Yet",
+            "The code has not arrived yet. Please keep the app open and try Get Code again shortly.",
+            "⏳"
+        );
+
+
+        await loadRecentPurchases();
+
+    }catch(error){
+
+        hideLoading();
+
+        showAlert(
+            "Unable to Get Code",
+            "The code is not available yet. Please try again shortly.",
+            "⏳"
+        );
+    }
+}
+
+
+/* =========================================================
+   CANCEL ORDER
+========================================================= */
+
+function askCancelOrder(order){
+
+    pendingCancelOrder =
+        order;
+
+    $("cancelConfirmOverlay")
+        .classList
+        .add("show");
+}
+
+
+$("cancelNo").addEventListener(
+    "click",
+    () => {
+
+        pendingCancelOrder =
+            null;
+
+        $("cancelConfirmOverlay")
+            .classList
+            .remove("show");
+    }
+);
+
+
+$("cancelYes").addEventListener(
+    "click",
+    async () => {
+
+        if(!pendingCancelOrder){
+            return;
+        }
+
+        const order =
+            pendingCancelOrder;
+
+        pendingCancelOrder =
+            null;
+
+        $("cancelConfirmOverlay")
+            .classList
+            .remove("show");
+
+        await cancelOrder(
+            order
+        );
+    }
+);
+
+
+async function cancelOrder(
+    order
+){
+
+    const activationId =
+        order.activation_id ||
+        order.activationId ||
+        order.id;
+
+
+    if(!activationId){
+
+        showAlert(
+            "Unable to Cancel",
+            "The activation information for this order could not be found.",
+            "⚠️"
+        );
+
+        return;
+    }
+
+
+    showLoading(
+        "Cancelling number..."
+    );
+
+
+    try{
+
+        await callGrizzly(
+            "cancel",
+            {
+                activation_id:
+                    activationId,
+
+                activationId:
+                    activationId
+            }
+        );
+
+
+        hideLoading();
+
+
+        showAlert(
+            "Number Cancelled",
+            "Number cancelled and refund processed.",
+            "✅"
+        );
+
+
+        await Promise.allSettled([
+            loadRecentPurchases(),
+            loadWalletBalance()
+        ]);
+
+    }catch(error){
+
+        hideLoading();
+
+        showAlert(
+            "Cancellation Unavailable",
+            "This number cannot be cancelled at the moment. Please try again later or contact support.",
+            "⚠️"
+        );
+    }
+}
+
+
+/* =========================================================
+   MENU
+========================================================= */
+
+$("menuBtn")
+    .addEventListener(
+        "click",
+        () => {
+
+            $("menuOverlay")
+                .classList
+                .add("show");
+        }
+    );
+
+
+$("menuClose")
+    .addEventListener(
+        "click",
+        closeMenu
+    );
+
+
+$("menuOverlay")
+    .addEventListener(
+        "click",
+        event => {
+
+            if(
+                event.target ===
+                $("menuOverlay")
+            ){
+                closeMenu();
+            }
+        }
+    );
+
+
+function closeMenu(){
+
+    $("menuOverlay")
+        .classList
+        .remove("show");
+}
+
+
+/* =========================================================
+   LOGOUT
+========================================================= */
+
+$("logoutBtn")
+    .addEventListener(
+        "click",
+        async () => {
+
+            closeMenu();
+
+            showLoading(
+                "Signing out..."
+            );
+
+            await supabaseClient.auth.signOut();
+
+            location.replace(
+                "login.html"
+            );
+        }
+    );
+
+
+/* =========================================================
+   REFRESH
+========================================================= */
+
+$("refreshBtn")
+    .addEventListener(
+        "click",
+        async () => {
+
+            $("refreshBtn")
+                .style
+                .transform =
+                "rotate(360deg)";
+
+            setTimeout(
+                () => {
+
+                    $("refreshBtn")
+                        .style
+                        .transform = "";
+
+                },
+                400
+            );
+
+            await Promise.allSettled([
+                loadWalletBalance(),
+                loadRecentPurchases()
+            ]);
+
+            if(currentStep === 1){
+                await loadCountries();
+            }
+
+            if(
+                currentStep === 2 &&
+                selectedCountry
+            ){
+                await loadServices();
+            }
+
+            if(
+                currentStep === 3 &&
+                selectedCountry &&
+                selectedService
+            ){
+                await loadServers();
+            }
+        }
+    );
+
+
+/* =========================================================
+   VERIFICATION POPUP
+   SHOWS EVERY TIME DASHBOARD LOADS
+========================================================= */
+
+function closeVerification(){
+
+    $("verificationOverlay")
+        .style
+        .display = "none";
+}
+
+
+$("verificationClose")
+    .addEventListener(
+        "click",
+        closeVerification
+    );
+
+
+$("understandBtn")
+    .addEventListener(
+        "click",
+        closeVerification
+    );
+
+
+/* =========================================================
+   ESCAPE HTML
+========================================================= */
+
+function escapeHtml(value){
+
+    return String(value ?? "")
+        .replace(/&/g,"&amp;")
+        .replace(/</g,"&lt;")
+        .replace(/>/g,"&gt;")
+        .replace(/"/g,"&quot;")
+        .replace(/'/g,"&#039;");
+}
+
+
+function escapeAttribute(value){
+
+    return escapeHtml(
+        JSON.stringify(value)
+    );
+}
+
+
+/* =========================================================
+   INITIALIZE
+========================================================= */
+
+document.addEventListener(
+    "DOMContentLoaded",
+    initialize
+);
+</script>
+
+</body>
+</html>
