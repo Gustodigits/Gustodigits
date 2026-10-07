@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Fund Wallet - Gustodigits</title>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://js.paystack.co/v2/inline.js"></script>
+
+<style>
+*{
+    box-sizing:border-box;
+}
+
+html,
+body{
+    margin:0;
+    padding:0;
+}
+
+body{
+    background:#f4f9ff;
+    color:#172033;
+    font-family:Arial,sans-serif;
+    min-height:100vh;
+}
+
+/* HEADER */
+
+header{
+    background:#ffffff;
+    border-bottom:1px solid #e5edf7;
+    padding:18px 20px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    position:relative;
+}
+
+header h1{
+    margin:0;
+    font-size:22px;
+    font-weight:800;
+    color:#1267d6;
+    letter-spacing:.1px;
+}
+
+/* BACK BUTTON */
+
+.header-back{
+    position:absolute;
+    left:18px;
+    width:38px;
+    height:38px;
+    border-radius:11px;
+    border:1px solid #e2ebf6;
+    background:#f7fbff;
+    color:#1267d6;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:20px;
+    cursor:pointer;
+}
+
+/* MAIN */
+
+main{
+    max-width:500px;
+    margin:auto;
+    padding:22px 16px 35px;
+}
+
+/* CARDS */
+
+.card{
+    background:#ffffff;
+    border:1px solid #e3edf8;
+    padding:21px;
+    border-radius:20px;
+    box-shadow:0 8px 25px rgba(31,91,145,.07);
+    margin-bottom:16px;
+}
+
+/* BALANCE */
+
+.balance-card{
+    position:relative;
+    overflow:hidden;
+    padding:23px;
+    background:linear-gradient(135deg,#1677e8,#0d5fc4);
+    border:0;
+    color:#ffffff;
+    box-shadow:0 12px 28px rgba(18,103,214,.18);
+}
+
+.balance-card::after{
+    content:"";
+    position:absolute;
+    width:150px;
+    height:150px;
+    right:-65px;
+    bottom:-80px;
+    border-radius:50%;
+    border:1px solid rgba(255,255,255,.16);
+}
+
+.balance-card::before{
+    content:"";
+    position:absolute;
+    width:90px;
+    height:90px;
+    right:35px;
+    top:-55px;
+    border-radius:50%;
+    border:1px solid rgba(255,255,255,.1);
+}
+
+.balance-top{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    margin-bottom:12px;
+    position:relative;
+    z-index:1;
+}
+
+.balance-label{
+    margin:0;
+    color:rgba(255,255,255,.82);
+    font-size:14px;
+    font-weight:600;
+}
+
+.balance-icon{
+    width:39px;
+    height:39px;
+    border-radius:12px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background:rgba(255,255,255,.13);
+    border:1px solid rgba(255,255,255,.18);
+    color:#ffffff;
+    font-size:18px;
+    font-weight:800;
+    position:relative;
+    z-index:1;
+}
+
+#walletBalance{
+    margin:0;
+    font-size:31px;
+    font-weight:800;
+    color:#ffffff;
+    letter-spacing:.2px;
+    position:relative;
+    z-index:1;
+}
+
+/* ADD MONEY */
+
+.card h2{
+    margin:0 0 17px;
+    color:#172033;
+    font-size:20px;
+}
+
+/* QUICK SELECT */
+
+.quick-title{
+    margin:0 0 11px;
+    color:#64748b;
+    font-size:13px;
+    font-weight:700;
+}
+
+.quick-select{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:9px;
+    margin-bottom:16px;
+}
+
+.quick-btn{
+    border:1px solid #dbe8f5;
+    background:#f7fbff;
+    color:#1267d6;
+    padding:11px 5px;
+    border-radius:11px;
+    font-size:13px;
+    font-weight:800;
+    cursor:pointer;
+    transition:.18s;
+}
+
+.quick-btn:hover{
+    background:#eaf4ff;
+    border-color:#b9d8f8;
+}
+
+.quick-btn.active{
+    background:#1267d6;
+    color:#ffffff;
+    border-color:#1267d6;
+    box-shadow:0 5px 13px rgba(18,103,214,.16);
+}
+
+/* AMOUNT */
+
+#amount{
+    width:100%;
+    padding:16px;
+    border:1px solid #dbe5f0;
+    background:#fbfdff;
+    color:#172033;
+    border-radius:13px;
+    font-size:18px;
+    outline:none;
+    transition:.2s;
+}
+
+#amount::placeholder{
+    color:#9aa8b8;
+}
+
+#amount:focus{
+    border-color:#3788e8;
+    background:#ffffff;
+    box-shadow:0 0 0 3px rgba(18,103,214,.08);
+}
+
+/* BUTTON */
+
+.btn{
+    width:100%;
+    border:0;
+    background:#1267d6;
+    color:#ffffff;
+    padding:16px;
+    margin-top:15px;
+    border-radius:13px;
+    font-size:17px;
+    font-weight:800;
+    cursor:pointer;
+    box-shadow:0 8px 20px rgba(18,103,214,.17);
+    transition:.2s;
+}
+
+.btn:hover{
+    background:#0d5fc4;
+    transform:translateY(-1px);
+    box-shadow:0 10px 24px rgba(18,103,214,.22);
+}
+
+.btn:active{
+    transform:translateY(0);
+}
+
+.btn:disabled{
+    opacity:.6;
+    cursor:not-allowed;
+    transform:none;
+}
+
+/* MESSAGE */
+
+#message{
+    min-height:25px;
+    margin-top:17px;
+    font-weight:bold;
+    line-height:1.5;
+}
+
+/* BACK */
+
+.back{
+    width:100%;
+    background:#ffffff;
+    color:#1267d6;
+    padding:16px;
+    margin-top:4px;
+    border-radius:14px;
+    text-align:center;
+    font-weight:800;
+    cursor:pointer;
+    border:1px solid #dce8f5;
+    box-shadow:0 5px 15px rgba(31,91,145,.05);
+    transition:.2s;
+}
+
+.back:hover{
+    background:#f5faff;
+    border-color:#bdd9f5;
+}
+
+/* MOBILE */
+
+@media(max-width:420px){
+    main{
+        padding:20px 15px 30px;
+    }
+
+    header{
+        padding:17px;
+    }
+
+    header h1{
+        font-size:21px;
+    }
+
+    .card{
+        padding:19px;
+        border-radius:18px;
+    }
+
+    #walletBalance{
+        font-size:28px;
+    }
+
+    .quick-select{
+        grid-template-columns:repeat(4,1fr);
+        gap:8px;
+    }
+
+    .quick-btn{
+        padding:10px 3px;
+        font-size:12px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+    <button
+        class="header-back"
+        type="button"
+        onclick="location.href='dashboard.html'"
+        aria-label="Back"
+    >
+        ‹
+    </button>
+
+    <h1>Fund Wallet</h1>
+</header>
+
+<main>
+
+<div class="card balance-card">
+
+    <div class="balance-top">
+        <p class="balance-label">Available Wallet Balance</p>
+
+        <div class="balance-icon">
+            ₦
+        </div>
+    </div>
+
+    <p id="walletBalance">Loading...</p>
+
+</div>
+
+<div class="card">
+
+    <h2>Add Money</h2>
+
+    <p class="quick-title">Quick Select</p>
+
+    <div class="quick-select">
+
+        <button
+            type="button"
+            class="quick-btn"
+            onclick="selectAmount(100,this)"
+        >
+            ₦100
+        </button>
+
+        <button
+            type="button"
+            class="quick-btn"
+            onclick="selectAmount(200,this)"
+        >
+            ₦200
+        </button>
+
+        <button
+            type="button"
+            class="quick-btn"
+            onclick="selectAmount(500,this)"
+        >
+            ₦500
+        </button>
+
+        <button
+            type="button"
+            class="quick-btn"
+            onclick="selectAmount(1000,this)"
+        >
+            ₦1,000
+        </button>
+
+        <button
+            type="button"
+            class="quick-btn"
+            onclick="selectAmount(2000,this)"
+        >
+            ₦2,000
+        </button>
+
+        <button
+            type="button"
+            class="quick-btn"
+            onclick="selectAmount(5000,this)"
+        >
+            ₦5,000
+        </button>
+
+        <button
+            type="button"
+            class="quick-btn"
+            onclick="selectAmount(10000,this)"
+        >
+            ₦10,000
+        </button>
+
+        <button
+            type="button"
+            class="quick-btn"
+            onclick="selectAmount(20000,this)"
+        >
+            ₦20,000
+        </button>
+
+    </div>
+
+    <input
+        id="amount"
+        type="number"
+        min="100"
+        step="1"
+        placeholder="Enter amount"
+    >
+
+    <button
+        id="continueButton"
+        class="btn"
+        onclick="continuePayment()"
+    >
+        Continue
+    </button>
+
+    <p id="message"></p>
+
+</div>
+
+<div
+    class="back"
+    onclick="location.href='dashboard.html'"
+>
+    🏠 Back to Dashboard
+</div>
+
+</main>
+
+<script>
+const SUPABASE_URL="https://hkfhehbhmucymusaytoe.supabase.co";
+const SUPABASE_KEY="sb_publishable_O-aPnRtG3EZ6-Lwo8_sRuw_ZQqSQSF_";
+const PAYSTACK_PUBLIC_KEY="pk_live_404fd9834a0f367328c2fb55a2256e406ed6b43f";
+
+const supabaseClient=supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
+
+function message(text,color="#111"){
+const el=document.getElementById("message");
+el.textContent=text;
+el.style.color=color;
+}
+
+function selectAmount(amount,button){
+document.getElementById("amount").value=amount;
+
+document.querySelectorAll(".quick-btn").forEach(btn=>{
+btn.classList.remove("active");
+});
+
+if(button){
+button.classList.add("active");
+}
+}
+
+document.getElementById("amount").addEventListener("input",()=>{
+const current=Number(document.getElementById("amount").value);
+
+document.querySelectorAll(".quick-btn").forEach(btn=>{
+btn.classList.remove("active");
+});
+
+const matchingButton=[...document.querySelectorAll(".quick-btn")]
+.find(btn=>Number(btn.textContent.replace(/[₦,]/g,""))===current);
+
+if(matchingButton){
+matchingButton.classList.add("active");
+}
+});
+
+async function getWalletBalance(){
+const {data:{user}}=await supabaseClient.auth.getUser();
+
+if(!user){
+location.href="login.html";
+return null;
+}
+
+const {data,error}=await supabaseClient.rpc("ensure_my_wallet");
+
+if(error){
+console.error(error);
+document.getElementById("walletBalance").textContent="Unable to load balance";
+return null;
+}
+
+return Number(data?.balance||0);
+}
+
+async function loadWallet(){
+const balance=await getWalletBalance();
+
+if(balance===null)return null;
+
+document.getElementById("walletBalance").textContent=
+"₦"+balance.toLocaleString("en-NG",{
+minimumFractionDigits:2,
+maximumFractionDigits:2
+});
+
+return balance;
+}
+
+async function continuePayment(){
+const amount=Number(document.getElementById("amount").value);
+const button=document.getElementById("continueButton");
+
+if(!Number.isFinite(amount)||amount<100){
+message("Please enter at least ₦100.","red");
+return;
+}
+
+const {data:{user},error}=await supabaseClient.auth.getUser();
+
+if(error||!user){
+location.href="login.html";
+return;
+}
+
+if(!user.email){
+message("Your account has no email address.","red");
+return;
+}
+
+button.disabled=true;
+button.textContent="Opening payment...";
+message("Opening Paystack...");
+
+try{
+const oldBalance=await getWalletBalance();
+
+if(oldBalance===null){
+button.disabled=false;
+button.textContent="Continue";
+return;
+}
+
+const paystack=new PaystackPop();
+
+paystack.newTransaction({
+key:PAYSTACK_PUBLIC_KEY,
+email:user.email,
+amount:Math.round(amount*100),
+currency:"NGN",
+metadata:{
+user_id:user.id,
+purpose:"wallet_funding"
+},
+
+onSuccess:async(transaction)=>{
+message("Payment successful. Waiting for wallet confirmation...","green");
+button.textContent="Confirming...";
+
+for(let i=0;i<10;i++){
+await new Promise(resolve=>setTimeout(resolve,3000));
+
+const newBalance=await loadWallet();
+
+if(newBalance!==null&&newBalance>oldBalance){
+message("Payment successful! Wallet balance updated.","green");
+document.getElementById("amount").value="";
+
+document.querySelectorAll(".quick-btn").forEach(btn=>{
+btn.classList.remove("active");
+});
+
+button.disabled=false;
+button.textContent="Continue";
+return;
+}
+}
+
+message("Payment was successful, but wallet balance has not updated yet. Please wait and refresh.","#cc6600");
+button.disabled=false;
+button.textContent="Continue";
+},
+
+onCancel:()=>{
+message("Payment cancelled.","#cc6600");
+button.disabled=false;
+button.textContent="Continue";
+},
+
+onError:(error)=>{
+console.error(error);
+message(error?.message||"Payment failed.","red");
+button.disabled=false;
+button.textContent="Continue";
+}
+});
+
+}catch(error){
+console.error(error);
+message("Unable to open Paystack payment.","red");
+button.disabled=false;
+button.textContent="Continue";
+}
+}
+
+loadWallet();
+</script>
+
+</body>
+</html>
