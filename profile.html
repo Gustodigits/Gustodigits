@@ -1,0 +1,1659 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta
+  name="viewport"
+  content="width=device-width, initial-scale=1.0"
+>
+
+<title>My Profile - Gustodigits</title>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<style>
+
+*{
+  box-sizing:border-box;
+}
+
+:root{
+  --blue:#1877f2;
+  --blue-dark:#0f5fc4;
+  --blue-soft:#eef6ff;
+  --green:#16a34a;
+  --red:#dc2626;
+  --text:#172033;
+  --muted:#718096;
+  --border:#e5edf7;
+  --white:#ffffff;
+}
+
+body{
+  margin:0;
+  padding:0 0 30px;
+  background:#f4f8fd;
+  color:var(--text);
+  font-family:Arial,Helvetica,sans-serif;
+  min-height:100vh;
+}
+
+
+/* =========================
+   HEADER
+========================= */
+
+header{
+  position:sticky;
+  top:0;
+  z-index:20;
+  background:#fff;
+  border-bottom:1px solid var(--border);
+  padding:15px 16px;
+  display:flex;
+  align-items:center;
+  gap:12px;
+}
+
+.header-back{
+  width:40px;
+  height:40px;
+  border:0;
+  border-radius:12px;
+  background:var(--blue-soft);
+  color:var(--blue);
+  font-size:22px;
+  cursor:pointer;
+}
+
+header h1{
+  margin:0;
+  font-size:20px;
+  font-weight:800;
+  flex:1;
+}
+
+.header-refresh{
+  width:40px;
+  height:40px;
+  border:0;
+  border-radius:12px;
+  background:var(--blue-soft);
+  color:var(--blue);
+  font-size:18px;
+  cursor:pointer;
+}
+
+
+/* =========================
+   MAIN
+========================= */
+
+main{
+  max-width:620px;
+  margin:auto;
+  padding:18px 15px 35px;
+}
+
+
+/* =========================
+   PROFILE HERO
+========================= */
+
+.profile-hero{
+  background:linear-gradient(
+    135deg,
+    #1877f2,
+    #0f5fc4
+  );
+  color:#fff;
+  border-radius:22px;
+  padding:22px 20px;
+  margin-bottom:18px;
+  box-shadow:0 8px 24px rgba(24,119,242,.18);
+  display:flex;
+  align-items:center;
+  gap:15px;
+}
+
+.profile-avatar{
+  width:68px;
+  height:68px;
+  min-width:68px;
+  border-radius:20px;
+  background:rgba(255,255,255,.18);
+  border:1px solid rgba(255,255,255,.25);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:28px;
+  font-weight:800;
+}
+
+.profile-hero-text{
+  min-width:0;
+}
+
+.profile-hero-text h2{
+  margin:0 0 5px;
+  font-size:21px;
+  font-weight:800;
+  word-break:break-word;
+}
+
+.profile-hero-text p{
+  margin:0;
+  font-size:13px;
+  opacity:.84;
+  word-break:break-word;
+}
+
+
+/* =========================
+   SECTION
+========================= */
+
+.section{
+  margin-bottom:18px;
+}
+
+.section-title{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  margin:0 2px 10px;
+  color:var(--text);
+  font-size:16px;
+  font-weight:800;
+}
+
+.section-title::after{
+  content:"";
+  height:1px;
+  background:var(--border);
+  flex:1;
+}
+
+
+/* =========================
+   CARD
+========================= */
+
+.card{
+  background:#fff;
+  border:1px solid var(--border);
+  border-radius:18px;
+  overflow:hidden;
+  box-shadow:0 4px 16px rgba(25,60,100,.05);
+}
+
+
+/* =========================
+   ACCOUNT ROW
+========================= */
+
+.profile-row{
+  min-height:88px;
+  padding:15px 16px;
+  display:flex;
+  align-items:center;
+  gap:14px;
+  border-bottom:1px solid var(--border);
+}
+
+.profile-row:last-child{
+  border-bottom:none;
+}
+
+.icon-box{
+  width:52px;
+  height:52px;
+  min-width:52px;
+  border-radius:15px;
+  background:var(--blue-soft);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:23px;
+}
+
+.row-info{
+  flex:1;
+  min-width:0;
+}
+
+.row-label{
+  margin-bottom:4px;
+  color:var(--muted);
+  font-size:11px;
+  font-weight:800;
+  text-transform:uppercase;
+  letter-spacing:.3px;
+}
+
+.row-value{
+  color:var(--text);
+  font-size:16px;
+  font-weight:700;
+  word-break:break-word;
+}
+
+
+/* =========================
+   WALLET
+========================= */
+
+.wallet-card{
+  background:linear-gradient(
+    135deg,
+    #1877f2,
+    #0f5fc4
+  );
+  color:#fff;
+  border-radius:18px;
+  padding:19px;
+  box-shadow:0 8px 22px rgba(24,119,242,.16);
+}
+
+.wallet-title{
+  display:flex;
+  align-items:center;
+  gap:13px;
+}
+
+.wallet-icon{
+  width:52px;
+  height:52px;
+  border-radius:15px;
+  background:rgba(255,255,255,.16);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:24px;
+  border:1px solid rgba(255,255,255,.18);
+}
+
+.wallet-label{
+  font-size:12px;
+  color:rgba(255,255,255,.78);
+  font-weight:700;
+  text-transform:uppercase;
+}
+
+.wallet-balance{
+  margin-top:4px;
+  font-size:25px;
+  font-weight:800;
+}
+
+.fund-wallet{
+  width:100%;
+  margin-top:15px;
+  padding:12px;
+  border:0;
+  border-radius:12px;
+  background:#fff;
+  color:var(--blue);
+  font-size:14px;
+  font-weight:800;
+  cursor:pointer;
+}
+
+
+/* =========================
+   SETTINGS / EDIT CARD
+========================= */
+
+.edit-card{
+  background:#fff;
+  border:1px solid var(--border);
+  border-radius:18px;
+  padding:16px;
+  box-shadow:0 4px 16px rgba(25,60,100,.05);
+}
+
+.field-label{
+  display:block;
+  margin:0 0 7px;
+  color:var(--muted);
+  font-size:12px;
+  font-weight:800;
+}
+
+input{
+  width:100%;
+  padding:13px 14px;
+  border:1px solid var(--border);
+  border-radius:11px;
+  background:#f9fbfe;
+  color:var(--text);
+  font-size:15px;
+  outline:none;
+  margin-bottom:13px;
+}
+
+input:focus{
+  border-color:#9bc4ff;
+  background:#fff;
+  box-shadow:0 0 0 3px rgba(24,119,242,.08);
+}
+
+input::placeholder{
+  color:#9aa8ba;
+}
+
+.email-display{
+  width:100%;
+  padding:13px 14px;
+  border:1px solid var(--border);
+  border-radius:11px;
+  background:#f4f7fb;
+  color:#68778c;
+  font-size:15px;
+  margin-bottom:13px;
+  word-break:break-word;
+}
+
+.primary-button{
+  width:100%;
+  border:0;
+  border-radius:12px;
+  padding:13px 15px;
+  background:var(--blue);
+  color:#fff;
+  font-size:14px;
+  font-weight:800;
+  cursor:pointer;
+}
+
+.primary-button:active{
+  transform:translateY(1px);
+}
+
+
+/* =========================
+   SUPPORT
+========================= */
+
+.support-row{
+  cursor:pointer;
+}
+
+.arrow{
+  color:#9aa8ba;
+  font-size:27px;
+  line-height:1;
+}
+
+
+/* =========================
+   MESSAGE
+========================= */
+
+#message{
+  min-height:20px;
+  margin:10px 2px 0;
+  font-size:13px;
+  text-align:center;
+}
+
+.message-success{
+  color:var(--green);
+}
+
+.message-error{
+  color:var(--red);
+}
+
+
+/* =========================
+   LOGOUT
+========================= */
+
+.logout{
+  width:100%;
+  margin-top:4px;
+  padding:15px;
+  border:1px solid #fecaca;
+  border-radius:15px;
+  background:#fff;
+  color:var(--red);
+  font-size:15px;
+  font-weight:800;
+  cursor:pointer;
+}
+
+.back-dashboard{
+  width:100%;
+  margin-top:11px;
+  padding:15px;
+  border:1px solid #cfe2ff;
+  border-radius:15px;
+  background:var(--blue-soft);
+  color:var(--blue);
+  font-size:15px;
+  font-weight:800;
+  cursor:pointer;
+}
+
+
+/* =========================
+   SUPPORT MODAL
+========================= */
+
+.contact-overlay{
+  display:none;
+  position:fixed;
+  inset:0;
+  background:rgba(15,32,51,.35);
+  z-index:999;
+  align-items:flex-end;
+  justify-content:center;
+  padding:16px;
+}
+
+.contact-overlay.show{
+  display:flex;
+}
+
+.contact-modal{
+  width:100%;
+  max-width:620px;
+  background:#fff;
+  border:1px solid var(--border);
+  border-radius:22px;
+  padding:18px;
+  box-shadow:0 18px 50px rgba(20,50,90,.22);
+  position:relative;
+  animation:supportUp .2s ease-out;
+}
+
+@keyframes supportUp{
+  from{
+    transform:translateY(20px);
+    opacity:0;
+  }
+  to{
+    transform:translateY(0);
+    opacity:1;
+  }
+}
+
+.contact-head{
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+  gap:12px;
+  margin-bottom:14px;
+}
+
+.contact-title{
+  margin:0;
+  color:var(--text);
+  font-size:18px;
+  font-weight:800;
+}
+
+.contact-subtitle{
+  margin:5px 0 0;
+  color:var(--muted);
+  font-size:12px;
+}
+
+.contact-close{
+  width:36px;
+  height:36px;
+  border:0;
+  border-radius:11px;
+  background:var(--blue-soft);
+  color:var(--blue);
+  font-size:22px;
+  cursor:pointer;
+  line-height:1;
+}
+
+.contact-option{
+  width:100%;
+  display:flex;
+  align-items:center;
+  gap:12px;
+  border:1px solid var(--border);
+  background:#fff;
+  border-radius:15px;
+  padding:14px;
+  margin-top:10px;
+  text-align:left;
+  cursor:pointer;
+  color:var(--text);
+}
+
+.contact-option:hover{
+  background:var(--blue-soft);
+  border-color:#cfe2ff;
+}
+
+.contact-icon{
+  width:40px;
+  height:40px;
+  min-width:40px;
+  border-radius:12px;
+  background:var(--blue-soft);
+  color:var(--blue);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:19px;
+  font-weight:800;
+}
+
+.contact-option-text{
+  flex:1;
+}
+
+.contact-option-text strong{
+  display:block;
+  font-size:14px;
+  font-weight:800;
+  margin-bottom:3px;
+}
+
+.contact-option-text span{
+  display:block;
+  font-size:11px;
+  color:var(--muted);
+}
+
+.contact-arrow{
+  margin-left:auto;
+  font-size:25px;
+  color:#9aa8ba;
+}
+
+
+/* =========================
+   RESPONSIVE
+========================= */
+
+@media(max-width:420px){
+
+  main{
+    padding-left:12px;
+    padding-right:12px;
+  }
+
+  .profile-hero{
+    border-radius:18px;
+  }
+
+  .profile-avatar{
+    width:60px;
+    height:60px;
+    min-width:60px;
+    border-radius:17px;
+  }
+
+  .profile-hero-text h2{
+    font-size:19px;
+  }
+
+  .profile-row{
+    padding:14px;
+  }
+
+}
+
+</style>
+
+</head>
+
+
+<body>
+
+
+<header>
+
+  <button
+    class="header-back"
+    type="button"
+    onclick="goDashboard()"
+    aria-label="Back"
+  >
+    ‹
+  </button>
+
+  <h1>
+    My Profile
+  </h1>
+
+  <button
+    class="header-refresh"
+    type="button"
+    onclick="loadProfile()"
+    aria-label="Refresh"
+  >
+    ↻
+  </button>
+
+</header>
+
+
+<main>
+
+
+<!-- =========================
+     PROFILE HERO
+========================= -->
+
+<section class="profile-hero">
+
+  <div class="profile-avatar">
+    G
+  </div>
+
+  <div class="profile-hero-text">
+
+    <h2 id="heroName">
+      Loading...
+    </h2>
+
+    <p id="memberSince">
+      Loading member information...
+    </p>
+
+  </div>
+
+</section>
+
+
+<!-- =========================
+     ACCOUNT INFORMATION
+========================= -->
+
+<section class="section">
+
+  <div class="section-title">
+    Account Information
+  </div>
+
+  <div class="card">
+
+    <div class="profile-row">
+
+      <div class="icon-box">
+        👤
+      </div>
+
+      <div class="row-info">
+
+        <div class="row-label">
+          Full Name
+        </div>
+
+        <div
+          class="row-value"
+          id="userName"
+        >
+          Loading...
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <div class="profile-row">
+
+      <div class="icon-box">
+        ✉️
+      </div>
+
+      <div class="row-info">
+
+        <div class="row-label">
+          Email
+        </div>
+
+        <div
+          class="row-value"
+          id="userEmail"
+        >
+          Loading...
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</section>
+
+
+<!-- =========================
+     WALLET
+========================= -->
+
+<section class="section">
+
+  <div class="section-title">
+    Wallet
+  </div>
+
+  <div class="wallet-card">
+
+    <div class="wallet-title">
+
+      <div class="wallet-icon">
+        💳
+      </div>
+
+      <div>
+
+        <div class="wallet-label">
+          Available Wallet
+        </div>
+
+        <div
+          class="wallet-balance"
+          id="walletBalance"
+        >
+          Loading...
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <button
+      class="fund-wallet"
+      type="button"
+      onclick="goWallet()"
+    >
+      + Fund Wallet
+    </button>
+
+  </div>
+
+</section>
+
+
+<!-- =========================
+     EDIT PROFILE
+========================= -->
+
+<section class="section">
+
+  <div class="section-title">
+    Edit Profile
+  </div>
+
+  <div class="edit-card">
+
+    <label
+      class="field-label"
+      for="name"
+    >
+      Your Name
+    </label>
+
+    <input
+      id="name"
+      type="text"
+      placeholder="Enter your name"
+      autocomplete="name"
+    >
+
+    <button
+      class="primary-button"
+      type="button"
+      onclick="saveName()"
+    >
+      Save Name
+    </button>
+
+  </div>
+
+</section>
+
+
+<!-- =========================
+     CHANGE PASSWORD
+========================= -->
+
+<section class="section">
+
+  <div class="section-title">
+    Change Password
+  </div>
+
+  <div class="edit-card">
+
+    <label
+      class="field-label"
+      for="newPassword"
+    >
+      New Password
+    </label>
+
+    <input
+      id="newPassword"
+      type="password"
+      placeholder="Enter new password"
+      autocomplete="new-password"
+    >
+
+
+    <label
+      class="field-label"
+      for="confirmPassword"
+    >
+      Confirm New Password
+    </label>
+
+    <input
+      id="confirmPassword"
+      type="password"
+      placeholder="Confirm new password"
+      autocomplete="new-password"
+    >
+
+
+    <button
+      class="primary-button"
+      type="button"
+      onclick="changePassword()"
+    >
+      Change Password
+    </button>
+
+  </div>
+
+</section>
+
+
+<!-- =========================
+     SUPPORT
+========================= -->
+
+<section class="section">
+
+  <div class="section-title">
+    Support
+  </div>
+
+  <div class="card">
+
+    <div
+      class="profile-row support-row"
+      onclick="openContactSupport()"
+    >
+
+      <div class="icon-box">
+        🎧
+      </div>
+
+      <div class="row-info">
+
+        <div class="row-value">
+          Help &amp; Support
+        </div>
+
+      </div>
+
+      <div class="arrow">
+        ›
+      </div>
+
+    </div>
+
+  </div>
+
+</section>
+
+
+<!-- =========================
+     MESSAGE
+========================= -->
+
+<p id="message"></p>
+
+
+<!-- =========================
+     LOG OUT
+========================= -->
+
+<button
+  class="logout"
+  type="button"
+  onclick="logout()"
+>
+  ⇥ &nbsp; Log Out
+</button>
+
+
+<!-- =========================
+     BACK TO DASHBOARD
+========================= -->
+
+<button
+  class="back-dashboard"
+  type="button"
+  onclick="goDashboard()"
+>
+  ← &nbsp; Back to Dashboard
+</button>
+
+
+</main>
+
+
+<!-- =========================
+     SUPPORT MODAL
+========================= -->
+
+<div
+  class="contact-overlay"
+  id="contactOverlay"
+  onclick="closeContactSupport(event)"
+  aria-hidden="true"
+>
+
+  <div
+    class="contact-modal"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="contactTitle"
+    onclick="event.stopPropagation()"
+  >
+
+    <div class="contact-head">
+
+      <div>
+
+        <h2
+          class="contact-title"
+          id="contactTitle"
+        >
+          Contact Support
+        </h2>
+
+        <p class="contact-subtitle">
+          Choose how you would like to contact us.
+        </p>
+
+      </div>
+
+
+      <button
+        class="contact-close"
+        type="button"
+        onclick="closeContactSupport()"
+        aria-label="Close"
+      >
+        ×
+      </button>
+
+    </div>
+
+
+    <button
+      class="contact-option"
+      type="button"
+      onclick="contactTelegram()"
+    >
+
+      <span class="contact-icon">
+        ✈
+      </span>
+
+      <span class="contact-option-text">
+
+        <strong>
+          Contact us on Telegram
+        </strong>
+
+        <span>
+          Chat with our support team on Telegram
+        </span>
+
+      </span>
+
+      <span class="contact-arrow">
+        ›
+      </span>
+
+    </button>
+
+
+    <button
+      class="contact-option"
+      type="button"
+      onclick="contactWhatsApp()"
+    >
+
+      <span class="contact-icon">
+        ◉
+      </span>
+
+      <span class="contact-option-text">
+
+        <strong>
+          Contact us on WhatsApp
+        </strong>
+
+        <span>
+          Chat with our support team on WhatsApp
+        </span>
+
+      </span>
+
+      <span class="contact-arrow">
+        ›
+      </span>
+
+    </button>
+
+  </div>
+
+</div>
+
+
+<script>
+
+
+/* =========================
+   SUPABASE
+========================= */
+
+const SUPABASE_URL =
+  "https://gvuaxtsdpmrragkkjowv.supabase.co";
+
+const SUPABASE_PUBLISHABLE_KEY =
+  "sb_publishable_oDAsADaZzLDiFX0cXogUyw_tTQYCa2k";
+
+const supabaseClient =
+  window.supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_PUBLISHABLE_KEY
+  );
+
+
+let currentUser = null;
+
+
+/* =========================
+   NAVIGATION
+========================= */
+
+function goDashboard(){
+
+  window.location.href =
+    "dashboard.html";
+
+}
+
+
+function goWallet(){
+
+  window.location.href =
+    "wallet.html";
+
+}
+
+
+/* =========================
+   SUPPORT
+========================= */
+
+function openContactSupport(){
+
+  const overlay =
+    document.getElementById(
+      "contactOverlay"
+    );
+
+  if(!overlay){
+    return;
+  }
+
+  overlay.classList.add("show");
+
+  overlay.setAttribute(
+    "aria-hidden",
+    "false"
+  );
+
+}
+
+
+function closeContactSupport(event){
+
+  const overlay =
+    document.getElementById(
+      "contactOverlay"
+    );
+
+  if(!overlay){
+    return;
+  }
+
+  if(
+    event &&
+    event.target !== overlay
+  ){
+    return;
+  }
+
+  overlay.classList.remove("show");
+
+  overlay.setAttribute(
+    "aria-hidden",
+    "true"
+  );
+
+}
+
+
+function contactTelegram(){
+
+  closeContactSupport();
+
+  window.open(
+    "https://t.me/GustodigitsSupportbot",
+    "_blank",
+    "noopener,noreferrer"
+  );
+
+}
+
+
+function contactWhatsApp(){
+
+  closeContactSupport();
+
+  window.open(
+    "https://wa.me/2347038064570?text=Hello%20Gustodigits%20Support",
+    "_blank",
+    "noopener,noreferrer"
+  );
+
+}
+
+
+document.addEventListener(
+  "keydown",
+  function(event){
+
+    if(event.key === "Escape"){
+
+      closeContactSupport();
+
+    }
+
+  }
+);
+
+
+/* =========================
+   MESSAGE
+========================= */
+
+function showMessage(
+  text,
+  type = "success"
+){
+
+  const message =
+    document.getElementById(
+      "message"
+    );
+
+  message.textContent =
+    text;
+
+  message.className =
+    type === "error"
+      ? "message-error"
+      : "message-success";
+
+}
+
+
+/* =========================
+   LOAD PROFILE
+========================= */
+
+async function loadProfile(){
+
+  const {
+    data,
+    error
+  } =
+    await supabaseClient.auth.getUser();
+
+
+  if(
+    error ||
+    !data ||
+    !data.user
+  ){
+
+    window.location.href =
+      "login.html";
+
+    return;
+
+  }
+
+
+  currentUser =
+    data.user;
+
+
+  /* =========================
+     NAME
+  ========================= */
+
+  let name =
+    currentUser.user_metadata?.name;
+
+
+  if(!name){
+
+    const firstName =
+      currentUser.user_metadata?.first_name ||
+      "";
+
+    const lastName =
+      currentUser.user_metadata?.last_name ||
+      "";
+
+    name =
+      (
+        firstName +
+        " " +
+        lastName
+      ).trim();
+
+  }
+
+
+  name =
+    name ||
+    "Not set";
+
+
+  document
+    .getElementById("heroName")
+    .textContent =
+      name;
+
+
+  document
+    .getElementById("userName")
+    .textContent =
+      name;
+
+
+  document
+    .getElementById("name")
+    .value =
+      name === "Not set"
+        ? ""
+        : name;
+
+
+  /* =========================
+     EMAIL
+  ========================= */
+
+  document
+    .getElementById("userEmail")
+    .textContent =
+      currentUser.email ||
+      "Not available";
+
+
+  /* =========================
+     MEMBER SINCE
+  ========================= */
+
+  if(currentUser.created_at){
+
+    const joinedDate =
+      new Date(
+        currentUser.created_at
+      );
+
+
+    const memberSince =
+      joinedDate.toLocaleDateString(
+        "en-US",
+        {
+          month:"long",
+          year:"numeric"
+        }
+      );
+
+
+    document
+      .getElementById("memberSince")
+      .textContent =
+        "Member since " +
+        memberSince;
+
+  }else{
+
+    document
+      .getElementById("memberSince")
+      .textContent =
+        "Gustodigits member";
+
+  }
+
+
+  /* =========================
+     WALLET
+  ========================= */
+
+  await loadWalletBalance();
+
+}
+
+
+/* =========================
+   LOAD WALLET BALANCE
+========================= */
+
+async function loadWalletBalance(){
+
+  const {
+    data,
+    error
+  } =
+    await supabaseClient.rpc(
+      "ensure_my_wallet"
+    );
+
+
+  if(error){
+
+    console.error(
+      "Wallet error:",
+      error
+    );
+
+    document
+      .getElementById("walletBalance")
+      .textContent =
+        "Unable to load";
+
+    return;
+
+  }
+
+
+  let balance = 0;
+
+
+  if(
+    Array.isArray(data)
+  ){
+
+    balance =
+      Number(
+        data[0]?.balance || 0
+      );
+
+  }else{
+
+    balance =
+      Number(
+        data?.balance || 0
+      );
+
+  }
+
+
+  document
+    .getElementById("walletBalance")
+    .textContent =
+      "₦" +
+      balance.toLocaleString(
+        "en-NG",
+        {
+          minimumFractionDigits:2,
+          maximumFractionDigits:2
+        }
+      );
+
+}
+
+
+/* =========================
+   SAVE NAME
+========================= */
+
+async function saveName(){
+
+  const name =
+    document
+      .getElementById("name")
+      .value
+      .trim();
+
+
+  if(!name){
+
+    showMessage(
+      "Please enter your name.",
+      "error"
+    );
+
+    return;
+
+  }
+
+
+  const {
+    error
+  } =
+    await supabaseClient.auth.updateUser({
+
+      data:{
+        name:name
+      }
+
+    });
+
+
+  if(error){
+
+    console.error(
+      "Name update error:",
+      error
+    );
+
+    showMessage(
+      error.message ||
+      "Unable to update your name.",
+      "error"
+    );
+
+    return;
+
+  }
+
+
+  document
+    .getElementById("heroName")
+    .textContent =
+      name;
+
+
+  document
+    .getElementById("userName")
+    .textContent =
+      name;
+
+
+  showMessage(
+    "Name updated successfully.",
+    "success"
+  );
+
+}
+
+
+/* =========================
+   CHANGE PASSWORD
+========================= */
+
+async function changePassword(){
+
+  const password =
+    document
+      .getElementById("newPassword")
+      .value;
+
+
+  const confirmPassword =
+    document
+      .getElementById("confirmPassword")
+      .value;
+
+
+  if(!password){
+
+    showMessage(
+      "Please enter a new password.",
+      "error"
+    );
+
+    return;
+
+  }
+
+
+  if(password.length < 6){
+
+    showMessage(
+      "Password must be at least 6 characters.",
+      "error"
+    );
+
+    return;
+
+  }
+
+
+  if(
+    password !==
+    confirmPassword
+  ){
+
+    showMessage(
+      "Passwords do not match.",
+      "error"
+    );
+
+    return;
+
+  }
+
+
+  const {
+    error
+  } =
+    await supabaseClient.auth.updateUser({
+
+      password:password
+
+    });
+
+
+  if(error){
+
+    console.error(
+      "Password update error:",
+      error
+    );
+
+    showMessage(
+      error.message ||
+      "Unable to change password.",
+      "error"
+    );
+
+    return;
+
+  }
+
+
+  document
+    .getElementById("newPassword")
+    .value =
+      "";
+
+
+  document
+    .getElementById("confirmPassword")
+    .value =
+      "";
+
+
+  showMessage(
+    "Password changed successfully.",
+    "success"
+  );
+
+}
+
+
+/* =========================
+   LOG OUT
+========================= */
+
+async function logout(){
+
+  const {
+    error
+  } =
+    await supabaseClient.auth.signOut();
+
+
+  if(error){
+
+    showMessage(
+      error.message ||
+      "Unable to log out.",
+      "error"
+    );
+
+    return;
+
+  }
+
+
+  window.location.href =
+    "login.html";
+
+}
+
+
+/* =========================
+   START
+========================= */
+
+loadProfile();
+
+</script>
+
+
+</body>
+
+</html>
