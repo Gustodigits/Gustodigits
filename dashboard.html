@@ -5400,7 +5400,7 @@ async function loadRecentPurchases(){
                 )
                 .slice(
                     0,
-                    3
+                    5
                 );
 
 
@@ -5409,13 +5409,27 @@ async function loadRecentPurchases(){
         );
 
 
-    }catch{
+    }catch(error){
+
+        console.error(
+            "Recent purchases error:",
+            error
+        );
+
+        const message =
+            error?.message ||
+            error?.error ||
+            error?.details ||
+            error?.msg ||
+            "Unable to load recent purchases.";
 
         $("recentPurchases")
             .innerHTML =
             `
             <div class="no-purchases">
-                Unable to load recent purchases.
+                ${escapeHtml(
+                    String(message)
+                )}
             </div>
             `;
 
