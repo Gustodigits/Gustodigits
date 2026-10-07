@@ -2,640 +2,736 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>Fund Wallet - Gustodigits</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Wallet - Gustodigits</title>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="https://js.paystack.co/v2/inline.js"></script>
 
 <style>
 *{
-    box-sizing:border-box;
-}
-
-html,
-body{
-    margin:0;
-    padding:0;
+  box-sizing:border-box;
+  margin:0;
+  padding:0;
 }
 
 body{
-    background:#f4f9ff;
-    color:#172033;
-    font-family:Arial,sans-serif;
-    min-height:100vh;
+  font-family:Arial,Helvetica,sans-serif;
+  background:#f4f9ff;
+  color:#172033;
+  min-height:100vh;
 }
 
-/* HEADER */
-
-header{
-    background:#ffffff;
-    border-bottom:1px solid #e5edf7;
-    padding:18px 20px;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    position:relative;
+.header{
+  background:#ffffff;
+  border-bottom:1px solid #e3edf8;
+  padding:16px 18px;
+  display:flex;
+  align-items:center;
+  gap:14px;
+  position:sticky;
+  top:0;
+  z-index:10;
 }
 
-header h1{
-    margin:0;
-    font-size:22px;
-    font-weight:800;
-    color:#1267d6;
-    letter-spacing:.1px;
+.back-btn{
+  width:42px;
+  height:42px;
+  border:none;
+  border-radius:12px;
+  background:#eef6ff;
+  color:#1976d2;
+  font-size:22px;
+  cursor:pointer;
 }
 
-/* BACK BUTTON */
-
-.header-back{
-    position:absolute;
-    left:18px;
-    width:38px;
-    height:38px;
-    border-radius:11px;
-    border:1px solid #e2ebf6;
-    background:#f7fbff;
-    color:#1267d6;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    font-size:20px;
-    cursor:pointer;
+.header-title{
+  font-size:20px;
+  font-weight:700;
 }
 
-/* MAIN */
-
-main{
-    max-width:500px;
-    margin:auto;
-    padding:22px 16px 35px;
+.container{
+  width:100%;
+  max-width:520px;
+  margin:0 auto;
+  padding:22px 16px 40px;
 }
-
-/* CARDS */
-
-.card{
-    background:#ffffff;
-    border:1px solid #e3edf8;
-    padding:21px;
-    border-radius:20px;
-    box-shadow:0 8px 25px rgba(31,91,145,.07);
-    margin-bottom:16px;
-}
-
-/* BALANCE */
 
 .balance-card{
-    position:relative;
-    overflow:hidden;
-    padding:23px;
-    background:linear-gradient(135deg,#1677e8,#0d5fc4);
-    border:0;
-    color:#ffffff;
-    box-shadow:0 12px 28px rgba(18,103,214,.18);
-}
-
-.balance-card::after{
-    content:"";
-    position:absolute;
-    width:150px;
-    height:150px;
-    right:-65px;
-    bottom:-80px;
-    border-radius:50%;
-    border:1px solid rgba(255,255,255,.16);
-}
-
-.balance-card::before{
-    content:"";
-    position:absolute;
-    width:90px;
-    height:90px;
-    right:35px;
-    top:-55px;
-    border-radius:50%;
-    border:1px solid rgba(255,255,255,.1);
-}
-
-.balance-top{
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-    margin-bottom:12px;
-    position:relative;
-    z-index:1;
+  background:linear-gradient(135deg,#1976d2,#42a5f5);
+  color:white;
+  border-radius:20px;
+  padding:24px;
+  box-shadow:0 10px 25px rgba(25,118,210,.18);
+  margin-bottom:22px;
 }
 
 .balance-label{
-    margin:0;
-    color:rgba(255,255,255,.82);
-    font-size:14px;
-    font-weight:600;
+  font-size:14px;
+  opacity:.9;
+  margin-bottom:8px;
 }
 
-.balance-icon{
-    width:39px;
-    height:39px;
-    border-radius:12px;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    background:rgba(255,255,255,.13);
-    border:1px solid rgba(255,255,255,.18);
-    color:#ffffff;
-    font-size:18px;
-    font-weight:800;
-    position:relative;
-    z-index:1;
+.balance{
+  font-size:32px;
+  font-weight:800;
 }
 
-#walletBalance{
-    margin:0;
-    font-size:31px;
-    font-weight:800;
-    color:#ffffff;
-    letter-spacing:.2px;
-    position:relative;
-    z-index:1;
+.card{
+  background:#ffffff;
+  border:1px solid #e4edf7;
+  border-radius:20px;
+  padding:20px;
+  box-shadow:0 6px 20px rgba(20,70,120,.05);
 }
 
-/* ADD MONEY */
-
-.card h2{
-    margin:0 0 17px;
-    color:#172033;
-    font-size:20px;
+.card-title{
+  font-size:18px;
+  font-weight:700;
+  margin-bottom:16px;
 }
 
-/* QUICK SELECT */
+.amount-input{
+  width:100%;
+  height:52px;
+  border:1px solid #d7e5f3;
+  border-radius:13px;
+  padding:0 15px;
+  font-size:16px;
+  outline:none;
+  background:#fbfdff;
+}
+
+.amount-input:focus{
+  border-color:#42a5f5;
+  box-shadow:0 0 0 3px rgba(66,165,245,.12);
+}
 
 .quick-title{
-    margin:0 0 11px;
-    color:#64748b;
-    font-size:13px;
-    font-weight:700;
+  margin-top:20px;
+  margin-bottom:12px;
+  font-size:14px;
+  font-weight:700;
+  color:#526173;
 }
 
-.quick-select{
-    display:grid;
-    grid-template-columns:repeat(4,1fr);
-    gap:9px;
-    margin-bottom:16px;
+.quick-grid{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:9px;
 }
 
 .quick-btn{
-    border:1px solid #dbe8f5;
-    background:#f7fbff;
-    color:#1267d6;
-    padding:11px 5px;
-    border-radius:11px;
-    font-size:13px;
-    font-weight:800;
-    cursor:pointer;
-    transition:.18s;
+  border:1px solid #d8e8f8;
+  background:#f5faff;
+  color:#1976d2;
+  min-height:42px;
+  border-radius:11px;
+  font-size:13px;
+  font-weight:700;
+  cursor:pointer;
 }
 
 .quick-btn:hover{
-    background:#eaf4ff;
-    border-color:#b9d8f8;
+  background:#eaf5ff;
 }
 
 .quick-btn.active{
-    background:#1267d6;
-    color:#ffffff;
-    border-color:#1267d6;
-    box-shadow:0 5px 13px rgba(18,103,214,.16);
+  background:#1976d2;
+  color:white;
+  border-color:#1976d2;
 }
 
-/* AMOUNT */
-
-#amount{
-    width:100%;
-    padding:16px;
-    border:1px solid #dbe5f0;
-    background:#fbfdff;
-    color:#172033;
-    border-radius:13px;
-    font-size:18px;
-    outline:none;
-    transition:.2s;
+.pay-btn{
+  width:100%;
+  height:54px;
+  margin-top:20px;
+  border:none;
+  border-radius:14px;
+  background:#1976d2;
+  color:white;
+  font-size:16px;
+  font-weight:800;
+  cursor:pointer;
+  box-shadow:0 7px 16px rgba(25,118,210,.2);
 }
 
-#amount::placeholder{
-    color:#9aa8b8;
+.pay-btn:hover{
+  background:#1565c0;
 }
 
-#amount:focus{
-    border-color:#3788e8;
-    background:#ffffff;
-    box-shadow:0 0 0 3px rgba(18,103,214,.08);
+.pay-btn:disabled{
+  opacity:.6;
+  cursor:not-allowed;
 }
 
-/* BUTTON */
-
-.btn{
-    width:100%;
-    border:0;
-    background:#1267d6;
-    color:#ffffff;
-    padding:16px;
-    margin-top:15px;
-    border-radius:13px;
-    font-size:17px;
-    font-weight:800;
-    cursor:pointer;
-    box-shadow:0 8px 20px rgba(18,103,214,.17);
-    transition:.2s;
+.status{
+  margin-top:15px;
+  padding:12px 14px;
+  border-radius:11px;
+  display:none;
+  font-size:14px;
+  line-height:1.5;
 }
 
-.btn:hover{
-    background:#0d5fc4;
-    transform:translateY(-1px);
-    box-shadow:0 10px 24px rgba(18,103,214,.22);
+.status.success{
+  display:block;
+  background:#eaf8ef;
+  color:#19733a;
 }
 
-.btn:active{
-    transform:translateY(0);
+.status.error{
+  display:block;
+  background:#fff0f0;
+  color:#c62828;
 }
 
-.btn:disabled{
-    opacity:.6;
-    cursor:not-allowed;
-    transform:none;
+.status.info{
+  display:block;
+  background:#edf6ff;
+  color:#1565c0;
 }
 
-/* MESSAGE */
-
-#message{
-    min-height:25px;
-    margin-top:17px;
-    font-weight:bold;
-    line-height:1.5;
+.note{
+  margin-top:16px;
+  text-align:center;
+  font-size:12px;
+  color:#7a8797;
+  line-height:1.5;
 }
 
-/* BACK */
-
-.back{
-    width:100%;
-    background:#ffffff;
-    color:#1267d6;
-    padding:16px;
-    margin-top:4px;
-    border-radius:14px;
-    text-align:center;
-    font-weight:800;
-    cursor:pointer;
-    border:1px solid #dce8f5;
-    box-shadow:0 5px 15px rgba(31,91,145,.05);
-    transition:.2s;
-}
-
-.back:hover{
-    background:#f5faff;
-    border-color:#bdd9f5;
-}
-
-/* MOBILE */
-
-@media(max-width:420px){
-    main{
-        padding:20px 15px 30px;
-    }
-
-    header{
-        padding:17px;
-    }
-
-    header h1{
-        font-size:21px;
-    }
-
-    .card{
-        padding:19px;
-        border-radius:18px;
-    }
-
-    #walletBalance{
-        font-size:28px;
-    }
-
-    .quick-select{
-        grid-template-columns:repeat(4,1fr);
-        gap:8px;
-    }
-
-    .quick-btn{
-        padding:10px 3px;
-        font-size:12px;
-    }
+@media(max-width:400px){
+  .quick-grid{
+    grid-template-columns:repeat(2,1fr);
+  }
 }
 </style>
 </head>
 
 <body>
 
-<header>
-    <button
-        class="header-back"
-        type="button"
-        onclick="location.href='dashboard.html'"
-        aria-label="Back"
-    >
-        ‹
-    </button>
-
-    <h1>Fund Wallet</h1>
+<header class="header">
+  <button class="back-btn" onclick="goBack()">‹</button>
+  <div class="header-title">Fund Wallet</div>
 </header>
 
-<main>
+<main class="container">
 
-<div class="card balance-card">
+  <section class="balance-card">
+    <div class="balance-label">Available Balance</div>
+    <div class="balance" id="balance">₦0.00</div>
+  </section>
 
-    <div class="balance-top">
-        <p class="balance-label">Available Wallet Balance</p>
+  <section class="card">
 
-        <div class="balance-icon">
-            ₦
-        </div>
-    </div>
-
-    <p id="walletBalance">Loading...</p>
-
-</div>
-
-<div class="card">
-
-    <h2>Add Money</h2>
-
-    <p class="quick-title">Quick Select</p>
-
-    <div class="quick-select">
-
-        <button
-            type="button"
-            class="quick-btn"
-            onclick="selectAmount(100,this)"
-        >
-            ₦100
-        </button>
-
-        <button
-            type="button"
-            class="quick-btn"
-            onclick="selectAmount(200,this)"
-        >
-            ₦200
-        </button>
-
-        <button
-            type="button"
-            class="quick-btn"
-            onclick="selectAmount(500,this)"
-        >
-            ₦500
-        </button>
-
-        <button
-            type="button"
-            class="quick-btn"
-            onclick="selectAmount(1000,this)"
-        >
-            ₦1,000
-        </button>
-
-        <button
-            type="button"
-            class="quick-btn"
-            onclick="selectAmount(2000,this)"
-        >
-            ₦2,000
-        </button>
-
-        <button
-            type="button"
-            class="quick-btn"
-            onclick="selectAmount(5000,this)"
-        >
-            ₦5,000
-        </button>
-
-        <button
-            type="button"
-            class="quick-btn"
-            onclick="selectAmount(10000,this)"
-        >
-            ₦10,000
-        </button>
-
-        <button
-            type="button"
-            class="quick-btn"
-            onclick="selectAmount(20000,this)"
-        >
-            ₦20,000
-        </button>
-
-    </div>
+    <div class="card-title">Add Money</div>
 
     <input
-        id="amount"
-        type="number"
-        min="100"
-        step="1"
-        placeholder="Enter amount"
+      type="number"
+      id="amount"
+      class="amount-input"
+      placeholder="Enter amount"
+      min="100"
+      step="1"
     >
 
-    <button
-        id="continueButton"
-        class="btn"
-        onclick="continuePayment()"
-    >
-        Continue
+    <div class="quick-title">Quick Select</div>
+
+    <div class="quick-grid">
+
+      <button class="quick-btn" onclick="selectAmount(100,this)">
+        ₦100
+      </button>
+
+      <button class="quick-btn" onclick="selectAmount(200,this)">
+        ₦200
+      </button>
+
+      <button class="quick-btn" onclick="selectAmount(500,this)">
+        ₦500
+      </button>
+
+      <button class="quick-btn" onclick="selectAmount(1000,this)">
+        ₦1,000
+      </button>
+
+      <button class="quick-btn" onclick="selectAmount(2000,this)">
+        ₦2,000
+      </button>
+
+      <button class="quick-btn" onclick="selectAmount(5000,this)">
+        ₦5,000
+      </button>
+
+      <button class="quick-btn" onclick="selectAmount(10000,this)">
+        ₦10,000
+      </button>
+
+      <button class="quick-btn" onclick="selectAmount(20000,this)">
+        ₦20,000
+      </button>
+
+    </div>
+
+    <button id="payBtn" class="pay-btn" onclick="fundWallet()">
+      Fund Wallet
     </button>
 
-    <p id="message"></p>
+    <div id="status" class="status"></div>
 
-</div>
+    <div class="note">
+      Your wallet will be credited automatically after successful payment.
+    </div>
 
-<div
-    class="back"
-    onclick="location.href='dashboard.html'"
->
-    🏠 Back to Dashboard
-</div>
+  </section>
 
 </main>
 
 <script>
-const SUPABASE_URL="https://hkfhehbhmucymusaytoe.supabase.co";
-const SUPABASE_KEY="sb_publishable_O-aPnRtG3EZ6-Lwo8_sRuw_ZQqSQSF_";
-const PAYSTACK_PUBLIC_KEY="pk_live_404fd9834a0f367328c2fb55a2256e406ed6b43f";
+/* =========================================================
+   GUSTODIGITS SUPABASE
+   ========================================================= */
 
-const supabaseClient=supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
+const SUPABASE_URL =
+  "https://gvuaxtsdpmrragkkjowv.supabase.co";
 
-function message(text,color="#111"){
-const el=document.getElementById("message");
-el.textContent=text;
-el.style.color=color;
+const SUPABASE_KEY =
+  "sb_publishable_oDAsADaZzLDiFX0cXogUyw_tTQYCa2k";
+
+const supabaseClient =
+  supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+
+/* =========================================================
+   EXISTING PAYSTACK PUBLIC KEY
+   ========================================================= */
+
+const PAYSTACK_PUBLIC_KEY =
+  "pk_live_404fd9834a0f367328c2fb55a2256e406ed6b43f";
+
+
+let currentUser = null;
+let oldBalance = 0;
+
+
+/* =========================================================
+   BACK BUTTON
+   ========================================================= */
+
+function goBack(){
+  window.location.href = "dashboard.html";
 }
+
+
+/* =========================================================
+   FORMAT MONEY
+   ========================================================= */
+
+function formatMoney(amount){
+  return "₦" + Number(amount || 0).toLocaleString(
+    "en-NG",
+    {
+      minimumFractionDigits:2,
+      maximumFractionDigits:2
+    }
+  );
+}
+
+
+/* =========================================================
+   STATUS MESSAGE
+   ========================================================= */
+
+function showStatus(message,type="info"){
+  const status = document.getElementById("status");
+
+  status.className = "status " + type;
+  status.textContent = message;
+}
+
+
+/* =========================================================
+   CLEAR STATUS
+   ========================================================= */
+
+function clearStatus(){
+  const status = document.getElementById("status");
+
+  status.className = "status";
+  status.textContent = "";
+}
+
+
+/* =========================================================
+   QUICK AMOUNT
+   ========================================================= */
 
 function selectAmount(amount,button){
-document.getElementById("amount").value=amount;
 
-document.querySelectorAll(".quick-btn").forEach(btn=>{
-btn.classList.remove("active");
-});
+  document.getElementById("amount").value = amount;
 
-if(button){
-button.classList.add("active");
-}
-}
+  document
+    .querySelectorAll(".quick-btn")
+    .forEach(btn => btn.classList.remove("active"));
 
-document.getElementById("amount").addEventListener("input",()=>{
-const current=Number(document.getElementById("amount").value);
+  button.classList.add("active");
 
-document.querySelectorAll(".quick-btn").forEach(btn=>{
-btn.classList.remove("active");
-});
-
-const matchingButton=[...document.querySelectorAll(".quick-btn")]
-.find(btn=>Number(btn.textContent.replace(/[₦,]/g,""))===current);
-
-if(matchingButton){
-matchingButton.classList.add("active");
-}
-});
-
-async function getWalletBalance(){
-const {data:{user}}=await supabaseClient.auth.getUser();
-
-if(!user){
-location.href="login.html";
-return null;
+  clearStatus();
 }
 
-const {data,error}=await supabaseClient.rpc("ensure_my_wallet");
 
-if(error){
-console.error(error);
-document.getElementById("walletBalance").textContent="Unable to load balance";
-return null;
+/* =========================================================
+   LOAD USER
+   ========================================================= */
+
+async function loadUser(){
+
+  const {
+    data:{
+      user
+    },
+    error
+  } = await supabaseClient.auth.getUser();
+
+  if(error || !user){
+
+    window.location.href = "login.html";
+
+    return null;
+  }
+
+  currentUser = user;
+
+  return user;
 }
 
-return Number(data?.balance||0);
+
+/* =========================================================
+   LOAD WALLET BALANCE
+   ========================================================= */
+
+async function loadBalance(){
+
+  try{
+
+    const {
+      data,
+      error
+    } = await supabaseClient.rpc("ensure_my_wallet");
+
+    if(error){
+      throw error;
+    }
+
+    let balance = 0;
+
+    if(Array.isArray(data)){
+
+      if(data.length > 0){
+
+        balance =
+          Number(
+            data[0]?.balance ??
+            data[0]?.wallet_balance ??
+            0
+          );
+
+      }
+
+    }else if(data){
+
+      balance =
+        Number(
+          data.balance ??
+          data.wallet_balance ??
+          data ??
+          0
+        );
+
+    }
+
+    oldBalance = balance;
+
+    document.getElementById("balance").textContent =
+      formatMoney(balance);
+
+    return balance;
+
+  }catch(error){
+
+    console.error("Wallet balance error:",error);
+
+    showStatus(
+      "Unable to load wallet balance.",
+      "error"
+    );
+
+    return null;
+  }
 }
 
-async function loadWallet(){
-const balance=await getWalletBalance();
 
-if(balance===null)return null;
+/* =========================================================
+   FUND WALLET
+   ========================================================= */
 
-document.getElementById("walletBalance").textContent=
-"₦"+balance.toLocaleString("en-NG",{
-minimumFractionDigits:2,
-maximumFractionDigits:2
-});
+async function fundWallet(){
 
-return balance;
+  if(!currentUser){
+
+    showStatus(
+      "Please log in again.",
+      "error"
+    );
+
+    return;
+  }
+
+  const amountInput =
+    document.getElementById("amount");
+
+  const payBtn =
+    document.getElementById("payBtn");
+
+  const amount =
+    Number(amountInput.value);
+
+  if(!Number.isFinite(amount) || amount <= 0){
+
+    showStatus(
+      "Please enter a valid amount.",
+      "error"
+    );
+
+    return;
+  }
+
+  if(amount < 100){
+
+    showStatus(
+      "Minimum funding amount is ₦100.",
+      "error"
+    );
+
+    return;
+  }
+
+  payBtn.disabled = true;
+  payBtn.textContent = "Opening payment...";
+
+  clearStatus();
+
+  try{
+
+    const handler =
+      PaystackPop.setup({
+
+        key: PAYSTACK_PUBLIC_KEY,
+
+        email: currentUser.email,
+
+        amount: Math.round(amount * 100),
+
+        currency: "NGN",
+
+        metadata:{
+          user_id: currentUser.id,
+          purpose: "wallet_funding"
+        },
+
+        callback:function(response){
+
+          showStatus(
+            "Payment successful. Updating your wallet...",
+            "info"
+          );
+
+          payBtn.textContent =
+            "Updating wallet...";
+
+          pollBalance(amount);
+        },
+
+        onClose:function(){
+
+          payBtn.disabled = false;
+          payBtn.textContent =
+            "Fund Wallet";
+
+          showStatus(
+            "Payment window closed.",
+            "error"
+          );
+        }
+
+      });
+
+    handler.openIframe();
+
+  }catch(error){
+
+    console.error(error);
+
+    payBtn.disabled = false;
+    payBtn.textContent =
+      "Fund Wallet";
+
+    showStatus(
+      error?.message ||
+      "Unable to start payment.",
+      "error"
+    );
+  }
 }
 
-async function continuePayment(){
-const amount=Number(document.getElementById("amount").value);
-const button=document.getElementById("continueButton");
 
-if(!Number.isFinite(amount)||amount<100){
-message("Please enter at least ₦100.","red");
-return;
+/* =========================================================
+   POLL BALANCE AFTER PAYMENT
+   ========================================================= */
+
+async function pollBalance(amount){
+
+  const payBtn =
+    document.getElementById("payBtn");
+
+  let attempts = 0;
+
+  const maxAttempts = 10;
+
+  const interval =
+    setInterval(async()=>{
+
+      attempts++;
+
+      try{
+
+        const {
+          data,
+          error
+        } = await supabaseClient.rpc(
+          "ensure_my_wallet"
+        );
+
+        if(error){
+          throw error;
+        }
+
+        let newBalance = 0;
+
+        if(Array.isArray(data)){
+
+          if(data.length > 0){
+
+            newBalance =
+              Number(
+                data[0]?.balance ??
+                data[0]?.wallet_balance ??
+                0
+              );
+
+          }
+
+        }else if(data){
+
+          newBalance =
+            Number(
+              data.balance ??
+              data.wallet_balance ??
+              data ??
+              0
+            );
+
+        }
+
+        document.getElementById("balance").textContent =
+          formatMoney(newBalance);
+
+        if(newBalance > oldBalance){
+
+          clearInterval(interval);
+
+          oldBalance = newBalance;
+
+          payBtn.disabled = false;
+          payBtn.textContent =
+            "Fund Wallet";
+
+          showStatus(
+            "Wallet funded successfully!",
+            "success"
+          );
+
+          amountInputReset();
+
+          return;
+        }
+
+      }catch(error){
+
+        console.error(
+          "Balance polling error:",
+          error
+        );
+      }
+
+      if(attempts >= maxAttempts){
+
+        clearInterval(interval);
+
+        payBtn.disabled = false;
+        payBtn.textContent =
+          "Fund Wallet";
+
+        showStatus(
+          "Payment was successful, but your wallet is still updating. Please refresh in a moment.",
+          "info"
+        );
+      }
+
+    },3000);
 }
 
-const {data:{user},error}=await supabaseClient.auth.getUser();
 
-if(error||!user){
-location.href="login.html";
-return;
+/* =========================================================
+   RESET AMOUNT
+   ========================================================= */
+
+function amountInputReset(){
+
+  document.getElementById("amount").value = "";
+
+  document
+    .querySelectorAll(".quick-btn")
+    .forEach(btn => {
+      btn.classList.remove("active");
+    });
 }
 
-if(!user.email){
-message("Your account has no email address.","red");
-return;
+
+/* =========================================================
+   INITIALIZE
+   ========================================================= */
+
+async function init(){
+
+  const user =
+    await loadUser();
+
+  if(!user){
+    return;
+  }
+
+  await loadBalance();
 }
 
-button.disabled=true;
-button.textContent="Opening payment...";
-message("Opening Paystack...");
 
-try{
-const oldBalance=await getWalletBalance();
+/* =========================================================
+   START
+   ========================================================= */
 
-if(oldBalance===null){
-button.disabled=false;
-button.textContent="Continue";
-return;
-}
+init();
 
-const paystack=new PaystackPop();
-
-paystack.newTransaction({
-key:PAYSTACK_PUBLIC_KEY,
-email:user.email,
-amount:Math.round(amount*100),
-currency:"NGN",
-metadata:{
-user_id:user.id,
-purpose:"wallet_funding"
-},
-
-onSuccess:async(transaction)=>{
-message("Payment successful. Waiting for wallet confirmation...","green");
-button.textContent="Confirming...";
-
-for(let i=0;i<10;i++){
-await new Promise(resolve=>setTimeout(resolve,3000));
-
-const newBalance=await loadWallet();
-
-if(newBalance!==null&&newBalance>oldBalance){
-message("Payment successful! Wallet balance updated.","green");
-document.getElementById("amount").value="";
-
-document.querySelectorAll(".quick-btn").forEach(btn=>{
-btn.classList.remove("active");
-});
-
-button.disabled=false;
-button.textContent="Continue";
-return;
-}
-}
-
-message("Payment was successful, but wallet balance has not updated yet. Please wait and refresh.","#cc6600");
-button.disabled=false;
-button.textContent="Continue";
-},
-
-onCancel:()=>{
-message("Payment cancelled.","#cc6600");
-button.disabled=false;
-button.textContent="Continue";
-},
-
-onError:(error)=>{
-console.error(error);
-message(error?.message||"Payment failed.","red");
-button.disabled=false;
-button.textContent="Continue";
-}
-});
-
-}catch(error){
-console.error(error);
-message("Unable to open Paystack payment.","red");
-button.disabled=false;
-button.textContent="Continue";
-}
-}
-
-loadWallet();
 </script>
 
 </body>
