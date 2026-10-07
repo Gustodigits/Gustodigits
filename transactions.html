@@ -1,5 +1,4 @@
-<!DOCTYPE html>
-<html lang="en">
+<!DOCTYPE html><html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -42,9 +41,7 @@ main{max-width:620px;margin:auto;padding:18px 15px 95px}
 .error{text-align:center;color:var(--red);padding:30px 12px;font-size:14px;line-height:1.5}
 .loading{text-align:center;color:#718096;padding:35px 12px}
 .loading-spinner{width:25px;height:25px;border:3px solid #dbeafe;border-top-color:var(--blue);border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 10px}
-@keyframes spin{to{transform:rotate(360deg)}}
-
-/* Support chooser */
+@keyframes spin{to{transform:rotate(360deg)}}/* Support chooser */
 .support-overlay{
 position:fixed;
 inset:0;
@@ -167,23 +164,18 @@ color:#9aa8ba;
 .nav-item.active{color:var(--blue)}
 @media(max-width:420px){main{padding-left:12px;padding-right:12px}.balance-card{border-radius:17px}.transaction-top{gap:8px}.amount{font-size:15px}}
 </style>
-</head>
-<body>
 
-<header>
+</head>
+<body><header>
 <button class="header-back" type="button" onclick="goDashboard()" aria-label="Back">‹</button>
 <h1>Transactions</h1>
 <button class="header-refresh" type="button" onclick="loadTransactions()" aria-label="Refresh">↻</button>
-</header>
-
-<main>
+</header><main>
 <section class="balance-card">
 <p class="balance-label">Available Wallet Balance</p>
 <p id="walletBalance">Loading...</p>
 <p class="balance-sub">Your wallet activity appears below.</p>
-</section>
-
-<section class="section-card">
+</section><section class="section-card">
 <div class="section-title">
 <h2>Transaction History</h2>
 <button class="refresh-btn" type="button" onclick="loadTransactions()">Refresh</button>
@@ -192,52 +184,36 @@ color:#9aa8ba;
 <div class="loading"><div class="loading-spinner"></div>Loading transactions...</div>
 </div>
 </section>
-</main>
-
-<!-- Support chooser -->
-<div id="supportOverlay" class="support-overlay" onclick="handleSupportOverlayClick(event)" aria-hidden="true">
-<div class="support-box" role="dialog" aria-modal="true" aria-labelledby="supportTitle">
-
-<div class="support-head">
+</main><!-- Support chooser --><div id="supportOverlay" class="support-overlay" onclick="handleSupportOverlayClick(event)" aria-hidden="true">
+<div class="support-box" role="dialog" aria-modal="true" aria-labelledby="supportTitle"><div class="support-head">
 <div class="support-head-text">
 <h3 id="supportTitle">Contact Support</h3>
 <p>Choose how you would like to contact us.</p>
-</div>
+</div><button class="support-close" type="button" onclick="closeSupport()" aria-label="Close">×</button>
 
-<button class="support-close" type="button" onclick="closeSupport()" aria-label="Close">×</button>
-</div>
-
-<button class="support-option" type="button" onclick="contactTelegram()">
+</div><button class="support-option" type="button" onclick="contactTelegram()">
 <span class="support-icon">✈</span>
 <span>
 <strong>Contact us on Telegram</strong>
 <span>Chat with our support team on Telegram</span>
 </span>
 <span class="support-arrow">›</span>
-</button>
-
-<button class="support-option" type="button" onclick="contactWhatsApp()">
+</button><button class="support-option" type="button" onclick="contactWhatsApp()">
 <span class="support-icon">◉</span>
 <span>
 <strong>Contact us on WhatsApp</strong>
 <span>Chat with our support team on WhatsApp</span>
 </span>
 <span class="support-arrow">›</span>
-</button>
-
-</div>
-</div>
-
-<nav class="bottom-nav">
+</button></div>
+</div><nav class="bottom-nav">
 <div class="bottom-nav-inner">
 <button class="nav-item" type="button" onclick="goDashboard()"><span class="icon">⌂</span>Dashboard</button>
 <button class="nav-item" type="button" onclick="goOrders()"><span class="icon">▣</span>Orders</button>
 <button class="nav-item active" type="button"><span class="icon">↕</span>Transactions</button>
 <button class="nav-item" type="button" onclick="openSupport()"><span class="icon">◉</span>Support</button>
 </div>
-</nav>
-
-<script>
+</nav><script>
 const SUPABASE_URL="https://gvuaxtsdpmrragkkjowv.supabase.co";
 const SUPABASE_PUBLISHABLE_KEY="sb_publishable_oDAsADaZzLDiFX0cXogUyw_tTQYCa2k";
 const supabaseClient=window.supabase.createClient(SUPABASE_URL,SUPABASE_PUBLISHABLE_KEY);
@@ -293,14 +269,30 @@ async function getCurrentUser(){
 }
 
 async function loadWalletBalance(){
-  const {data,error}=await supabaseClient.rpc("ensure_my_wallet");
+  if(!currentUser){
+    document.getElementById("walletBalance").textContent="Unable to load balance";
+    return;
+  }
+
+  const {data,error}=await supabaseClient
+    .from("wallet")
+    .select("balance")
+    .eq("user-id",currentUser.id)
+    .maybeSingle();
+
   if(error){
     console.error("Balance error:",error);
     document.getElementById("walletBalance").textContent="Unable to load balance";
     return;
   }
+
   const balance=Number(data?.balance||0);
-  document.getElementById("walletBalance").textContent="₦"+balance.toLocaleString("en-NG",{minimumFractionDigits:2,maximumFractionDigits:2});
+
+  document.getElementById("walletBalance").textContent=
+    "₦"+balance.toLocaleString("en-NG",{
+      minimumFractionDigits:2,
+      maximumFractionDigits:2
+    });
 }
 
 function isCredit(transaction){
@@ -363,7 +355,7 @@ async function loadTransactions(){
         <div class="amount ${amountClass}">${amountSign}₦${amount.toLocaleString("en-NG",{minimumFractionDigits:2,maximumFractionDigits:2})}</div>
       </div>
       <div class="status-row"><span class="status ${statusClass(status)}">${escapeHTML(status)}</span></div>
-      ${transaction.description?`<div class="description">${escapeHTML(transaction.description)}</div>`:""}
+      ${transaction.description?`<div class="description">${escapeHTML(transaction.description)}`:""}
       ${date?`<div class="date">${escapeHTML(date)}</div>`:""}
     `;
     container.appendChild(item);
@@ -375,6 +367,5 @@ function escapeHTML(value){
 }
 
 loadTransactions();
-</script>
-</body>
+</script></body>
 </html>
