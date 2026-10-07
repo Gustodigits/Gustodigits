@@ -14,6 +14,10 @@
   padding:0;
 }
 
+html{
+  font-size:16px;
+}
+
 :root{
   --blue:#1677ff;
   --blue-dark:#075bd6;
@@ -26,13 +30,16 @@
   --green:#16a34a;
   --red:#dc2626;
   --orange:#f59e0b;
-  --shadow:0 8px 30px rgba(22,119,255,.08);
+  --shadow:0 6px 24px rgba(22,119,255,.07);
 }
 
 body{
   font-family:Arial,Helvetica,sans-serif;
   background:var(--bg);
   color:var(--text);
+  font-size:14px;
+  line-height:1.45;
+  -webkit-text-size-adjust:100%;
 }
 
 button,
@@ -49,7 +56,9 @@ button{
   display:none!important;
 }
 
-/* LOGIN */
+/* =========================================================
+   LOGIN
+========================================================= */
 
 #loginScreen{
   min-height:100vh;
@@ -62,18 +71,18 @@ button{
 
 .login-card{
   width:100%;
-  max-width:420px;
+  max-width:400px;
   background:#fff;
   border:1px solid var(--border);
-  border-radius:22px;
-  padding:30px;
+  border-radius:20px;
+  padding:28px;
   box-shadow:var(--shadow);
 }
 
 .logo{
-  font-size:28px;
+  font-size:27px;
   font-weight:900;
-  margin-bottom:7px;
+  margin-bottom:6px;
 }
 
 .logo span{
@@ -82,27 +91,28 @@ button{
 
 .login-subtitle{
   color:var(--muted);
-  margin-bottom:25px;
+  margin-bottom:23px;
+  font-size:14px;
 }
 
 .field{
-  margin-bottom:17px;
+  margin-bottom:15px;
 }
 
 .field label{
   display:block;
-  font-size:13px;
+  font-size:12px;
   font-weight:700;
-  margin-bottom:7px;
+  margin-bottom:6px;
 }
 
 .field input,
 .field select{
   width:100%;
-  height:46px;
+  height:44px;
   border:1px solid var(--border);
-  border-radius:10px;
-  padding:0 13px;
+  border-radius:9px;
+  padding:0 12px;
   outline:none;
   background:#fff;
 }
@@ -116,10 +126,11 @@ button{
   border:0;
   background:var(--blue);
   color:#fff;
-  border-radius:10px;
-  min-height:45px;
-  padding:0 18px;
+  border-radius:9px;
+  min-height:42px;
+  padding:0 16px;
   font-weight:800;
+  font-size:13px;
 }
 
 .primary-btn:hover{
@@ -132,11 +143,13 @@ button{
 
 .error{
   color:var(--red);
-  font-size:13px;
-  margin-top:12px;
+  font-size:12px;
+  margin-top:11px;
 }
 
-/* APP */
+/* =========================================================
+   APP
+========================================================= */
 
 #app{
   min-height:100vh;
@@ -147,16 +160,16 @@ button{
   left:0;
   top:0;
   bottom:0;
-  width:245px;
+  width:230px;
   background:#fff;
   border-right:1px solid var(--border);
-  padding:22px 15px;
+  padding:20px 13px;
   z-index:50;
 }
 
 .sidebar-logo{
-  padding:4px 12px 25px;
-  font-size:23px;
+  padding:3px 11px 23px;
+  font-size:21px;
   font-weight:900;
 }
 
@@ -166,11 +179,12 @@ button{
 
 .nav-title{
   color:#a0a8b7;
-  font-size:11px;
+  font-size:10px;
   font-weight:800;
-  padding:0 12px;
-  margin:10px 0 8px;
+  padding:0 11px;
+  margin:9px 0 7px;
   text-transform:uppercase;
+  letter-spacing:.5px;
 }
 
 .nav-btn{
@@ -178,11 +192,12 @@ button{
   border:0;
   background:transparent;
   color:#566174;
-  padding:12px;
-  border-radius:10px;
+  padding:10px 11px;
+  border-radius:9px;
   text-align:left;
   font-weight:700;
-  margin-bottom:4px;
+  font-size:13px;
+  margin-bottom:3px;
 }
 
 .nav-btn:hover,
@@ -196,62 +211,218 @@ button{
 }
 
 .main{
-  margin-left:245px;
-  padding:25px;
+  margin-left:230px;
+  padding:22px;
+  max-width:1600px;
 }
 
 .topbar{
   display:flex;
   align-items:center;
-  justify-content:space-between;
-  margin-bottom:25px;
-  gap:15px;
+  margin-bottom:20px;
+  gap:12px;
+}
+
+.topbar-content{
+  min-width:0;
 }
 
 .topbar h1{
-  font-size:26px;
+  font-size:23px;
+  line-height:1.2;
+  font-weight:900;
 }
 
 .topbar p{
   color:var(--muted);
-  margin-top:4px;
-  font-size:14px;
+  margin-top:3px;
+  font-size:12px;
 }
 
 .mobile-menu{
   display:none;
 }
 
-/* CARDS */
+/* =========================================================
+   DASHBOARD WELCOME
+========================================================= */
+
+.welcome-card{
+  position:relative;
+  overflow:hidden;
+  background:linear-gradient(135deg,#1677ff 0%,#075bd6 100%);
+  color:#fff;
+  border-radius:18px;
+  padding:24px 26px;
+  margin-bottom:18px;
+  box-shadow:0 10px 30px rgba(22,119,255,.18);
+}
+
+.welcome-card::after{
+  content:"";
+  position:absolute;
+  width:190px;
+  height:190px;
+  border-radius:50%;
+  right:-65px;
+  top:-85px;
+  background:rgba(255,255,255,.08);
+}
+
+.welcome-card::before{
+  content:"";
+  position:absolute;
+  width:120px;
+  height:120px;
+  border-radius:50%;
+  right:90px;
+  bottom:-90px;
+  background:rgba(255,255,255,.06);
+}
+
+.welcome-content{
+  position:relative;
+  z-index:2;
+  max-width:760px;
+}
+
+.welcome-small{
+  font-size:11px;
+  font-weight:800;
+  opacity:.82;
+  text-transform:uppercase;
+  letter-spacing:.7px;
+  margin-bottom:6px;
+}
+
+.welcome-title{
+  font-size:26px;
+  font-weight:900;
+  line-height:1.2;
+  margin-bottom:8px;
+}
+
+.welcome-text{
+  font-size:13px;
+  line-height:1.65;
+  opacity:.92;
+  max-width:680px;
+}
+
+.welcome-hint{
+  margin-top:14px;
+  display:inline-flex;
+  align-items:center;
+  gap:7px;
+  background:rgba(255,255,255,.13);
+  border:1px solid rgba(255,255,255,.16);
+  border-radius:8px;
+  padding:8px 11px;
+  font-size:11px;
+  font-weight:700;
+}
+
+/* =========================================================
+   QUICK ACTIONS
+========================================================= */
+
+.quick-section{
+  margin-bottom:18px;
+}
+
+.quick-title{
+  font-size:14px;
+  font-weight:900;
+  margin-bottom:10px;
+}
+
+.quick-grid{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:12px;
+}
+
+.quick-card{
+  border:1px solid var(--border);
+  background:#fff;
+  border-radius:13px;
+  padding:15px;
+  display:flex;
+  align-items:center;
+  gap:11px;
+  text-align:left;
+  box-shadow:var(--shadow);
+  transition:.18s ease;
+}
+
+.quick-card:hover{
+  transform:translateY(-2px);
+  border-color:#cfe0f8;
+  box-shadow:0 9px 25px rgba(22,119,255,.10);
+}
+
+.quick-icon{
+  width:38px;
+  height:38px;
+  flex:0 0 38px;
+  border-radius:10px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:18px;
+  background:var(--blue-light);
+}
+
+.quick-info{
+  min-width:0;
+}
+
+.quick-name{
+  font-size:13px;
+  font-weight:900;
+  color:var(--text);
+}
+
+.quick-desc{
+  color:var(--muted);
+  font-size:10px;
+  margin-top:2px;
+}
+
+/* =========================================================
+   STAT CARDS
+========================================================= */
 
 .stats{
   display:grid;
   grid-template-columns:repeat(4,1fr);
-  gap:16px;
-  margin-bottom:24px;
+  gap:12px;
+  margin-bottom:18px;
 }
 
 .stat-card{
   background:#fff;
   border:1px solid var(--border);
-  border-radius:16px;
-  padding:20px;
+  border-radius:13px;
+  padding:15px 16px;
   box-shadow:var(--shadow);
 }
 
 .stat-label{
   color:var(--muted);
-  font-size:13px;
+  font-size:11px;
   font-weight:700;
 }
 
 .stat-value{
-  font-size:27px;
+  font-size:21px;
   font-weight:900;
-  margin-top:8px;
+  margin-top:5px;
 }
 
-/* SECTIONS */
+/* =========================================================
+   SECTIONS
+========================================================= */
 
 .page{
   display:none;
@@ -264,51 +435,54 @@ button{
 .panel{
   background:#fff;
   border:1px solid var(--border);
-  border-radius:16px;
+  border-radius:14px;
   box-shadow:var(--shadow);
   overflow:hidden;
 }
 
 .panel-header{
-  padding:18px 20px;
+  padding:15px 17px;
   border-bottom:1px solid var(--border);
   display:flex;
   justify-content:space-between;
   align-items:center;
-  gap:12px;
+  gap:10px;
   flex-wrap:wrap;
 }
 
 .panel-title{
   font-weight:900;
-  font-size:17px;
+  font-size:15px;
 }
 
 .panel-body{
-  padding:20px;
+  padding:17px;
 }
 
 .toolbar{
   display:flex;
-  gap:10px;
+  gap:8px;
   flex-wrap:wrap;
   align-items:center;
 }
 
 .search{
-  height:42px;
-  min-width:230px;
+  height:39px;
+  min-width:220px;
   border:1px solid var(--border);
-  border-radius:9px;
-  padding:0 12px;
+  border-radius:8px;
+  padding:0 11px;
   outline:none;
+  font-size:12px;
 }
 
 .search:focus{
   border-color:var(--blue);
 }
 
-/* TABLE */
+/* =========================================================
+   TABLE
+========================================================= */
 
 .table-wrap{
   width:100%;
@@ -318,22 +492,22 @@ button{
 table{
   width:100%;
   border-collapse:collapse;
-  min-width:800px;
+  min-width:780px;
 }
 
 th{
   background:#f8fafc;
   color:#667085;
-  font-size:12px;
+  font-size:10px;
   text-align:left;
-  padding:13px 15px;
+  padding:11px 13px;
   white-space:nowrap;
 }
 
 td{
   border-top:1px solid var(--border);
-  padding:14px 15px;
-  font-size:13px;
+  padding:12px 13px;
+  font-size:12px;
   vertical-align:middle;
 }
 
@@ -341,8 +515,8 @@ td{
   display:inline-flex;
   align-items:center;
   border-radius:30px;
-  padding:5px 9px;
-  font-size:11px;
+  padding:4px 8px;
+  font-size:10px;
   font-weight:800;
 }
 
@@ -366,19 +540,21 @@ td{
   background:#fef3c7;
 }
 
-/* BUTTONS */
+/* =========================================================
+   BUTTONS
+========================================================= */
 
 .action-row{
   display:flex;
-  gap:7px;
+  gap:6px;
   flex-wrap:wrap;
 }
 
 .small-btn{
   border:0;
-  border-radius:8px;
-  padding:8px 10px;
-  font-size:12px;
+  border-radius:7px;
+  padding:7px 9px;
+  font-size:10px;
   font-weight:800;
 }
 
@@ -411,7 +587,9 @@ td{
   opacity:.8;
 }
 
-/* MODAL */
+/* =========================================================
+   MODAL
+========================================================= */
 
 .modal-overlay{
   position:fixed;
@@ -420,7 +598,7 @@ td{
   display:none;
   align-items:center;
   justify-content:center;
-  padding:18px;
+  padding:16px;
   z-index:100;
 }
 
@@ -434,16 +612,16 @@ td{
   max-height:92vh;
   overflow:auto;
   background:#fff;
-  border-radius:18px;
+  border-radius:16px;
   box-shadow:0 20px 70px rgba(0,0,0,.2);
 }
 
 .modal.small{
-  max-width:500px;
+  max-width:480px;
 }
 
 .modal-header{
-  padding:19px 22px;
+  padding:16px 19px;
   border-bottom:1px solid var(--border);
   display:flex;
   justify-content:space-between;
@@ -452,30 +630,30 @@ td{
 }
 
 .modal-header h2{
-  font-size:19px;
+  font-size:17px;
 }
 
 .close{
   border:0;
   background:#f1f5f9;
-  width:34px;
-  height:34px;
+  width:32px;
+  height:32px;
   border-radius:50%;
-  font-size:19px;
+  font-size:18px;
 }
 
 .modal-body{
-  padding:22px;
+  padding:19px;
 }
 
 .form-grid{
   display:grid;
   grid-template-columns:repeat(2,1fr);
-  gap:15px;
+  gap:13px;
 }
 
 .form-group{
-  margin-bottom:15px;
+  margin-bottom:13px;
 }
 
 .form-group.full{
@@ -484,20 +662,21 @@ td{
 
 .form-group label{
   display:block;
-  font-size:12px;
+  font-size:11px;
   font-weight:800;
-  margin-bottom:7px;
+  margin-bottom:6px;
 }
 
 .form-group input,
 .form-group select{
   width:100%;
-  height:44px;
+  height:41px;
   border:1px solid var(--border);
-  border-radius:9px;
-  padding:0 11px;
+  border-radius:8px;
+  padding:0 10px;
   outline:none;
   background:#fff;
+  font-size:12px;
 }
 
 .form-group input:focus,
@@ -512,55 +691,60 @@ td{
 }
 
 .modal-footer{
-  padding:18px 22px;
+  padding:16px 19px;
   border-top:1px solid var(--border);
   display:flex;
   justify-content:flex-end;
-  gap:10px;
+  gap:8px;
   flex-wrap:wrap;
 }
 
-/* USER INFO */
+/* =========================================================
+   USER INFO
+========================================================= */
 
 .user-summary{
   display:grid;
   grid-template-columns:repeat(3,1fr);
-  gap:12px;
-  margin-bottom:20px;
+  gap:10px;
+  margin-bottom:17px;
 }
 
 .info-box{
   background:#f8fafc;
   border:1px solid var(--border);
-  border-radius:12px;
-  padding:14px;
+  border-radius:10px;
+  padding:12px;
 }
 
 .info-box small{
   display:block;
   color:var(--muted);
-  font-size:11px;
-  margin-bottom:5px;
+  font-size:10px;
+  margin-bottom:4px;
 }
 
 .info-box strong{
-  font-size:15px;
+  font-size:13px;
 }
 
-/* TABS */
+/* =========================================================
+   TABS
+========================================================= */
 
 .tabs{
   display:flex;
-  gap:5px;
+  gap:3px;
   border-bottom:1px solid var(--border);
-  margin-bottom:18px;
+  margin-bottom:16px;
 }
 
 .tab-btn{
   border:0;
   background:transparent;
-  padding:11px 14px;
+  padding:9px 12px;
   color:#64748b;
+  font-size:12px;
   font-weight:800;
   border-bottom:2px solid transparent;
 }
@@ -570,25 +754,27 @@ td{
   border-bottom-color:var(--blue);
 }
 
-/* MARKUP */
+/* =========================================================
+   MARKUP
+========================================================= */
 
 .markup-form{
   background:#f8fbff;
   border:1px solid #dbeafe;
-  border-radius:14px;
-  padding:18px;
-  margin-bottom:20px;
+  border-radius:12px;
+  padding:15px;
+  margin-bottom:17px;
 }
 
 .markup-form-title{
-  font-size:15px;
+  font-size:13px;
   font-weight:900;
-  margin-bottom:15px;
+  margin-bottom:13px;
 }
 
 .markup-actions{
   display:flex;
-  gap:8px;
+  gap:7px;
   flex-wrap:wrap;
 }
 
@@ -600,39 +786,43 @@ td{
   color:var(--blue);
 }
 
-/* LOADER */
+/* =========================================================
+   LOADER
+========================================================= */
 
 .loading{
-  padding:35px;
+  padding:30px;
   text-align:center;
   color:var(--muted);
 }
 
 .empty{
-  padding:35px;
+  padding:30px;
   text-align:center;
   color:var(--muted);
 }
 
-/* TOAST */
+/* =========================================================
+   TOAST
+========================================================= */
 
 .toast{
   position:fixed;
-  right:20px;
-  bottom:20px;
+  right:18px;
+  bottom:18px;
   z-index:300;
-  min-width:280px;
-  max-width:420px;
+  min-width:270px;
+  max-width:400px;
   background:#172033;
   color:#fff;
-  padding:14px 17px;
-  border-radius:11px;
+  padding:12px 15px;
+  border-radius:10px;
   box-shadow:0 15px 40px rgba(0,0,0,.2);
   transform:translateY(20px);
   opacity:0;
   pointer-events:none;
   transition:.25s;
-  font-size:13px;
+  font-size:12px;
 }
 
 .toast.show{
@@ -648,15 +838,23 @@ td{
   background:#b91c1c;
 }
 
-/* MOBILE */
+/* =========================================================
+   MOBILE
+========================================================= */
 
-@media(max-width:1000px){
+@media(max-width:1050px){
+
+  .quick-grid{
+    grid-template-columns:repeat(2,1fr);
+  }
+
   .stats{
     grid-template-columns:repeat(2,1fr);
   }
 }
 
 @media(max-width:760px){
+
   .sidebar{
     transform:translateX(-100%);
     transition:.25s;
@@ -664,11 +862,12 @@ td{
 
   .sidebar.open{
     transform:translateX(0);
+    box-shadow:10px 0 35px rgba(0,0,0,.12);
   }
 
   .main{
     margin-left:0;
-    padding:16px;
+    padding:14px;
   }
 
   .mobile-menu{
@@ -676,14 +875,40 @@ td{
     border:0;
     background:#e8f1ff;
     color:var(--blue);
-    width:40px;
-    height:40px;
-    border-radius:10px;
-    font-size:20px;
+    width:38px;
+    height:38px;
+    border-radius:9px;
+    font-size:19px;
+    flex:0 0 38px;
   }
 
   .topbar{
-    align-items:flex-start;
+    margin-bottom:16px;
+  }
+
+  .topbar h1{
+    font-size:20px;
+  }
+
+  .topbar p{
+    font-size:11px;
+  }
+
+  .welcome-card{
+    padding:20px;
+    border-radius:15px;
+  }
+
+  .welcome-title{
+    font-size:22px;
+  }
+
+  .welcome-text{
+    font-size:12px;
+  }
+
+  .quick-grid{
+    grid-template-columns:1fr 1fr;
   }
 
   .stats{
@@ -705,12 +930,38 @@ td{
 }
 
 @media(max-width:480px){
-  .stats{
+
+  .main{
+    padding:12px;
+  }
+
+  .quick-grid{
     grid-template-columns:1fr;
   }
 
-  .topbar h1{
-    font-size:22px;
+  .stats{
+    grid-template-columns:1fr 1fr;
+    gap:9px;
+  }
+
+  .stat-card{
+    padding:12px;
+  }
+
+  .stat-value{
+    font-size:18px;
+  }
+
+  .welcome-title{
+    font-size:20px;
+  }
+
+  .welcome-card{
+    padding:18px;
+  }
+
+  .quick-card{
+    padding:12px;
   }
 }
 </style>
@@ -721,24 +972,42 @@ td{
 <!-- LOGIN -->
 <div id="loginScreen">
   <div class="login-card">
-    <div class="logo">Gusto<span>digits</span></div>
-    <div class="login-subtitle">Administrator Login</div>
+
+    <div class="logo">
+      Gusto<span>digits</span>
+    </div>
+
+    <div class="login-subtitle">
+      Administrator Login
+    </div>
 
     <div class="field">
       <label>Email</label>
-      <input id="loginEmail" type="email" placeholder="Admin email">
+      <input
+        id="loginEmail"
+        type="email"
+        placeholder="Admin email"
+      >
     </div>
 
     <div class="field">
       <label>Password</label>
-      <input id="loginPassword" type="password" placeholder="Password">
+      <input
+        id="loginPassword"
+        type="password"
+        placeholder="Password"
+      >
     </div>
 
-    <button class="primary-btn full-btn" onclick="login()">
+    <button
+      class="primary-btn full-btn"
+      onclick="login()"
+    >
       Login
     </button>
 
     <div id="loginError" class="error"></div>
+
   </div>
 </div>
 
@@ -752,31 +1021,58 @@ td{
       Gusto<span>digits</span>
     </div>
 
-    <div class="nav-title">Main</div>
+    <div class="nav-title">
+      Main
+    </div>
 
-    <button class="nav-btn active" data-page="dashboard" onclick="showPage('dashboard',this)">
+    <button
+      class="nav-btn active"
+      data-page="dashboard"
+      onclick="showPage('dashboard',this)"
+    >
       📊 Dashboard
     </button>
 
-    <button class="nav-btn" data-page="users" onclick="showPage('users',this)">
+    <button
+      class="nav-btn"
+      data-page="users"
+      onclick="showPage('users',this)"
+    >
       👥 Users
     </button>
 
-    <button class="nav-btn" data-page="orders" onclick="showPage('orders',this)">
+    <button
+      class="nav-btn"
+      data-page="orders"
+      onclick="showPage('orders',this)"
+    >
       📦 Orders
     </button>
 
-    <button class="nav-btn" data-page="transactions" onclick="showPage('transactions',this)">
+    <button
+      class="nav-btn"
+      data-page="transactions"
+      onclick="showPage('transactions',this)"
+    >
       💳 Transactions
     </button>
 
-    <button class="nav-btn" data-page="markup" onclick="showPage('markup',this)">
+    <button
+      class="nav-btn"
+      data-page="markup"
+      onclick="showPage('markup',this)"
+    >
       💰 Markup Manager
     </button>
 
-    <div class="nav-title">Account</div>
+    <div class="nav-title">
+      Account
+    </div>
 
-    <button class="nav-btn logout-btn" onclick="logout()">
+    <button
+      class="nav-btn logout-btn"
+      onclick="logout()"
+    >
       🚪 Logout
     </button>
 
@@ -786,56 +1082,269 @@ td{
   <main class="main">
 
     <div class="topbar">
-      <div>
-        <button class="mobile-menu" onclick="toggleSidebar()">☰</button>
+
+      <button
+        class="mobile-menu"
+        onclick="toggleSidebar()"
+      >
+        ☰
+      </button>
+
+      <div class="topbar-content">
+
+        <h1 id="pageTitle">
+          Dashboard
+        </h1>
+
+        <p>
+          Gustodigits administration panel
+        </p>
+
       </div>
 
-      <div style="margin-left:auto">
-        <h1 id="pageTitle">Dashboard</h1>
-        <p>Gustodigits administration panel</p>
-      </div>
     </div>
 
 
-    <!-- DASHBOARD -->
-    <section id="page-dashboard" class="page active">
+    <!-- =====================================================
+         DASHBOARD
+    ====================================================== -->
+
+    <section
+      id="page-dashboard"
+      class="page active"
+    >
+
+      <!-- WELCOME -->
+
+      <div class="welcome-card">
+
+        <div class="welcome-content">
+
+          <div class="welcome-small">
+            Gustodigits
+          </div>
+
+          <div class="welcome-title">
+            Welcome to Gustodigits Admin Dashboard 👋
+          </div>
+
+          <div class="welcome-text">
+            Manage your virtual-number platform from one place.
+            View customers, monitor orders, manage wallet transactions,
+            and control your markup pricing with ease.
+          </div>
+
+          <div class="welcome-hint">
+            ☰ Use the menu to select what you want to manage.
+          </div>
+
+        </div>
+
+      </div>
+
+
+      <!-- QUICK ACTIONS -->
+
+      <div class="quick-section">
+
+        <div class="quick-title">
+          Quick Access
+        </div>
+
+        <div class="quick-grid">
+
+          <button
+            class="quick-card"
+            onclick="openDashboardPage('users')"
+          >
+
+            <div class="quick-icon">
+              👥
+            </div>
+
+            <div class="quick-info">
+
+              <div class="quick-name">
+                Users
+              </div>
+
+              <div class="quick-desc">
+                View and manage customers
+              </div>
+
+            </div>
+
+          </button>
+
+
+          <button
+            class="quick-card"
+            onclick="openDashboardPage('orders')"
+          >
+
+            <div class="quick-icon">
+              📦
+            </div>
+
+            <div class="quick-info">
+
+              <div class="quick-name">
+                Orders
+              </div>
+
+              <div class="quick-desc">
+                View virtual-number orders
+              </div>
+
+            </div>
+
+          </button>
+
+
+          <button
+            class="quick-card"
+            onclick="openDashboardPage('transactions')"
+          >
+
+            <div class="quick-icon">
+              💳
+            </div>
+
+            <div class="quick-info">
+
+              <div class="quick-name">
+                Transactions
+              </div>
+
+              <div class="quick-desc">
+                Monitor wallet activity
+              </div>
+
+            </div>
+
+          </button>
+
+
+          <button
+            class="quick-card"
+            onclick="openDashboardPage('markup')"
+          >
+
+            <div class="quick-icon">
+              💰
+            </div>
+
+            <div class="quick-info">
+
+              <div class="quick-name">
+                Markup Manager
+              </div>
+
+              <div class="quick-desc">
+                Manage pricing rules
+              </div>
+
+            </div>
+
+          </button>
+
+        </div>
+
+      </div>
+
+
+      <!-- STATS -->
 
       <div class="stats">
 
         <div class="stat-card">
-          <div class="stat-label">Total Users</div>
-          <div class="stat-value" id="statUsers">0</div>
+
+          <div class="stat-label">
+            Total Users
+          </div>
+
+          <div
+            class="stat-value"
+            id="statUsers"
+          >
+            0
+          </div>
+
         </div>
 
-        <div class="stat-card">
-          <div class="stat-label">Total Wallet Balance</div>
-          <div class="stat-value" id="statBalance">₦0</div>
-        </div>
 
         <div class="stat-card">
-          <div class="stat-label">Total Orders</div>
-          <div class="stat-value" id="statOrders">0</div>
+
+          <div class="stat-label">
+            Total Wallet Balance
+          </div>
+
+          <div
+            class="stat-value"
+            id="statBalance"
+          >
+            ₦0
+          </div>
+
         </div>
 
+
         <div class="stat-card">
-          <div class="stat-label">Total Transactions</div>
-          <div class="stat-value" id="statTransactions">0</div>
+
+          <div class="stat-label">
+            Total Orders
+          </div>
+
+          <div
+            class="stat-value"
+            id="statOrders"
+          >
+            0
+          </div>
+
+        </div>
+
+
+        <div class="stat-card">
+
+          <div class="stat-label">
+            Total Transactions
+          </div>
+
+          <div
+            class="stat-value"
+            id="statTransactions"
+          >
+            0
+          </div>
+
         </div>
 
       </div>
 
 
+      <!-- OVERVIEW -->
+
       <div class="panel">
 
         <div class="panel-header">
-          <div class="panel-title">Admin Overview</div>
+
+          <div class="panel-title">
+            Admin Overview
+          </div>
+
         </div>
 
         <div class="panel-body">
-          <p style="color:#64748b;line-height:1.7">
-            Manage Gustodigits users, virtual-number orders, wallet
-            transactions and virtual-number markup pricing from this panel.
+
+          <p style="color:#64748b;line-height:1.7;font-size:12px">
+
+            Use the menu or Quick Access above to manage
+            Gustodigits users, virtual-number orders,
+            wallet transactions and markup pricing.
+
           </p>
+
         </div>
 
       </div>
@@ -843,16 +1352,25 @@ td{
     </section>
 
 
-    <!-- USERS -->
-    <section id="page-users" class="page">
+    <!-- =====================================================
+         USERS
+    ====================================================== -->
+
+    <section
+      id="page-users"
+      class="page"
+    >
 
       <div class="panel">
 
         <div class="panel-header">
 
-          <div class="panel-title">Users</div>
+          <div class="panel-title">
+            Users
+          </div>
 
           <div class="toolbar">
+
             <input
               id="userSearch"
               class="search"
@@ -860,16 +1378,23 @@ td{
               oninput="filterUsers()"
             >
 
-            <button class="primary-btn" onclick="loadUsers()">
+            <button
+              class="primary-btn"
+              onclick="loadUsers()"
+            >
               Refresh
             </button>
+
           </div>
 
         </div>
 
         <div class="table-wrap">
+
           <table>
+
             <thead>
+
               <tr>
                 <th>Email</th>
                 <th>User ID</th>
@@ -878,10 +1403,13 @@ td{
                 <th>Total Spent</th>
                 <th>Actions</th>
               </tr>
+
             </thead>
 
             <tbody id="usersBody"></tbody>
+
           </table>
+
         </div>
 
       </div>
@@ -889,16 +1417,27 @@ td{
     </section>
 
 
-    <!-- ORDERS -->
-    <section id="page-orders" class="page">
+    <!-- =====================================================
+         ORDERS
+    ====================================================== -->
+
+    <section
+      id="page-orders"
+      class="page"
+    >
 
       <div class="panel">
 
         <div class="panel-header">
 
-          <div class="panel-title">Virtual Number Orders</div>
+          <div class="panel-title">
+            Virtual Number Orders
+          </div>
 
-          <button class="primary-btn" onclick="loadOrders()">
+          <button
+            class="primary-btn"
+            onclick="loadOrders()"
+          >
             Refresh
           </button>
 
@@ -909,6 +1448,7 @@ td{
           <table>
 
             <thead>
+
               <tr>
                 <th>Date</th>
                 <th>User</th>
@@ -919,6 +1459,7 @@ td{
                 <th>Status</th>
                 <th>Action</th>
               </tr>
+
             </thead>
 
             <tbody id="ordersBody"></tbody>
@@ -932,16 +1473,27 @@ td{
     </section>
 
 
-    <!-- TRANSACTIONS -->
-    <section id="page-transactions" class="page">
+    <!-- =====================================================
+         TRANSACTIONS
+    ====================================================== -->
+
+    <section
+      id="page-transactions"
+      class="page"
+    >
 
       <div class="panel">
 
         <div class="panel-header">
 
-          <div class="panel-title">Transactions</div>
+          <div class="panel-title">
+            Transactions
+          </div>
 
-          <button class="primary-btn" onclick="loadTransactions()">
+          <button
+            class="primary-btn"
+            onclick="loadTransactions()"
+          >
             Refresh
           </button>
 
@@ -952,6 +1504,7 @@ td{
           <table>
 
             <thead>
+
               <tr>
                 <th>Date</th>
                 <th>User</th>
@@ -961,6 +1514,7 @@ td{
                 <th>Description</th>
                 <th>Reference</th>
               </tr>
+
             </thead>
 
             <tbody id="transactionsBody"></tbody>
@@ -974,49 +1528,84 @@ td{
     </section>
 
 
-    <!-- MARKUP -->
-    <section id="page-markup" class="page">
+    <!-- =====================================================
+         MARKUP
+    ====================================================== -->
+
+    <section
+      id="page-markup"
+      class="page"
+    >
 
       <div class="panel">
 
         <div class="panel-header">
-          <div class="panel-title">Markup Manager</div>
 
-          <button class="primary-btn" onclick="resetMarkupForm()">
+          <div class="panel-title">
+            Markup Manager
+          </div>
+
+          <button
+            class="primary-btn"
+            onclick="resetMarkupForm()"
+          >
             + Add Markup
           </button>
+
         </div>
 
         <div class="panel-body">
 
           <div class="markup-form">
 
-            <div class="markup-form-title" id="markupFormTitle">
+            <div
+              class="markup-form-title"
+              id="markupFormTitle"
+            >
               Add Markup Price
             </div>
 
             <div class="form-grid">
 
               <div class="form-group">
-                <label>Country</label>
+
+                <label>
+                  Country
+                </label>
 
                 <select id="markupCountry">
-                  <option value="">Overall</option>
+
+                  <option value="">
+                    Overall
+                  </option>
+
                 </select>
+
               </div>
 
 
               <div class="form-group">
-                <label>Service</label>
+
+                <label>
+                  Service
+                </label>
 
                 <select id="markupService">
-                  <option value="">Overall</option>
+
+                  <option value="">
+                    Overall
+                  </option>
+
                 </select>
+
               </div>
 
 
               <div class="form-group">
-                <label>Markup Percentage</label>
+
+                <label>
+                  Markup Percentage
+                </label>
 
                 <input
                   id="markupPercent"
@@ -1025,6 +1614,7 @@ td{
                   step="0.01"
                   placeholder="Example: 100"
                 >
+
               </div>
 
             </div>
@@ -1058,6 +1648,7 @@ td{
             <table>
 
               <thead>
+
                 <tr>
                   <th>Country</th>
                   <th>Service</th>
@@ -1066,6 +1657,7 @@ td{
                   <th>Updated</th>
                   <th>Actions</th>
                 </tr>
+
               </thead>
 
               <tbody id="markupBody"></tbody>
@@ -1085,17 +1677,30 @@ td{
 </div>
 
 
-<!-- USER MODAL -->
-<div class="modal-overlay" id="userModal">
+<!-- =======================================================
+     USER MODAL
+======================================================== -->
+
+<div
+  class="modal-overlay"
+  id="userModal"
+>
 
   <div class="modal">
 
     <div class="modal-header">
-      <h2 id="userModalTitle">User</h2>
 
-      <button class="close" onclick="closeModal('userModal')">
+      <h2 id="userModalTitle">
+        User
+      </h2>
+
+      <button
+        class="close"
+        onclick="closeModal('userModal')"
+      >
         ×
       </button>
+
     </div>
 
     <div class="modal-body">
@@ -1103,30 +1708,62 @@ td{
       <div class="user-summary">
 
         <div class="info-box">
-          <small>Email</small>
-          <strong id="viewEmail">-</strong>
+
+          <small>
+            Email
+          </small>
+
+          <strong id="viewEmail">
+            -
+          </strong>
+
         </div>
 
-        <div class="info-box">
-          <small>Wallet Balance</small>
-          <strong id="viewBalance">₦0</strong>
-        </div>
 
         <div class="info-box">
-          <small>Total Spent</small>
-          <strong id="viewSpent">₦0</strong>
+
+          <small>
+            Wallet Balance
+          </small>
+
+          <strong id="viewBalance">
+            ₦0
+          </strong>
+
+        </div>
+
+
+        <div class="info-box">
+
+          <small>
+            Total Spent
+          </small>
+
+          <strong id="viewSpent">
+            ₦0
+          </strong>
+
         </div>
 
       </div>
 
 
-      <div class="action-row" style="margin-bottom:20px">
+      <div
+        class="action-row"
+        style="margin-bottom:18px"
+      >
 
-        <button class="small-btn green-btn" onclick="openWalletAction('add')">
+        <button
+          class="small-btn green-btn"
+          onclick="openWalletAction('add')"
+        >
           + Add
         </button>
 
-        <button class="small-btn orange-btn" onclick="openWalletAction('deduct')">
+        <button
+          class="small-btn orange-btn"
+          onclick="openWalletAction('deduct')"
+        >
           − Deduct
         </button>
 
@@ -1161,6 +1798,7 @@ td{
           <table>
 
             <thead>
+
               <tr>
                 <th>Date</th>
                 <th>Number</th>
@@ -1170,6 +1808,7 @@ td{
                 <th>Status</th>
                 <th>Action</th>
               </tr>
+
             </thead>
 
             <tbody id="userOrdersBody"></tbody>
@@ -1181,13 +1820,17 @@ td{
       </div>
 
 
-      <div id="userTransactionsTab" class="hidden">
+      <div
+        id="userTransactionsTab"
+        class="hidden"
+      >
 
         <div class="table-wrap">
 
           <table>
 
             <thead>
+
               <tr>
                 <th>Date</th>
                 <th>Type</th>
@@ -1196,6 +1839,7 @@ td{
                 <th>Description</th>
                 <th>Reference</th>
               </tr>
+
             </thead>
 
             <tbody id="userTransactionsBody"></tbody>
@@ -1213,16 +1857,27 @@ td{
 </div>
 
 
-<!-- WALLET MODAL -->
-<div class="modal-overlay" id="walletModal">
+<!-- =======================================================
+     WALLET MODAL
+======================================================== -->
+
+<div
+  class="modal-overlay"
+  id="walletModal"
+>
 
   <div class="modal small">
 
     <div class="modal-header">
 
-      <h2 id="walletModalTitle">Add Wallet</h2>
+      <h2 id="walletModalTitle">
+        Add Wallet
+      </h2>
 
-      <button class="close" onclick="closeModal('walletModal')">
+      <button
+        class="close"
+        onclick="closeModal('walletModal')"
+      >
         ×
       </button>
 
@@ -1232,7 +1887,9 @@ td{
 
       <div class="form-group">
 
-        <label>Amount (NGN)</label>
+        <label>
+          Amount (NGN)
+        </label>
 
         <input
           id="walletAmount"
@@ -1269,7 +1926,10 @@ td{
 </div>
 
 
-<div class="toast" id="toast"></div>
+<div
+  class="toast"
+  id="toast"
+></div>
 
 
 <script>
@@ -1288,7 +1948,6 @@ const supabaseClient =
     SUPABASE_URL,
     SUPABASE_KEY
   );
-
 
 const GRIZZLY_URL =
   SUPABASE_URL + "/functions/v1/grizzly";
@@ -1331,11 +1990,15 @@ function escapeHtml(value){
 
 function formatNumber(value){
 
-  const number = Number(value || 0);
+  const number =
+    Number(value || 0);
 
-  return number.toLocaleString("en-NG",{
-    maximumFractionDigits:2
-  });
+  return number.toLocaleString(
+    "en-NG",
+    {
+      maximumFractionDigits:2
+    }
+  );
 }
 
 
@@ -1347,34 +2010,53 @@ function formatMoney(value){
 
 function formatDate(value){
 
-  if(!value) return "-";
+  if(!value)
+    return "-";
 
-  const date = new Date(value);
+  const date =
+    new Date(value);
 
-  if(Number.isNaN(date.getTime())) return "-";
+  if(
+    Number.isNaN(
+      date.getTime()
+    )
+  )
+    return "-";
 
-  return date.toLocaleString("en-NG",{
-    dateStyle:"medium",
-    timeStyle:"short"
-  });
+  return date.toLocaleString(
+    "en-NG",
+    {
+      dateStyle:"medium",
+      timeStyle:"short"
+    }
+  );
 }
 
 
-function showToast(message,type="success"){
+function showToast(
+  message,
+  type="success"
+){
 
   const toast =
-    document.getElementById("toast");
+    document.getElementById(
+      "toast"
+    );
 
-  toast.textContent = message;
+  toast.textContent =
+    message;
 
   toast.className =
     "toast show " + type;
 
-  clearTimeout(window.toastTimer);
+  clearTimeout(
+    window.toastTimer
+  );
 
   window.toastTimer =
     setTimeout(()=>{
-      toast.className = "toast";
+      toast.className =
+        "toast";
     },3500);
 }
 
@@ -1406,9 +2088,12 @@ function toggleSidebar(){
 function statusBadge(status){
 
   const value =
-    String(status || "unknown").toLowerCase();
+    String(
+      status || "unknown"
+    ).toLowerCase();
 
-  let cls = "blue";
+  let cls =
+    "blue";
 
   if(
     [
@@ -1418,7 +2103,8 @@ function statusBadge(status){
       "received"
     ].includes(value)
   ){
-    cls = "green";
+    cls =
+      "green";
   }
 
   if(
@@ -1430,7 +2116,8 @@ function statusBadge(status){
       "error"
     ].includes(value)
   ){
-    cls = "red";
+    cls =
+      "red";
   }
 
   if(
@@ -1441,12 +2128,15 @@ function statusBadge(status){
       "active"
     ].includes(value)
   ){
-    cls = "orange";
+    cls =
+      "orange";
   }
 
   return `
     <span class="badge ${cls}">
-      ${escapeHtml(status || "Unknown")}
+      ${escapeHtml(
+        status || "Unknown"
+      )}
     </span>
   `;
 }
@@ -1460,21 +2150,31 @@ async function login(){
 
   const email =
     document
-      .getElementById("loginEmail")
+      .getElementById(
+        "loginEmail"
+      )
       .value
       .trim();
 
   const password =
     document
-      .getElementById("loginPassword")
+      .getElementById(
+        "loginPassword"
+      )
       .value;
 
   const error =
-    document.getElementById("loginError");
+    document.getElementById(
+      "loginError"
+    );
 
-  error.textContent = "";
+  error.textContent =
+    "";
 
-  if(!email || !password){
+  if(
+    !email ||
+    !password
+  ){
 
     error.textContent =
       "Enter your email and password.";
@@ -1484,24 +2184,31 @@ async function login(){
 
   try{
 
-    const {data,error:loginError} =
-      await supabaseClient.auth.signInWithPassword({
-        email,
-        password
-      });
+    const {
+      data,
+      error:loginError
+    } =
+      await supabaseClient.auth
+        .signInWithPassword({
+          email,
+          password
+        });
 
     if(loginError)
       throw loginError;
 
     if(!data.session)
-      throw new Error("Login session was not created.");
+      throw new Error(
+        "Login session was not created."
+      );
 
     await checkAdminAccess();
 
   }catch(err){
 
     error.textContent =
-      err.message || "Login failed.";
+      err.message ||
+      "Login failed.";
 
   }
 }
@@ -1515,7 +2222,8 @@ async function checkAdminAccess(){
       data:sessionData,
       error:sessionError
     } =
-      await supabaseClient.auth.getSession();
+      await supabaseClient.auth
+        .getSession();
 
     if(sessionError)
       throw sessionError;
@@ -1537,19 +2245,26 @@ async function checkAdminAccess(){
       data,
       error
     } =
-      await supabaseClient.rpc("is_admin");
+      await supabaseClient.rpc(
+        "is_admin"
+      );
 
     if(error)
       throw error;
 
     if(data !== true){
 
-      await supabaseClient.auth.signOut();
+      await supabaseClient.auth
+        .signOut();
 
       showLogin();
 
-      document.getElementById("loginError").textContent =
-        "Access denied. Administrator account required.";
+      document
+        .getElementById(
+          "loginError"
+        )
+        .textContent =
+          "Access denied. Administrator account required.";
 
       return false;
     }
@@ -1564,12 +2279,18 @@ async function checkAdminAccess(){
 
     console.error(err);
 
-    await supabaseClient.auth.signOut();
+    await supabaseClient.auth
+      .signOut();
 
     showLogin();
 
-    document.getElementById("loginError").textContent =
-      err.message || "Unable to verify administrator.";
+    document
+      .getElementById(
+        "loginError"
+      )
+      .textContent =
+        err.message ||
+        "Unable to verify administrator.";
 
     return false;
   }
@@ -1579,32 +2300,50 @@ async function checkAdminAccess(){
 function showLogin(){
 
   document
-    .getElementById("loginScreen")
-    .classList.remove("hidden");
+    .getElementById(
+      "loginScreen"
+    )
+    .classList.remove(
+      "hidden"
+    );
 
   document
-    .getElementById("app")
-    .classList.add("hidden");
+    .getElementById(
+      "app"
+    )
+    .classList.add(
+      "hidden"
+    );
 }
 
 
 function showApp(){
 
   document
-    .getElementById("loginScreen")
-    .classList.add("hidden");
+    .getElementById(
+      "loginScreen"
+    )
+    .classList.add(
+      "hidden"
+    );
 
   document
-    .getElementById("app")
-    .classList.remove("hidden");
+    .getElementById(
+      "app"
+    )
+    .classList.remove(
+      "hidden"
+    );
 }
 
 
 async function logout(){
 
-  await supabaseClient.auth.signOut();
+  await supabaseClient.auth
+    .signOut();
 
-  currentUser = null;
+  currentUser =
+    null;
 
   showLogin();
 }
@@ -1614,46 +2353,96 @@ async function logout(){
    PAGE NAVIGATION
 ========================================================= */
 
-function showPage(page,button){
+function openDashboardPage(page){
+
+  const button =
+    document.querySelector(
+      `.nav-btn[data-page="${page}"]`
+    );
+
+  showPage(
+    page,
+    button
+  );
+}
+
+
+function showPage(
+  page,
+  button
+){
 
   document
     .querySelectorAll(".page")
     .forEach(el=>{
-      el.classList.remove("active");
+      el.classList.remove(
+        "active"
+      );
     });
 
-  document
-    .getElementById("page-"+page)
-    .classList.add("active");
+  const target =
+    document.getElementById(
+      "page-" + page
+    );
+
+  if(target)
+    target.classList.add(
+      "active"
+    );
 
 
   document
-    .querySelectorAll(".nav-btn")
+    .querySelectorAll(
+      ".nav-btn"
+    )
     .forEach(el=>{
-      el.classList.remove("active");
+      el.classList.remove(
+        "active"
+      );
     });
 
   if(button)
-    button.classList.add("active");
+    button.classList.add(
+      "active"
+    );
 
 
   const titles = {
-    dashboard:"Dashboard",
-    users:"Users",
-    orders:"Orders",
-    transactions:"Transactions",
-    markup:"Markup Manager"
+
+    dashboard:
+      "Dashboard",
+
+    users:
+      "Users",
+
+    orders:
+      "Orders",
+
+    transactions:
+      "Transactions",
+
+    markup:
+      "Markup Manager"
+
   };
 
+
   document
-    .getElementById("pageTitle")
+    .getElementById(
+      "pageTitle"
+    )
     .textContent =
-      titles[page] || "Dashboard";
+      titles[page] ||
+      "Dashboard";
 
 
   document
-    .getElementById("sidebar")
-    .classList.remove("open");
+    .getElementById(
+      "sidebar"
+    )
+    .classList.remove(
+      "open"
+    );
 
 
   if(page === "users")
@@ -1677,10 +2466,15 @@ function showPage(page,button){
 async function loadEverything(){
 
   await Promise.allSettled([
+
     loadUsers(),
+
     loadOrders(),
+
     loadTransactions(),
+
     loadMarkupData()
+
   ]);
 
   updateStats();
@@ -1694,10 +2488,21 @@ async function loadEverything(){
 async function loadUsers(){
 
   const body =
-    document.getElementById("usersBody");
+    document.getElementById(
+      "usersBody"
+    );
 
   body.innerHTML =
-    `<tr><td colspan="6" class="loading">Loading users...</td></tr>`;
+    `
+      <tr>
+        <td
+          colspan="6"
+          class="loading"
+        >
+          Loading users...
+        </td>
+      </tr>
+    `;
 
   try{
 
@@ -1705,15 +2510,21 @@ async function loadUsers(){
       data,
       error
     } =
-      await supabaseClient.rpc("admin_get_users");
+      await supabaseClient.rpc(
+        "admin_get_users"
+      );
 
     if(error)
       throw error;
 
     users =
-      Array.isArray(data) ? data : [];
+      Array.isArray(data)
+        ? data
+        : [];
 
-    renderUsers(users);
+    renderUsers(
+      users
+    );
 
     updateStats();
 
@@ -1722,12 +2533,20 @@ async function loadUsers(){
     console.error(err);
 
     body.innerHTML =
-      `<tr><td colspan="6" class="empty">
-        Failed to load users.
-      </td></tr>`;
+      `
+        <tr>
+          <td
+            colspan="6"
+            class="empty"
+          >
+            Failed to load users.
+          </td>
+        </tr>
+      `;
 
     showToast(
-      err.message || "Failed to load users.",
+      err.message ||
+      "Failed to load users.",
       "error"
     );
   }
@@ -1737,14 +2556,23 @@ async function loadUsers(){
 function renderUsers(list){
 
   const body =
-    document.getElementById("usersBody");
+    document.getElementById(
+      "usersBody"
+    );
 
   if(!list.length){
 
     body.innerHTML =
-      `<tr><td colspan="6" class="empty">
-        No users found.
-      </td></tr>`;
+      `
+        <tr>
+          <td
+            colspan="6"
+            class="empty"
+          >
+            No users found.
+          </td>
+        </tr>
+      `;
 
     return;
   }
@@ -1756,28 +2584,38 @@ function renderUsers(list){
 
         <td>
           <strong>
-            ${escapeHtml(user.email || "-")}
+            ${escapeHtml(
+              user.email || "-"
+            )}
           </strong>
         </td>
 
         <td>
           <small>
-            ${escapeHtml(user.user_id || "-")}
+            ${escapeHtml(
+              user.user_id || "-"
+            )}
           </small>
         </td>
 
         <td>
-          ${formatDate(user.created_at)}
+          ${formatDate(
+            user.created_at
+          )}
         </td>
 
         <td>
           <strong>
-            ${formatMoney(user.wallet_balance)}
+            ${formatMoney(
+              user.wallet_balance
+            )}
           </strong>
         </td>
 
         <td>
-          ${formatMoney(user.total_spent)}
+          ${formatMoney(
+            user.total_spent
+          )}
         </td>
 
         <td>
@@ -1819,7 +2657,9 @@ function filterUsers(){
 
   const query =
     document
-      .getElementById("userSearch")
+      .getElementById(
+        "userSearch"
+      )
       .value
       .trim()
       .toLowerCase();
@@ -1827,18 +2667,25 @@ function filterUsers(){
   const filtered =
     users.filter(user=>
 
-      String(user.email || "")
+      String(
+        user.email || ""
+      )
         .toLowerCase()
         .includes(query)
 
       ||
 
-      String(user.user_id || "")
+      String(
+        user.user_id || ""
+      )
         .toLowerCase()
         .includes(query)
+
     );
 
-  renderUsers(filtered);
+  renderUsers(
+    filtered
+  );
 }
 
 
@@ -1849,10 +2696,21 @@ function filterUsers(){
 async function loadOrders(){
 
   const body =
-    document.getElementById("ordersBody");
+    document.getElementById(
+      "ordersBody"
+    );
 
   body.innerHTML =
-    `<tr><td colspan="8" class="loading">Loading orders...</td></tr>`;
+    `
+      <tr>
+        <td
+          colspan="8"
+          class="loading"
+        >
+          Loading orders...
+        </td>
+      </tr>
+    `;
 
   try{
 
@@ -1861,15 +2719,24 @@ async function loadOrders(){
       error
     } =
       await supabaseClient
-        .from("virtual_number_orders")
+        .from(
+          "virtual_number_orders"
+        )
         .select("*")
-        .order("created_at",{ascending:false});
+        .order(
+          "created_at",
+          {
+            ascending:false
+          }
+        );
 
     if(error)
       throw error;
 
     allOrders =
-      Array.isArray(data) ? data : [];
+      Array.isArray(data)
+        ? data
+        : [];
 
     renderOrders();
 
@@ -1880,23 +2747,35 @@ async function loadOrders(){
     console.error(err);
 
     body.innerHTML =
-      `<tr><td colspan="8" class="empty">
-        Failed to load orders.
-      </td></tr>`;
+      `
+        <tr>
+          <td
+            colspan="8"
+            class="empty"
+          >
+            Failed to load orders.
+          </td>
+        </tr>
+      `;
 
     showToast(
-      err.message || "Failed to load orders.",
+      err.message ||
+      "Failed to load orders.",
       "error"
     );
   }
 }
 
 
-function getUserEmail(userId){
+function getUserEmail(
+  userId
+){
 
   const user =
     users.find(
-      item => item.user_id === userId
+      item =>
+        item.user_id ===
+        userId
     );
 
   return user
@@ -1908,14 +2787,23 @@ function getUserEmail(userId){
 function renderOrders(){
 
   const body =
-    document.getElementById("ordersBody");
+    document.getElementById(
+      "ordersBody"
+    );
 
   if(!allOrders.length){
 
     body.innerHTML =
-      `<tr><td colspan="8" class="empty">
-        No orders found.
-      </td></tr>`;
+      `
+        <tr>
+          <td
+            colspan="8"
+            class="empty"
+          >
+            No orders found.
+          </td>
+        </tr>
+      `;
 
     return;
   }
@@ -1924,8 +2812,9 @@ function renderOrders(){
     allOrders.map(order=>{
 
       const status =
-        String(order.status || "")
-          .toLowerCase();
+        String(
+          order.status || ""
+        ).toLowerCase();
 
       const canCancel =
         ![
@@ -1942,18 +2831,25 @@ function renderOrders(){
         <tr>
 
           <td>
-            ${formatDate(order.created_at)}
+            ${formatDate(
+              order.created_at
+            )}
           </td>
 
           <td>
             ${escapeHtml(
-              getUserEmail(order.user_id)
+              getUserEmail(
+                order.user_id
+              )
             )}
           </td>
 
           <td>
             <strong>
-              ${escapeHtml(order.phone_number || "-")}
+              ${escapeHtml(
+                order.phone_number ||
+                "-"
+              )}
             </strong>
           </td>
 
@@ -1983,13 +2879,16 @@ function renderOrders(){
           </td>
 
           <td>
-            ${statusBadge(order.status)}
+            ${statusBadge(
+              order.status
+            )}
           </td>
 
           <td>
 
             ${
               canCancel
+
               ?
 
               `<button
@@ -2008,7 +2907,9 @@ function renderOrders(){
 
               :
 
-              `<span style="color:#94a3b8;font-size:12px">
+              `<span
+                style="color:#94a3b8;font-size:11px"
+              >
                 —
               </span>`
             }
@@ -2029,12 +2930,21 @@ function renderOrders(){
 async function loadTransactions(){
 
   const body =
-    document.getElementById("transactionsBody");
+    document.getElementById(
+      "transactionsBody"
+    );
 
   body.innerHTML =
-    `<tr><td colspan="7" class="loading">
-      Loading transactions...
-    </td></tr>`;
+    `
+      <tr>
+        <td
+          colspan="7"
+          class="loading"
+        >
+          Loading transactions...
+        </td>
+      </tr>
+    `;
 
   try{
 
@@ -2043,17 +2953,24 @@ async function loadTransactions(){
       error
     } =
       await supabaseClient
-        .from("transactions")
+        .from(
+          "transactions"
+        )
         .select("*")
-        .order("created_at",{ascending:false});
+        .order(
+          "created_at",
+          {
+            ascending:false
+          }
+        );
 
     if(error)
       throw error;
 
     allTransactions =
       Array.isArray(data)
-      ? data
-      : [];
+        ? data
+        : [];
 
     renderTransactions();
 
@@ -2064,12 +2981,20 @@ async function loadTransactions(){
     console.error(err);
 
     body.innerHTML =
-      `<tr><td colspan="7" class="empty">
-        Failed to load transactions.
-      </td></tr>`;
+      `
+        <tr>
+          <td
+            colspan="7"
+            class="empty"
+          >
+            Failed to load transactions.
+          </td>
+        </tr>
+      `;
 
     showToast(
-      err.message || "Failed to load transactions.",
+      err.message ||
+      "Failed to load transactions.",
       "error"
     );
   }
@@ -2079,14 +3004,23 @@ async function loadTransactions(){
 function renderTransactions(){
 
   const body =
-    document.getElementById("transactionsBody");
+    document.getElementById(
+      "transactionsBody"
+    );
 
   if(!allTransactions.length){
 
     body.innerHTML =
-      `<tr><td colspan="7" class="empty">
-        No transactions found.
-      </td></tr>`;
+      `
+        <tr>
+          <td
+            colspan="7"
+            class="empty"
+          >
+            No transactions found.
+          </td>
+        </tr>
+      `;
 
     return;
   }
@@ -2097,43 +3031,72 @@ function renderTransactions(){
       <tr>
 
         <td>
-          ${formatDate(tx.created_at)}
+          ${formatDate(
+            tx.created_at
+          )}
         </td>
 
         <td>
           ${escapeHtml(
-            getUserEmail(tx.user_id)
+            getUserEmail(
+              tx.user_id
+            )
           )}
         </td>
 
         <td>
           <strong>
-            ${escapeHtml(tx.type || "-")}
+            ${escapeHtml(
+              tx.type || "-"
+            )}
           </strong>
         </td>
 
         <td>
-          <strong style="
-            color:${Number(tx.amount || 0) >= 0
-              ? "#15803d"
-              : "#b91c1c"}
-          ">
-            ${Number(tx.amount || 0) >= 0 ? "+" : ""}
-            ${formatMoney(tx.amount)}
+
+          <strong
+            style="
+              color:${Number(
+                tx.amount || 0
+              ) >= 0
+                ? "#15803d"
+                : "#b91c1c"}
+            "
+          >
+
+            ${
+              Number(
+                tx.amount || 0
+              ) >= 0
+                ? "+"
+                : ""
+            }
+
+            ${formatMoney(
+              tx.amount
+            )}
+
           </strong>
+
         </td>
 
         <td>
-          ${statusBadge(tx.status)}
+          ${statusBadge(
+            tx.status
+          )}
         </td>
 
         <td>
-          ${escapeHtml(tx.description || "-")}
+          ${escapeHtml(
+            tx.description || "-"
+          )}
         </td>
 
         <td>
           <small>
-            ${escapeHtml(tx.reference || "-")}
+            ${escapeHtml(
+              tx.reference || "-"
+            )}
           </small>
         </td>
 
@@ -2147,11 +3110,15 @@ function renderTransactions(){
    USER VIEW
 ========================================================= */
 
-async function viewUser(userId){
+async function viewUser(
+  userId
+){
 
   const user =
     users.find(
-      item => item.user_id === userId
+      item =>
+        item.user_id ===
+        userId
     );
 
   if(!user){
@@ -2164,23 +3131,42 @@ async function viewUser(userId){
     return;
   }
 
-  currentViewedUser = user;
+  currentViewedUser =
+    user;
 
-  document.getElementById("userModalTitle").textContent =
-    user.email || "User";
+  document.getElementById(
+    "userModalTitle"
+  ).textContent =
+    user.email ||
+    "User";
 
-  document.getElementById("viewEmail").textContent =
-    user.email || "-";
+  document.getElementById(
+    "viewEmail"
+  ).textContent =
+    user.email ||
+    "-";
 
-  document.getElementById("viewBalance").textContent =
-    formatMoney(user.wallet_balance);
+  document.getElementById(
+    "viewBalance"
+  ).textContent =
+    formatMoney(
+      user.wallet_balance
+    );
 
-  document.getElementById("viewSpent").textContent =
-    formatMoney(user.total_spent);
+  document.getElementById(
+    "viewSpent"
+  ).textContent =
+    formatMoney(
+      user.total_spent
+    );
 
-  showUserTab("orders");
+  showUserTab(
+    "orders"
+  );
 
-  openModal("userModal");
+  openModal(
+    "userModal"
+  );
 
   await loadUserOrders();
 
@@ -2191,15 +3177,24 @@ async function viewUser(userId){
 async function loadUserOrders(){
 
   const body =
-    document.getElementById("userOrdersBody");
+    document.getElementById(
+      "userOrdersBody"
+    );
 
   if(!currentViewedUser)
     return;
 
   body.innerHTML =
-    `<tr><td colspan="7" class="loading">
-      Loading orders...
-    </td></tr>`;
+    `
+      <tr>
+        <td
+          colspan="7"
+          class="loading"
+        >
+          Loading orders...
+        </td>
+      </tr>
+    `;
 
   try{
 
@@ -2219,14 +3214,23 @@ async function loadUserOrders(){
       throw error;
 
     const orders =
-      Array.isArray(data) ? data : [];
+      Array.isArray(data)
+        ? data
+        : [];
 
     if(!orders.length){
 
       body.innerHTML =
-        `<tr><td colspan="7" class="empty">
-          No orders found.
-        </td></tr>`;
+        `
+          <tr>
+            <td
+              colspan="7"
+              class="empty"
+            >
+              No orders found.
+            </td>
+          </tr>
+        `;
 
       return;
     }
@@ -2235,8 +3239,9 @@ async function loadUserOrders(){
       orders.map(order=>{
 
         const status =
-          String(order.status || "")
-            .toLowerCase();
+          String(
+            order.status || ""
+          ).toLowerCase();
 
         const canCancel =
           ![
@@ -2253,12 +3258,15 @@ async function loadUserOrders(){
           <tr>
 
             <td>
-              ${formatDate(order.created_at)}
+              ${formatDate(
+                order.created_at
+              )}
             </td>
 
             <td>
               ${escapeHtml(
-                order.phone_number || "-"
+                order.phone_number ||
+                "-"
               )}
             </td>
 
@@ -2288,7 +3296,9 @@ async function loadUserOrders(){
             </td>
 
             <td>
-              ${statusBadge(order.status)}
+              ${statusBadge(
+                order.status
+              )}
             </td>
 
             <td>
@@ -2331,9 +3341,16 @@ async function loadUserOrders(){
     console.error(err);
 
     body.innerHTML =
-      `<tr><td colspan="7" class="empty">
-        Failed to load orders.
-      </td></tr>`;
+      `
+        <tr>
+          <td
+            colspan="7"
+            class="empty"
+          >
+            Failed to load orders.
+          </td>
+        </tr>
+      `;
   }
 }
 
@@ -2341,15 +3358,24 @@ async function loadUserOrders(){
 async function loadUserTransactions(){
 
   const body =
-    document.getElementById("userTransactionsBody");
+    document.getElementById(
+      "userTransactionsBody"
+    );
 
   if(!currentViewedUser)
     return;
 
   body.innerHTML =
-    `<tr><td colspan="6" class="loading">
-      Loading transactions...
-    </td></tr>`;
+    `
+      <tr>
+        <td
+          colspan="6"
+          class="loading"
+        >
+          Loading transactions...
+        </td>
+      </tr>
+    `;
 
   try{
 
@@ -2370,15 +3396,22 @@ async function loadUserTransactions(){
 
     const transactions =
       Array.isArray(data)
-      ? data
-      : [];
+        ? data
+        : [];
 
     if(!transactions.length){
 
       body.innerHTML =
-        `<tr><td colspan="6" class="empty">
-          No transactions found.
-        </td></tr>`;
+        `
+          <tr>
+            <td
+              colspan="6"
+              class="empty"
+            >
+              No transactions found.
+            </td>
+          </tr>
+        `;
 
       return;
     }
@@ -2389,34 +3422,61 @@ async function loadUserTransactions(){
         <tr>
 
           <td>
-            ${formatDate(tx.created_at)}
+            ${formatDate(
+              tx.created_at
+            )}
           </td>
 
           <td>
-            ${escapeHtml(tx.type || "-")}
+            ${escapeHtml(
+              tx.type || "-"
+            )}
           </td>
 
           <td>
-            <strong style="
-              color:${Number(tx.amount || 0) >= 0
-                ? "#15803d"
-                : "#b91c1c"}
-            ">
-              ${Number(tx.amount || 0) >= 0 ? "+" : ""}
-              ${formatMoney(tx.amount)}
+
+            <strong
+              style="
+                color:${Number(
+                  tx.amount || 0
+                ) >= 0
+                  ? "#15803d"
+                  : "#b91c1c"}
+              "
+            >
+
+              ${
+                Number(
+                  tx.amount || 0
+                ) >= 0
+                  ? "+"
+                  : ""
+              }
+
+              ${formatMoney(
+                tx.amount
+              )}
+
             </strong>
+
           </td>
 
           <td>
-            ${statusBadge(tx.status)}
+            ${statusBadge(
+              tx.status
+            )}
           </td>
 
           <td>
-            ${escapeHtml(tx.description || "-")}
+            ${escapeHtml(
+              tx.description || "-"
+            )}
           </td>
 
           <td>
-            ${escapeHtml(tx.reference || "-")}
+            ${escapeHtml(
+              tx.reference || "-"
+            )}
           </td>
 
         </tr>
@@ -2428,44 +3488,80 @@ async function loadUserTransactions(){
     console.error(err);
 
     body.innerHTML =
-      `<tr><td colspan="6" class="empty">
-        Failed to load transactions.
-      </td></tr>`;
+      `
+        <tr>
+          <td
+            colspan="6"
+            class="empty"
+          >
+            Failed to load transactions.
+          </td>
+        </tr>
+      `;
   }
 }
 
 
-function showUserTab(tab){
+function showUserTab(
+  tab
+){
 
   const ordersTab =
-    document.getElementById("userOrdersTab");
+    document.getElementById(
+      "userOrdersTab"
+    );
 
   const transactionsTab =
-    document.getElementById("userTransactionsTab");
+    document.getElementById(
+      "userTransactionsTab"
+    );
 
   const ordersButton =
-    document.getElementById("userOrdersTabBtn");
+    document.getElementById(
+      "userOrdersTabBtn"
+    );
 
   const transactionsButton =
     document.getElementById(
       "userTransactionsTabBtn"
     );
 
+
   if(tab === "orders"){
 
-    ordersTab.classList.remove("hidden");
-    transactionsTab.classList.add("hidden");
+    ordersTab
+      .classList
+      .remove("hidden");
 
-    ordersButton.classList.add("active");
-    transactionsButton.classList.remove("active");
+    transactionsTab
+      .classList
+      .add("hidden");
+
+    ordersButton
+      .classList
+      .add("active");
+
+    transactionsButton
+      .classList
+      .remove("active");
 
   }else{
 
-    ordersTab.classList.add("hidden");
-    transactionsTab.classList.remove("hidden");
+    ordersTab
+      .classList
+      .add("hidden");
 
-    ordersButton.classList.remove("active");
-    transactionsButton.classList.add("active");
+    transactionsTab
+      .classList
+      .remove("hidden");
+
+    ordersButton
+      .classList
+      .remove("active");
+
+    transactionsButton
+      .classList
+      .add("active");
   }
 }
 
@@ -2474,26 +3570,37 @@ function showUserTab(tab){
    WALLET
 ========================================================= */
 
-function quickWallet(userId,email,action){
+function quickWallet(
+  userId,
+  email,
+  action
+){
 
   const user =
     users.find(
-      item => item.user_id === userId
+      item =>
+        item.user_id ===
+        userId
     );
 
   currentViewedUser =
-    user || {
+    user ||
+    {
       user_id:userId,
       email:email,
       wallet_balance:0,
       total_spent:0
     };
 
-  openWalletAction(action);
+  openWalletAction(
+    action
+  );
 }
 
 
-function openWalletAction(action){
+function openWalletAction(
+  action
+){
 
   if(!currentViewedUser){
 
@@ -2505,16 +3612,24 @@ function openWalletAction(action){
     return;
   }
 
-  walletAction = action;
+  walletAction =
+    action;
 
-  document.getElementById("walletModalTitle").textContent =
+  document.getElementById(
+    "walletModalTitle"
+  ).textContent =
     action === "add"
       ? "Add Wallet Balance"
       : "Deduct Wallet Balance";
 
-  document.getElementById("walletAmount").value = "";
+  document.getElementById(
+    "walletAmount"
+  ).value =
+    "";
 
-  openModal("walletModal");
+  openModal(
+    "walletModal"
+  );
 }
 
 
@@ -2526,11 +3641,16 @@ async function submitWalletAction(){
   const amount =
     Number(
       document
-        .getElementById("walletAmount")
+        .getElementById(
+          "walletAmount"
+        )
         .value
     );
 
-  if(!Number.isFinite(amount) || amount <= 0){
+  if(
+    !Number.isFinite(amount) ||
+    amount <= 0
+  ){
 
     showToast(
       "Enter a valid amount.",
@@ -2565,7 +3685,9 @@ async function submitWalletAction(){
     if(error)
       throw error;
 
-    closeModal("walletModal");
+    closeModal(
+      "walletModal"
+    );
 
     showToast(
       walletAction === "add"
@@ -2588,14 +3710,19 @@ async function submitWalletAction(){
         );
 
       if(updated)
-        currentViewedUser = updated;
+        currentViewedUser =
+          updated;
 
-      document.getElementById("viewBalance").textContent =
+      document.getElementById(
+        "viewBalance"
+      ).textContent =
         formatMoney(
           currentViewedUser.wallet_balance
         );
 
-      document.getElementById("viewSpent").textContent =
+      document.getElementById(
+        "viewSpent"
+      ).textContent =
         formatMoney(
           currentViewedUser.total_spent
         );
@@ -2626,7 +3753,10 @@ async function cancelOrder(
   fromUserModal=false
 ){
 
-  if(!userId || !activationId){
+  if(
+    !userId ||
+    !activationId
+  ){
 
     showToast(
       "Missing user or activation ID.",
@@ -2653,8 +3783,11 @@ async function cancelOrder(
       await supabaseClient.rpc(
         "admin_cancel_virtual_number",
         {
-          p_user_id:userId,
-          p_activation_id:activationId
+          p_user_id:
+            userId,
+
+          p_activation_id:
+            activationId
         }
       );
 
@@ -2665,6 +3798,7 @@ async function cancelOrder(
       data &&
       data.ok === false
     ){
+
       throw new Error(
         data.message ||
         "Cancellation failed."
@@ -2676,28 +3810,37 @@ async function cancelOrder(
     );
 
     await loadOrders();
+
     await loadUsers();
 
     if(fromUserModal){
 
       await loadUserOrders();
+
       await loadUserTransactions();
 
       const updated =
         users.find(
-          u => u.user_id === userId
+          u =>
+            u.user_id ===
+            userId
         );
 
       if(updated){
 
-        currentViewedUser = updated;
+        currentViewedUser =
+          updated;
 
-        document.getElementById("viewBalance").textContent =
+        document.getElementById(
+          "viewBalance"
+        ).textContent =
           formatMoney(
             updated.wallet_balance
           );
 
-        document.getElementById("viewSpent").textContent =
+        document.getElementById(
+          "viewSpent"
+        ).textContent =
           formatMoney(
             updated.total_spent
           );
@@ -2721,7 +3864,9 @@ async function cancelOrder(
    MARKUP PROVIDER DATA
 ========================================================= */
 
-async function grizzlyRequest(payload){
+async function grizzlyRequest(
+  payload
+){
 
   const response =
     await fetch(
@@ -2735,7 +3880,9 @@ async function grizzlyRequest(payload){
         },
 
         body:
-          JSON.stringify(payload)
+          JSON.stringify(
+            payload
+          )
       }
     );
 
@@ -2745,9 +3892,14 @@ async function grizzlyRequest(payload){
   let data;
 
   try{
-    data = JSON.parse(text);
+
+    data =
+      JSON.parse(text);
+
   }catch{
-    data = text;
+
+    data =
+      text;
   }
 
   if(!response.ok){
@@ -2762,7 +3914,8 @@ async function grizzlyRequest(payload){
         : data;
 
     throw new Error(
-      message || "Provider request failed."
+      message ||
+      "Provider request failed."
     );
   }
 
@@ -2770,12 +3923,17 @@ async function grizzlyRequest(payload){
 }
 
 
-function normalizeArrayResponse(data){
+function normalizeArrayResponse(
+  data
+){
 
   if(Array.isArray(data))
     return data;
 
-  if(!data || typeof data !== "object")
+  if(
+    !data ||
+    typeof data !== "object"
+  )
     return [];
 
   const possibleKeys = [
@@ -2787,9 +3945,15 @@ function normalizeArrayResponse(data){
     "list"
   ];
 
-  for(const key of possibleKeys){
+  for(
+    const key of possibleKeys
+  ){
 
-    if(Array.isArray(data[key]))
+    if(
+      Array.isArray(
+        data[key]
+      )
+    )
       return data[key];
   }
 
@@ -2797,9 +3961,14 @@ function normalizeArrayResponse(data){
 }
 
 
-function normalizeCountry(item){
+function normalizeCountry(
+  item
+){
 
-  if(typeof item === "string"){
+  if(
+    typeof item ===
+    "string"
+  ){
 
     return {
       id:item,
@@ -2808,7 +3977,10 @@ function normalizeCountry(item){
     };
   }
 
-  if(!item || typeof item !== "object")
+  if(
+    !item ||
+    typeof item !== "object"
+  )
     return null;
 
   const id =
@@ -2834,20 +4006,36 @@ function normalizeCountry(item){
     item.country ??
     key;
 
-  if(id === undefined && key === undefined)
+  if(
+    id === undefined &&
+    key === undefined
+  )
     return null;
 
   return {
-    id:String(id ?? key),
-    key:String(key ?? id),
-    name:String(name ?? key ?? id)
+    id:String(
+      id ?? key
+    ),
+
+    key:String(
+      key ?? id
+    ),
+
+    name:String(
+      name ?? key ?? id
+    )
   };
 }
 
 
-function normalizeService(item){
+function normalizeService(
+  item
+){
 
-  if(typeof item === "string"){
+  if(
+    typeof item ===
+    "string"
+  ){
 
     return {
       code:item,
@@ -2856,7 +4044,10 @@ function normalizeService(item){
     };
   }
 
-  if(!item || typeof item !== "object")
+  if(
+    !item ||
+    typeof item !== "object"
+  )
     return null;
 
   const code =
@@ -2882,13 +4073,24 @@ function normalizeService(item){
     item.service ??
     key;
 
-  if(code === undefined && key === undefined)
+  if(
+    code === undefined &&
+    key === undefined
+  )
     return null;
 
   return {
-    code:String(code ?? key),
-    key:String(key ?? code),
-    name:String(name ?? key ?? code)
+    code:String(
+      code ?? key
+    ),
+
+    key:String(
+      key ?? code
+    ),
+
+    name:String(
+      name ?? key ?? code
+    )
   };
 }
 
@@ -2896,8 +4098,11 @@ function normalizeService(item){
 async function loadMarkupData(){
 
   await Promise.allSettled([
+
     loadProviderCountries(),
+
     loadProviderServices()
+
   ]);
 
   populateMarkupSelects();
@@ -2916,9 +4121,13 @@ async function loadProviderCountries(){
       });
 
     providerCountries =
-      normalizeArrayResponse(data)
-        .map(normalizeCountry)
-        .filter(Boolean);
+      normalizeArrayResponse(
+        data
+      )
+      .map(
+        normalizeCountry
+      )
+      .filter(Boolean);
 
   }catch(err){
 
@@ -2927,7 +4136,8 @@ async function loadProviderCountries(){
       err
     );
 
-    providerCountries = [];
+    providerCountries =
+      [];
   }
 }
 
@@ -2942,9 +4152,13 @@ async function loadProviderServices(){
       });
 
     providerServices =
-      normalizeArrayResponse(data)
-        .map(normalizeService)
-        .filter(Boolean);
+      normalizeArrayResponse(
+        data
+      )
+      .map(
+        normalizeService
+      )
+      .filter(Boolean);
 
   }catch(err){
 
@@ -2953,7 +4167,8 @@ async function loadProviderServices(){
       err
     );
 
-    providerServices = [];
+    providerServices =
+      [];
   }
 }
 
@@ -2978,133 +4193,196 @@ function populateMarkupSelects(){
 
 
   countrySelect.innerHTML =
-    `<option value="">Overall</option>`;
+    `
+      <option value="">
+        Overall
+      </option>
+    `;
 
 
-  const uniqueCountries = new Map();
+  const uniqueCountries =
+    new Map();
 
-  providerCountries.forEach(country=>{
+  providerCountries.forEach(
+    country=>{
 
-    const key =
-      String(
-        country.key ??
-        country.id ??
-        ""
-      );
+      const key =
+        String(
+          country.key ??
+          country.id ??
+          ""
+        );
 
-    if(!key)
-      return;
+      if(!key)
+        return;
 
-    if(!uniqueCountries.has(key)){
+      if(
+        !uniqueCountries.has(
+          key
+        )
+      ){
 
-      uniqueCountries.set(
-        key,
-        country
-      );
+        uniqueCountries.set(
+          key,
+          country
+        );
+      }
     }
-  });
+  );
 
 
   Array.from(
     uniqueCountries.values()
   )
-  .sort((a,b)=>
-    a.name.localeCompare(
-      b.name
-    )
+  .sort(
+    (a,b)=>
+      a.name.localeCompare(
+        b.name
+      )
   )
-  .forEach(country=>{
+  .forEach(
+    country=>{
 
-    const option =
-      document.createElement("option");
+      const option =
+        document.createElement(
+          "option"
+        );
 
-    option.value =
-      country.key;
+      option.value =
+        country.key;
 
-    option.textContent =
-      country.name +
-      (
-        country.id &&
-        String(country.id) !==
-        String(country.key)
-          ? ` (${country.id})`
-          : ""
+      option.textContent =
+        country.name +
+        (
+          country.id &&
+          String(
+            country.id
+          ) !==
+          String(
+            country.key
+          )
+
+            ? ` (${country.id})`
+
+            : ""
+        );
+
+      countrySelect.appendChild(
+        option
       );
-
-    countrySelect.appendChild(option);
-  });
+    }
+  );
 
 
   serviceSelect.innerHTML =
-    `<option value="">Overall</option>`;
+    `
+      <option value="">
+        Overall
+      </option>
+    `;
 
 
-  const uniqueServices = new Map();
+  const uniqueServices =
+    new Map();
 
-  providerServices.forEach(service=>{
+  providerServices.forEach(
+    service=>{
 
-    const key =
-      String(
-        service.code ??
-        service.key ??
-        ""
-      );
+      const key =
+        String(
+          service.code ??
+          service.key ??
+          ""
+        );
 
-    if(!key)
-      return;
+      if(!key)
+        return;
 
-    if(!uniqueServices.has(key)){
+      if(
+        !uniqueServices.has(
+          key
+        )
+      ){
 
-      uniqueServices.set(
-        key,
-        service
-      );
+        uniqueServices.set(
+          key,
+          service
+        );
+      }
     }
-  });
+  );
 
 
   Array.from(
     uniqueServices.values()
   )
-  .sort((a,b)=>
-    a.name.localeCompare(
-      b.name
-    )
+  .sort(
+    (a,b)=>
+      a.name.localeCompare(
+        b.name
+      )
   )
-  .forEach(service=>{
+  .forEach(
+    service=>{
 
-    const option =
-      document.createElement("option");
+      const option =
+        document.createElement(
+          "option"
+        );
 
-    option.value =
-      service.code;
+      option.value =
+        service.code;
 
-    option.textContent =
-      service.name +
-      (
-        service.code &&
-        String(service.code) !==
-        String(service.name)
-          ? ` (${service.code})`
-          : ""
+      option.textContent =
+        service.name +
+        (
+          service.code &&
+          String(
+            service.code
+          ) !==
+          String(
+            service.name
+          )
+
+            ? ` (${service.code})`
+
+            : ""
+        );
+
+      serviceSelect.appendChild(
+        option
       );
-
-    serviceSelect.appendChild(option);
-  });
+    }
+  );
 
 
   if(
-    Array.from(countrySelect.options)
-      .some(o=>o.value === currentCountry)
+    Array.from(
+      countrySelect.options
+    )
+    .some(
+      o =>
+        o.value ===
+        currentCountry
+    )
   ){
+
     countrySelect.value =
       currentCountry;
   }
 
+
   if(
-    Array.from(serviceSelect.options)
-      .some(o=>o.value === currentService)
+    Array.from(
+      serviceSelect.options
+    )
+    .some(
+      o =>
+        o.value ===
+        currentService
+    )
   ){
+
     serviceSelect.value =
       currentService;
   }
@@ -3118,12 +4396,21 @@ function populateMarkupSelects(){
 async function loadMarkupRules(){
 
   const body =
-    document.getElementById("markupBody");
+    document.getElementById(
+      "markupBody"
+    );
 
   body.innerHTML =
-    `<tr><td colspan="6" class="loading">
-      Loading markup rules...
-    </td></tr>`;
+    `
+      <tr>
+        <td
+          colspan="6"
+          class="loading"
+        >
+          Loading markup rules...
+        </td>
+      </tr>
+    `;
 
   try{
 
@@ -3132,20 +4419,30 @@ async function loadMarkupRules(){
       error
     } =
       await supabaseClient
-        .from("virtual_number_markup_rules")
+        .from(
+          "virtual_number_markup_rules"
+        )
         .select(
           "id,country_key,service_code,markup_percent,is_active,created_at,updated_at"
         )
-        .eq("is_active",true)
-        .order("created_at",{ascending:false});
+        .eq(
+          "is_active",
+          true
+        )
+        .order(
+          "created_at",
+          {
+            ascending:false
+          }
+        );
 
     if(error)
       throw error;
 
     markupRules =
       Array.isArray(data)
-      ? data
-      : [];
+        ? data
+        : [];
 
     renderMarkupRules();
 
@@ -3154,9 +4451,16 @@ async function loadMarkupRules(){
     console.error(err);
 
     body.innerHTML =
-      `<tr><td colspan="6" class="empty">
-        Failed to load markup rules.
-      </td></tr>`;
+      `
+        <tr>
+          <td
+            colspan="6"
+            class="empty"
+          >
+            Failed to load markup rules.
+          </td>
+        </tr>
+      `;
 
     showToast(
       err.message ||
@@ -3170,95 +4474,122 @@ async function loadMarkupRules(){
 function renderMarkupRules(){
 
   const body =
-    document.getElementById("markupBody");
+    document.getElementById(
+      "markupBody"
+    );
 
   if(!markupRules.length){
 
     body.innerHTML =
-      `<tr><td colspan="6" class="empty">
-        No active markup rules found.
-      </td></tr>`;
+      `
+        <tr>
+          <td
+            colspan="6"
+            class="empty"
+          >
+            No active markup rules found.
+          </td>
+        </tr>
+      `;
 
     return;
   }
 
 
   body.innerHTML =
-    markupRules.map(rule=>{
+    markupRules.map(
+      rule=>{
 
-      const country =
-        rule.country_key
-          ? escapeHtml(rule.country_key)
-          : `<span class="overall">Overall</span>`;
+        const country =
+          rule.country_key
 
-      const service =
-        rule.service_code
-          ? escapeHtml(rule.service_code)
-          : `<span class="overall">Overall</span>`;
+            ? escapeHtml(
+                rule.country_key
+              )
 
-      return `
+            : `
+                <span class="overall">
+                  Overall
+                </span>
+              `;
 
-        <tr>
+        const service =
+          rule.service_code
 
-          <td>
-            <span class="rule-text">
-              ${country}
-            </span>
-          </td>
+            ? escapeHtml(
+                rule.service_code
+              )
 
-          <td>
-            <span class="rule-text">
-              ${service}
-            </span>
-          </td>
+            : `
+                <span class="overall">
+                  Overall
+                </span>
+              `;
 
-          <td>
-            <strong>
-              ${formatNumber(
-                rule.markup_percent
-              )}%
-            </strong>
-          </td>
+        return `
 
-          <td>
-            ${formatDate(
-              rule.created_at
-            )}
-          </td>
+          <tr>
 
-          <td>
-            ${formatDate(
-              rule.updated_at
-            )}
-          </td>
+            <td>
+              <span class="rule-text">
+                ${country}
+              </span>
+            </td>
 
-          <td>
+            <td>
+              <span class="rule-text">
+                ${service}
+              </span>
+            </td>
 
-            <div class="action-row">
+            <td>
+              <strong>
+                ${formatNumber(
+                  rule.markup_percent
+                )}%
+              </strong>
+            </td>
 
-              <button
-                class="small-btn blue-btn"
-                onclick="editMarkup('${escapeJs(rule.id)}')"
-              >
-                ✏️ Edit
-              </button>
+            <td>
+              ${formatDate(
+                rule.created_at
+              )}
+            </td>
 
-              <button
-                class="small-btn red-btn"
-                onclick="deleteMarkup('${escapeJs(rule.id)}')"
-              >
-                🗑️ Delete
-              </button>
+            <td>
+              ${formatDate(
+                rule.updated_at
+              )}
+            </td>
 
-            </div>
+            <td>
 
-          </td>
+              <div class="action-row">
 
-        </tr>
+                <button
+                  class="small-btn blue-btn"
+                  onclick="editMarkup('${escapeJs(rule.id)}')"
+                >
+                  ✏️ Edit
+                </button>
 
-      `;
+                <button
+                  class="small-btn red-btn"
+                  onclick="deleteMarkup('${escapeJs(rule.id)}')"
+                >
+                  🗑️ Delete
+                </button>
 
-    }).join("");
+              </div>
+
+            </td>
+
+          </tr>
+
+        `;
+
+      }
+    ).join("");
 }
 
 
@@ -3268,7 +4599,8 @@ function renderMarkupRules(){
 
 function resetMarkupForm(){
 
-  editingMarkupRuleId = null;
+  editingMarkupRuleId =
+    null;
 
   const country =
     document.getElementById(
@@ -3285,12 +4617,20 @@ function resetMarkupForm(){
       "markupPercent"
     );
 
-  country.disabled = false;
-  service.disabled = false;
+  country.disabled =
+    false;
 
-  country.value = "";
-  service.value = "";
-  percent.value = "";
+  service.disabled =
+    false;
+
+  country.value =
+    "";
+
+  service.value =
+    "";
+
+  percent.value =
+    "";
 
   document.getElementById(
     "markupFormTitle"
@@ -3304,15 +4644,21 @@ function resetMarkupForm(){
 
   document.getElementById(
     "markupCancelBtn"
-  ).classList.add("hidden");
+  ).classList.add(
+    "hidden"
+  );
 }
 
 
-function editMarkup(ruleId){
+function editMarkup(
+  ruleId
+){
 
   const rule =
     markupRules.find(
-      item => item.id === ruleId
+      item =>
+        item.id ===
+        ruleId
     );
 
   if(!rule){
@@ -3346,25 +4692,22 @@ function editMarkup(ruleId){
 
 
   country.value =
-    rule.country_key || "";
+    rule.country_key ||
+    "";
 
   service.value =
-    rule.service_code || "";
+    rule.service_code ||
+    "";
 
   percent.value =
     rule.markup_percent;
 
 
-  /*
-    During Edit, country and service are locked.
-    This prevents accidentally creating a second
-    rule with the same combination.
-    The dedicated admin_update_markup RPC updates
-    this exact rule ID.
-  */
+  country.disabled =
+    true;
 
-  country.disabled = true;
-  service.disabled = true;
+  service.disabled =
+    true;
 
 
   document.getElementById(
@@ -3379,11 +4722,15 @@ function editMarkup(ruleId){
 
   document.getElementById(
     "markupCancelBtn"
-  ).classList.remove("hidden");
+  ).classList.remove(
+    "hidden"
+  );
 
 
   document
-    .getElementById("page-markup")
+    .getElementById(
+      "page-markup"
+    )
     .scrollIntoView({
       behavior:"smooth",
       block:"start"
@@ -3395,25 +4742,36 @@ async function saveMarkup(){
 
   const country =
     document
-      .getElementById("markupCountry")
+      .getElementById(
+        "markupCountry"
+      )
       .value
       .trim();
 
   const service =
     document
-      .getElementById("markupService")
+      .getElementById(
+        "markupService"
+      )
       .value
       .trim();
 
   const percent =
     Number(
       document
-        .getElementById("markupPercent")
+        .getElementById(
+          "markupPercent"
+        )
         .value
     );
 
 
-  if(!Number.isFinite(percent) || percent < 0){
+  if(
+    !Number.isFinite(
+      percent
+    ) ||
+    percent < 0
+  ){
 
     showToast(
       "Enter a valid markup percentage.",
@@ -3452,7 +4810,6 @@ async function saveMarkup(){
       if(error)
         throw error;
 
-
       showToast(
         "Markup updated successfully."
       );
@@ -3479,7 +4836,6 @@ async function saveMarkup(){
 
       if(error)
         throw error;
-
 
       showToast(
         "Markup added successfully."
@@ -3508,11 +4864,15 @@ async function saveMarkup(){
    DELETE MARKUP
 ========================================================= */
 
-async function deleteMarkup(ruleId){
+async function deleteMarkup(
+  ruleId
+){
 
   const rule =
     markupRules.find(
-      item => item.id === ruleId
+      item =>
+        item.id ===
+        ruleId
     );
 
   if(!rule){
@@ -3563,7 +4923,10 @@ async function deleteMarkup(ruleId){
       throw error;
 
 
-    if(editingMarkupRuleId === ruleId)
+    if(
+      editingMarkupRuleId ===
+      ruleId
+    )
       resetMarkupForm();
 
 
@@ -3601,10 +4964,14 @@ function updateStats(){
 
   const totalBalance =
     users.reduce(
-      (sum,user)=>
+      (
+        sum,
+        user
+      ) =>
         sum +
         Number(
-          user.wallet_balance || 0
+          user.wallet_balance ||
+          0
         ),
       0
     );
@@ -3612,7 +4979,9 @@ function updateStats(){
   document.getElementById(
     "statBalance"
   ).textContent =
-    formatMoney(totalBalance);
+    formatMoney(
+      totalBalance
+    );
 
 
   document.getElementById(
@@ -3632,14 +5001,33 @@ function updateStats(){
    JS STRING ESCAPING
 ========================================================= */
 
-function escapeJs(value){
+function escapeJs(
+  value
+){
 
-  return String(value ?? "")
-    .replace(/\\/g,"\\\\")
-    .replace(/'/g,"\\'")
-    .replace(/"/g,'\\"')
-    .replace(/\n/g,"\\n")
-    .replace(/\r/g,"\\r");
+  return String(
+    value ?? ""
+  )
+    .replace(
+      /\\/g,
+      "\\\\"
+    )
+    .replace(
+      /'/g,
+      "\\'"
+    )
+    .replace(
+      /"/g,
+      '\\"'
+    )
+    .replace(
+      /\n/g,
+      "\\n"
+    )
+    .replace(
+      /\r/g,
+      "\\r"
+    );
 }
 
 
@@ -3654,7 +5042,8 @@ document.addEventListener(
     const {
       data
     } =
-      await supabaseClient.auth.getSession();
+      await supabaseClient.auth
+        .getSession();
 
     if(data.session){
 
@@ -3666,33 +5055,40 @@ document.addEventListener(
     }
 
 
-    supabaseClient.auth.onAuthStateChange(
-      async (event,session)=>{
-
-        if(
-          event === "SIGNED_OUT"
-        ){
-
-          currentUser = null;
-
-          showLogin();
-
-          return;
-        }
-
-        if(
-          event === "SIGNED_IN" &&
+    supabaseClient.auth
+      .onAuthStateChange(
+        async (
+          event,
           session
-        ){
+        )=>{
 
-          currentUser =
-            session.user;
+          if(
+            event ===
+            "SIGNED_OUT"
+          ){
 
-          await checkAdminAccess();
+            currentUser =
+              null;
+
+            showLogin();
+
+            return;
+          }
+
+          if(
+            event ===
+            "SIGNED_IN" &&
+            session
+          ){
+
+            currentUser =
+              session.user;
+
+            await checkAdminAccess();
+          }
+
         }
-
-      }
-    );
+      );
 
   }
 );
