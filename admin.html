@@ -1,0 +1,3702 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gustodigits — Admin</title>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<style>
+*{
+  box-sizing:border-box;
+  margin:0;
+  padding:0;
+}
+
+:root{
+  --blue:#1677ff;
+  --blue-dark:#075bd6;
+  --blue-light:#eef6ff;
+  --bg:#f5f8fc;
+  --white:#ffffff;
+  --text:#172033;
+  --muted:#718096;
+  --border:#e5eaf1;
+  --green:#16a34a;
+  --red:#dc2626;
+  --orange:#f59e0b;
+  --shadow:0 8px 30px rgba(22,119,255,.08);
+}
+
+body{
+  font-family:Arial,Helvetica,sans-serif;
+  background:var(--bg);
+  color:var(--text);
+}
+
+button,
+input,
+select{
+  font:inherit;
+}
+
+button{
+  cursor:pointer;
+}
+
+.hidden{
+  display:none!important;
+}
+
+/* LOGIN */
+
+#loginScreen{
+  min-height:100vh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:20px;
+  background:linear-gradient(135deg,#eef6ff,#f8fbff);
+}
+
+.login-card{
+  width:100%;
+  max-width:420px;
+  background:#fff;
+  border:1px solid var(--border);
+  border-radius:22px;
+  padding:30px;
+  box-shadow:var(--shadow);
+}
+
+.logo{
+  font-size:28px;
+  font-weight:900;
+  margin-bottom:7px;
+}
+
+.logo span{
+  color:var(--blue);
+}
+
+.login-subtitle{
+  color:var(--muted);
+  margin-bottom:25px;
+}
+
+.field{
+  margin-bottom:17px;
+}
+
+.field label{
+  display:block;
+  font-size:13px;
+  font-weight:700;
+  margin-bottom:7px;
+}
+
+.field input,
+.field select{
+  width:100%;
+  height:46px;
+  border:1px solid var(--border);
+  border-radius:10px;
+  padding:0 13px;
+  outline:none;
+  background:#fff;
+}
+
+.field input:focus,
+.field select:focus{
+  border-color:var(--blue);
+}
+
+.primary-btn{
+  border:0;
+  background:var(--blue);
+  color:#fff;
+  border-radius:10px;
+  min-height:45px;
+  padding:0 18px;
+  font-weight:800;
+}
+
+.primary-btn:hover{
+  background:var(--blue-dark);
+}
+
+.full-btn{
+  width:100%;
+}
+
+.error{
+  color:var(--red);
+  font-size:13px;
+  margin-top:12px;
+}
+
+/* APP */
+
+#app{
+  min-height:100vh;
+}
+
+.sidebar{
+  position:fixed;
+  left:0;
+  top:0;
+  bottom:0;
+  width:245px;
+  background:#fff;
+  border-right:1px solid var(--border);
+  padding:22px 15px;
+  z-index:50;
+}
+
+.sidebar-logo{
+  padding:4px 12px 25px;
+  font-size:23px;
+  font-weight:900;
+}
+
+.sidebar-logo span{
+  color:var(--blue);
+}
+
+.nav-title{
+  color:#a0a8b7;
+  font-size:11px;
+  font-weight:800;
+  padding:0 12px;
+  margin:10px 0 8px;
+  text-transform:uppercase;
+}
+
+.nav-btn{
+  width:100%;
+  border:0;
+  background:transparent;
+  color:#566174;
+  padding:12px;
+  border-radius:10px;
+  text-align:left;
+  font-weight:700;
+  margin-bottom:4px;
+}
+
+.nav-btn:hover,
+.nav-btn.active{
+  background:var(--blue-light);
+  color:var(--blue);
+}
+
+.logout-btn{
+  color:var(--red);
+}
+
+.main{
+  margin-left:245px;
+  padding:25px;
+}
+
+.topbar{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  margin-bottom:25px;
+  gap:15px;
+}
+
+.topbar h1{
+  font-size:26px;
+}
+
+.topbar p{
+  color:var(--muted);
+  margin-top:4px;
+  font-size:14px;
+}
+
+.mobile-menu{
+  display:none;
+}
+
+/* CARDS */
+
+.stats{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:16px;
+  margin-bottom:24px;
+}
+
+.stat-card{
+  background:#fff;
+  border:1px solid var(--border);
+  border-radius:16px;
+  padding:20px;
+  box-shadow:var(--shadow);
+}
+
+.stat-label{
+  color:var(--muted);
+  font-size:13px;
+  font-weight:700;
+}
+
+.stat-value{
+  font-size:27px;
+  font-weight:900;
+  margin-top:8px;
+}
+
+/* SECTIONS */
+
+.page{
+  display:none;
+}
+
+.page.active{
+  display:block;
+}
+
+.panel{
+  background:#fff;
+  border:1px solid var(--border);
+  border-radius:16px;
+  box-shadow:var(--shadow);
+  overflow:hidden;
+}
+
+.panel-header{
+  padding:18px 20px;
+  border-bottom:1px solid var(--border);
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:12px;
+  flex-wrap:wrap;
+}
+
+.panel-title{
+  font-weight:900;
+  font-size:17px;
+}
+
+.panel-body{
+  padding:20px;
+}
+
+.toolbar{
+  display:flex;
+  gap:10px;
+  flex-wrap:wrap;
+  align-items:center;
+}
+
+.search{
+  height:42px;
+  min-width:230px;
+  border:1px solid var(--border);
+  border-radius:9px;
+  padding:0 12px;
+  outline:none;
+}
+
+.search:focus{
+  border-color:var(--blue);
+}
+
+/* TABLE */
+
+.table-wrap{
+  width:100%;
+  overflow-x:auto;
+}
+
+table{
+  width:100%;
+  border-collapse:collapse;
+  min-width:800px;
+}
+
+th{
+  background:#f8fafc;
+  color:#667085;
+  font-size:12px;
+  text-align:left;
+  padding:13px 15px;
+  white-space:nowrap;
+}
+
+td{
+  border-top:1px solid var(--border);
+  padding:14px 15px;
+  font-size:13px;
+  vertical-align:middle;
+}
+
+.badge{
+  display:inline-flex;
+  align-items:center;
+  border-radius:30px;
+  padding:5px 9px;
+  font-size:11px;
+  font-weight:800;
+}
+
+.badge.green{
+  color:#15803d;
+  background:#dcfce7;
+}
+
+.badge.red{
+  color:#b91c1c;
+  background:#fee2e2;
+}
+
+.badge.blue{
+  color:#1d4ed8;
+  background:#dbeafe;
+}
+
+.badge.orange{
+  color:#b45309;
+  background:#fef3c7;
+}
+
+/* BUTTONS */
+
+.action-row{
+  display:flex;
+  gap:7px;
+  flex-wrap:wrap;
+}
+
+.small-btn{
+  border:0;
+  border-radius:8px;
+  padding:8px 10px;
+  font-size:12px;
+  font-weight:800;
+}
+
+.blue-btn{
+  background:#e8f1ff;
+  color:#145dcc;
+}
+
+.green-btn{
+  background:#dcfce7;
+  color:#15803d;
+}
+
+.red-btn{
+  background:#fee2e2;
+  color:#b91c1c;
+}
+
+.gray-btn{
+  background:#eef2f7;
+  color:#475569;
+}
+
+.orange-btn{
+  background:#fef3c7;
+  color:#b45309;
+}
+
+.small-btn:hover{
+  opacity:.8;
+}
+
+/* MODAL */
+
+.modal-overlay{
+  position:fixed;
+  inset:0;
+  background:rgba(15,23,42,.55);
+  display:none;
+  align-items:center;
+  justify-content:center;
+  padding:18px;
+  z-index:100;
+}
+
+.modal-overlay.show{
+  display:flex;
+}
+
+.modal{
+  width:100%;
+  max-width:850px;
+  max-height:92vh;
+  overflow:auto;
+  background:#fff;
+  border-radius:18px;
+  box-shadow:0 20px 70px rgba(0,0,0,.2);
+}
+
+.modal.small{
+  max-width:500px;
+}
+
+.modal-header{
+  padding:19px 22px;
+  border-bottom:1px solid var(--border);
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:10px;
+}
+
+.modal-header h2{
+  font-size:19px;
+}
+
+.close{
+  border:0;
+  background:#f1f5f9;
+  width:34px;
+  height:34px;
+  border-radius:50%;
+  font-size:19px;
+}
+
+.modal-body{
+  padding:22px;
+}
+
+.form-grid{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:15px;
+}
+
+.form-group{
+  margin-bottom:15px;
+}
+
+.form-group.full{
+  grid-column:1/-1;
+}
+
+.form-group label{
+  display:block;
+  font-size:12px;
+  font-weight:800;
+  margin-bottom:7px;
+}
+
+.form-group input,
+.form-group select{
+  width:100%;
+  height:44px;
+  border:1px solid var(--border);
+  border-radius:9px;
+  padding:0 11px;
+  outline:none;
+  background:#fff;
+}
+
+.form-group input:focus,
+.form-group select:focus{
+  border-color:var(--blue);
+}
+
+.form-group input:disabled,
+.form-group select:disabled{
+  background:#f1f5f9;
+  color:#64748b;
+}
+
+.modal-footer{
+  padding:18px 22px;
+  border-top:1px solid var(--border);
+  display:flex;
+  justify-content:flex-end;
+  gap:10px;
+  flex-wrap:wrap;
+}
+
+/* USER INFO */
+
+.user-summary{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:12px;
+  margin-bottom:20px;
+}
+
+.info-box{
+  background:#f8fafc;
+  border:1px solid var(--border);
+  border-radius:12px;
+  padding:14px;
+}
+
+.info-box small{
+  display:block;
+  color:var(--muted);
+  font-size:11px;
+  margin-bottom:5px;
+}
+
+.info-box strong{
+  font-size:15px;
+}
+
+/* TABS */
+
+.tabs{
+  display:flex;
+  gap:5px;
+  border-bottom:1px solid var(--border);
+  margin-bottom:18px;
+}
+
+.tab-btn{
+  border:0;
+  background:transparent;
+  padding:11px 14px;
+  color:#64748b;
+  font-weight:800;
+  border-bottom:2px solid transparent;
+}
+
+.tab-btn.active{
+  color:var(--blue);
+  border-bottom-color:var(--blue);
+}
+
+/* MARKUP */
+
+.markup-form{
+  background:#f8fbff;
+  border:1px solid #dbeafe;
+  border-radius:14px;
+  padding:18px;
+  margin-bottom:20px;
+}
+
+.markup-form-title{
+  font-size:15px;
+  font-weight:900;
+  margin-bottom:15px;
+}
+
+.markup-actions{
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap;
+}
+
+.rule-text{
+  font-weight:700;
+}
+
+.overall{
+  color:var(--blue);
+}
+
+/* LOADER */
+
+.loading{
+  padding:35px;
+  text-align:center;
+  color:var(--muted);
+}
+
+.empty{
+  padding:35px;
+  text-align:center;
+  color:var(--muted);
+}
+
+/* TOAST */
+
+.toast{
+  position:fixed;
+  right:20px;
+  bottom:20px;
+  z-index:300;
+  min-width:280px;
+  max-width:420px;
+  background:#172033;
+  color:#fff;
+  padding:14px 17px;
+  border-radius:11px;
+  box-shadow:0 15px 40px rgba(0,0,0,.2);
+  transform:translateY(20px);
+  opacity:0;
+  pointer-events:none;
+  transition:.25s;
+  font-size:13px;
+}
+
+.toast.show{
+  transform:translateY(0);
+  opacity:1;
+}
+
+.toast.success{
+  background:#15803d;
+}
+
+.toast.error{
+  background:#b91c1c;
+}
+
+/* MOBILE */
+
+@media(max-width:1000px){
+  .stats{
+    grid-template-columns:repeat(2,1fr);
+  }
+}
+
+@media(max-width:760px){
+  .sidebar{
+    transform:translateX(-100%);
+    transition:.25s;
+  }
+
+  .sidebar.open{
+    transform:translateX(0);
+  }
+
+  .main{
+    margin-left:0;
+    padding:16px;
+  }
+
+  .mobile-menu{
+    display:block;
+    border:0;
+    background:#e8f1ff;
+    color:var(--blue);
+    width:40px;
+    height:40px;
+    border-radius:10px;
+    font-size:20px;
+  }
+
+  .topbar{
+    align-items:flex-start;
+  }
+
+  .stats{
+    grid-template-columns:1fr 1fr;
+  }
+
+  .form-grid{
+    grid-template-columns:1fr;
+  }
+
+  .user-summary{
+    grid-template-columns:1fr;
+  }
+
+  .search{
+    width:100%;
+    min-width:0;
+  }
+}
+
+@media(max-width:480px){
+  .stats{
+    grid-template-columns:1fr;
+  }
+
+  .topbar h1{
+    font-size:22px;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<!-- LOGIN -->
+<div id="loginScreen">
+  <div class="login-card">
+    <div class="logo">Gusto<span>digits</span></div>
+    <div class="login-subtitle">Administrator Login</div>
+
+    <div class="field">
+      <label>Email</label>
+      <input id="loginEmail" type="email" placeholder="Admin email">
+    </div>
+
+    <div class="field">
+      <label>Password</label>
+      <input id="loginPassword" type="password" placeholder="Password">
+    </div>
+
+    <button class="primary-btn full-btn" onclick="login()">
+      Login
+    </button>
+
+    <div id="loginError" class="error"></div>
+  </div>
+</div>
+
+
+<!-- APP -->
+<div id="app" class="hidden">
+
+  <aside class="sidebar" id="sidebar">
+
+    <div class="sidebar-logo">
+      Gusto<span>digits</span>
+    </div>
+
+    <div class="nav-title">Main</div>
+
+    <button class="nav-btn active" data-page="dashboard" onclick="showPage('dashboard',this)">
+      📊 Dashboard
+    </button>
+
+    <button class="nav-btn" data-page="users" onclick="showPage('users',this)">
+      👥 Users
+    </button>
+
+    <button class="nav-btn" data-page="orders" onclick="showPage('orders',this)">
+      📦 Orders
+    </button>
+
+    <button class="nav-btn" data-page="transactions" onclick="showPage('transactions',this)">
+      💳 Transactions
+    </button>
+
+    <button class="nav-btn" data-page="markup" onclick="showPage('markup',this)">
+      💰 Markup Manager
+    </button>
+
+    <div class="nav-title">Account</div>
+
+    <button class="nav-btn logout-btn" onclick="logout()">
+      🚪 Logout
+    </button>
+
+  </aside>
+
+
+  <main class="main">
+
+    <div class="topbar">
+      <div>
+        <button class="mobile-menu" onclick="toggleSidebar()">☰</button>
+      </div>
+
+      <div style="margin-left:auto">
+        <h1 id="pageTitle">Dashboard</h1>
+        <p>Gustodigits administration panel</p>
+      </div>
+    </div>
+
+
+    <!-- DASHBOARD -->
+    <section id="page-dashboard" class="page active">
+
+      <div class="stats">
+
+        <div class="stat-card">
+          <div class="stat-label">Total Users</div>
+          <div class="stat-value" id="statUsers">0</div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-label">Total Wallet Balance</div>
+          <div class="stat-value" id="statBalance">₦0</div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-label">Total Orders</div>
+          <div class="stat-value" id="statOrders">0</div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-label">Total Transactions</div>
+          <div class="stat-value" id="statTransactions">0</div>
+        </div>
+
+      </div>
+
+
+      <div class="panel">
+
+        <div class="panel-header">
+          <div class="panel-title">Admin Overview</div>
+        </div>
+
+        <div class="panel-body">
+          <p style="color:#64748b;line-height:1.7">
+            Manage Gustodigits users, virtual-number orders, wallet
+            transactions and virtual-number markup pricing from this panel.
+          </p>
+        </div>
+
+      </div>
+
+    </section>
+
+
+    <!-- USERS -->
+    <section id="page-users" class="page">
+
+      <div class="panel">
+
+        <div class="panel-header">
+
+          <div class="panel-title">Users</div>
+
+          <div class="toolbar">
+            <input
+              id="userSearch"
+              class="search"
+              placeholder="Search email or user ID..."
+              oninput="filterUsers()"
+            >
+
+            <button class="primary-btn" onclick="loadUsers()">
+              Refresh
+            </button>
+          </div>
+
+        </div>
+
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Email</th>
+                <th>User ID</th>
+                <th>Created</th>
+                <th>Wallet</th>
+                <th>Total Spent</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+
+            <tbody id="usersBody"></tbody>
+          </table>
+        </div>
+
+      </div>
+
+    </section>
+
+
+    <!-- ORDERS -->
+    <section id="page-orders" class="page">
+
+      <div class="panel">
+
+        <div class="panel-header">
+
+          <div class="panel-title">Virtual Number Orders</div>
+
+          <button class="primary-btn" onclick="loadOrders()">
+            Refresh
+          </button>
+
+        </div>
+
+        <div class="table-wrap">
+
+          <table>
+
+            <thead>
+              <tr>
+                <th>Date</th>
+                <th>User</th>
+                <th>Number</th>
+                <th>Country</th>
+                <th>Service</th>
+                <th>Price</th>
+                <th>Status</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+
+            <tbody id="ordersBody"></tbody>
+
+          </table>
+
+        </div>
+
+      </div>
+
+    </section>
+
+
+    <!-- TRANSACTIONS -->
+    <section id="page-transactions" class="page">
+
+      <div class="panel">
+
+        <div class="panel-header">
+
+          <div class="panel-title">Transactions</div>
+
+          <button class="primary-btn" onclick="loadTransactions()">
+            Refresh
+          </button>
+
+        </div>
+
+        <div class="table-wrap">
+
+          <table>
+
+            <thead>
+              <tr>
+                <th>Date</th>
+                <th>User</th>
+                <th>Type</th>
+                <th>Amount</th>
+                <th>Status</th>
+                <th>Description</th>
+                <th>Reference</th>
+              </tr>
+            </thead>
+
+            <tbody id="transactionsBody"></tbody>
+
+          </table>
+
+        </div>
+
+      </div>
+
+    </section>
+
+
+    <!-- MARKUP -->
+    <section id="page-markup" class="page">
+
+      <div class="panel">
+
+        <div class="panel-header">
+          <div class="panel-title">Markup Manager</div>
+
+          <button class="primary-btn" onclick="resetMarkupForm()">
+            + Add Markup
+          </button>
+        </div>
+
+        <div class="panel-body">
+
+          <div class="markup-form">
+
+            <div class="markup-form-title" id="markupFormTitle">
+              Add Markup Price
+            </div>
+
+            <div class="form-grid">
+
+              <div class="form-group">
+                <label>Country</label>
+
+                <select id="markupCountry">
+                  <option value="">Overall</option>
+                </select>
+              </div>
+
+
+              <div class="form-group">
+                <label>Service</label>
+
+                <select id="markupService">
+                  <option value="">Overall</option>
+                </select>
+              </div>
+
+
+              <div class="form-group">
+                <label>Markup Percentage</label>
+
+                <input
+                  id="markupPercent"
+                  type="number"
+                  min="0"
+                  step="0.01"
+                  placeholder="Example: 100"
+                >
+              </div>
+
+            </div>
+
+
+            <div class="markup-actions">
+
+              <button
+                id="markupSaveBtn"
+                class="primary-btn"
+                onclick="saveMarkup()"
+              >
+                Save Markup
+              </button>
+
+              <button
+                id="markupCancelBtn"
+                class="small-btn gray-btn hidden"
+                onclick="resetMarkupForm()"
+              >
+                Cancel Edit
+              </button>
+
+            </div>
+
+          </div>
+
+
+          <div class="table-wrap">
+
+            <table>
+
+              <thead>
+                <tr>
+                  <th>Country</th>
+                  <th>Service</th>
+                  <th>Markup</th>
+                  <th>Created</th>
+                  <th>Updated</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+
+              <tbody id="markupBody"></tbody>
+
+            </table>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </section>
+
+  </main>
+
+</div>
+
+
+<!-- USER MODAL -->
+<div class="modal-overlay" id="userModal">
+
+  <div class="modal">
+
+    <div class="modal-header">
+      <h2 id="userModalTitle">User</h2>
+
+      <button class="close" onclick="closeModal('userModal')">
+        ×
+      </button>
+    </div>
+
+    <div class="modal-body">
+
+      <div class="user-summary">
+
+        <div class="info-box">
+          <small>Email</small>
+          <strong id="viewEmail">-</strong>
+        </div>
+
+        <div class="info-box">
+          <small>Wallet Balance</small>
+          <strong id="viewBalance">₦0</strong>
+        </div>
+
+        <div class="info-box">
+          <small>Total Spent</small>
+          <strong id="viewSpent">₦0</strong>
+        </div>
+
+      </div>
+
+
+      <div class="action-row" style="margin-bottom:20px">
+
+        <button class="small-btn green-btn" onclick="openWalletAction('add')">
+          + Add
+        </button>
+
+        <button class="small-btn orange-btn" onclick="openWalletAction('deduct')">
+          − Deduct
+        </button>
+
+      </div>
+
+
+      <div class="tabs">
+
+        <button
+          class="tab-btn active"
+          id="userOrdersTabBtn"
+          onclick="showUserTab('orders')"
+        >
+          Orders
+        </button>
+
+        <button
+          class="tab-btn"
+          id="userTransactionsTabBtn"
+          onclick="showUserTab('transactions')"
+        >
+          Transactions
+        </button>
+
+      </div>
+
+
+      <div id="userOrdersTab">
+
+        <div class="table-wrap">
+
+          <table>
+
+            <thead>
+              <tr>
+                <th>Date</th>
+                <th>Number</th>
+                <th>Country</th>
+                <th>Service</th>
+                <th>Price</th>
+                <th>Status</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+
+            <tbody id="userOrdersBody"></tbody>
+
+          </table>
+
+        </div>
+
+      </div>
+
+
+      <div id="userTransactionsTab" class="hidden">
+
+        <div class="table-wrap">
+
+          <table>
+
+            <thead>
+              <tr>
+                <th>Date</th>
+                <th>Type</th>
+                <th>Amount</th>
+                <th>Status</th>
+                <th>Description</th>
+                <th>Reference</th>
+              </tr>
+            </thead>
+
+            <tbody id="userTransactionsBody"></tbody>
+
+          </table>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
+
+
+<!-- WALLET MODAL -->
+<div class="modal-overlay" id="walletModal">
+
+  <div class="modal small">
+
+    <div class="modal-header">
+
+      <h2 id="walletModalTitle">Add Wallet</h2>
+
+      <button class="close" onclick="closeModal('walletModal')">
+        ×
+      </button>
+
+    </div>
+
+    <div class="modal-body">
+
+      <div class="form-group">
+
+        <label>Amount (NGN)</label>
+
+        <input
+          id="walletAmount"
+          type="number"
+          min="0.01"
+          step="0.01"
+          placeholder="Enter amount"
+        >
+
+      </div>
+
+    </div>
+
+    <div class="modal-footer">
+
+      <button
+        class="small-btn gray-btn"
+        onclick="closeModal('walletModal')"
+      >
+        Cancel
+      </button>
+
+      <button
+        class="primary-btn"
+        onclick="submitWalletAction()"
+      >
+        Save
+      </button>
+
+    </div>
+
+  </div>
+
+</div>
+
+
+<div class="toast" id="toast"></div>
+
+
+<script>
+/* =========================================================
+   SUPABASE
+========================================================= */
+
+const SUPABASE_URL =
+  "https://gvuaxtsdpmrragkkjowv.supabase.co";
+
+const SUPABASE_KEY =
+  "sb_publishable_oDAsADaZzLDiFX0cXogUyw_tTQYCa2k";
+
+const supabaseClient =
+  supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_KEY
+  );
+
+
+const GRIZZLY_URL =
+  SUPABASE_URL + "/functions/v1/grizzly";
+
+
+/* =========================================================
+   STATE
+========================================================= */
+
+let currentUser = null;
+
+let users = [];
+let allOrders = [];
+let allTransactions = [];
+
+let currentViewedUser = null;
+let walletAction = null;
+
+let markupRules = [];
+let providerCountries = [];
+let providerServices = [];
+
+let editingMarkupRuleId = null;
+
+
+/* =========================================================
+   HELPERS
+========================================================= */
+
+function escapeHtml(value){
+
+  return String(value ?? "")
+    .replace(/&/g,"&amp;")
+    .replace(/</g,"&lt;")
+    .replace(/>/g,"&gt;")
+    .replace(/"/g,"&quot;")
+    .replace(/'/g,"&#039;");
+}
+
+
+function formatNumber(value){
+
+  const number = Number(value || 0);
+
+  return number.toLocaleString("en-NG",{
+    maximumFractionDigits:2
+  });
+}
+
+
+function formatMoney(value){
+
+  return "₦" + formatNumber(value);
+}
+
+
+function formatDate(value){
+
+  if(!value) return "-";
+
+  const date = new Date(value);
+
+  if(Number.isNaN(date.getTime())) return "-";
+
+  return date.toLocaleString("en-NG",{
+    dateStyle:"medium",
+    timeStyle:"short"
+  });
+}
+
+
+function showToast(message,type="success"){
+
+  const toast =
+    document.getElementById("toast");
+
+  toast.textContent = message;
+
+  toast.className =
+    "toast show " + type;
+
+  clearTimeout(window.toastTimer);
+
+  window.toastTimer =
+    setTimeout(()=>{
+      toast.className = "toast";
+    },3500);
+}
+
+
+function closeModal(id){
+
+  document
+    .getElementById(id)
+    .classList.remove("show");
+}
+
+
+function openModal(id){
+
+  document
+    .getElementById(id)
+    .classList.add("show");
+}
+
+
+function toggleSidebar(){
+
+  document
+    .getElementById("sidebar")
+    .classList.toggle("open");
+}
+
+
+function statusBadge(status){
+
+  const value =
+    String(status || "unknown").toLowerCase();
+
+  let cls = "blue";
+
+  if(
+    [
+      "completed",
+      "success",
+      "successful",
+      "received"
+    ].includes(value)
+  ){
+    cls = "green";
+  }
+
+  if(
+    [
+      "cancelled",
+      "canceled",
+      "refunded",
+      "failed",
+      "error"
+    ].includes(value)
+  ){
+    cls = "red";
+  }
+
+  if(
+    [
+      "pending",
+      "waiting",
+      "processing",
+      "active"
+    ].includes(value)
+  ){
+    cls = "orange";
+  }
+
+  return `
+    <span class="badge ${cls}">
+      ${escapeHtml(status || "Unknown")}
+    </span>
+  `;
+}
+
+
+/* =========================================================
+   AUTH
+========================================================= */
+
+async function login(){
+
+  const email =
+    document
+      .getElementById("loginEmail")
+      .value
+      .trim();
+
+  const password =
+    document
+      .getElementById("loginPassword")
+      .value;
+
+  const error =
+    document.getElementById("loginError");
+
+  error.textContent = "";
+
+  if(!email || !password){
+
+    error.textContent =
+      "Enter your email and password.";
+
+    return;
+  }
+
+  try{
+
+    const {data,error:loginError} =
+      await supabaseClient.auth.signInWithPassword({
+        email,
+        password
+      });
+
+    if(loginError)
+      throw loginError;
+
+    if(!data.session)
+      throw new Error("Login session was not created.");
+
+    await checkAdminAccess();
+
+  }catch(err){
+
+    error.textContent =
+      err.message || "Login failed.";
+
+  }
+}
+
+
+async function checkAdminAccess(){
+
+  try{
+
+    const {
+      data:sessionData,
+      error:sessionError
+    } =
+      await supabaseClient.auth.getSession();
+
+    if(sessionError)
+      throw sessionError;
+
+    const session =
+      sessionData.session;
+
+    if(!session){
+
+      showLogin();
+
+      return false;
+    }
+
+    currentUser =
+      session.user;
+
+    const {
+      data,
+      error
+    } =
+      await supabaseClient.rpc("is_admin");
+
+    if(error)
+      throw error;
+
+    if(data !== true){
+
+      await supabaseClient.auth.signOut();
+
+      showLogin();
+
+      document.getElementById("loginError").textContent =
+        "Access denied. Administrator account required.";
+
+      return false;
+    }
+
+    showApp();
+
+    await loadEverything();
+
+    return true;
+
+  }catch(err){
+
+    console.error(err);
+
+    await supabaseClient.auth.signOut();
+
+    showLogin();
+
+    document.getElementById("loginError").textContent =
+      err.message || "Unable to verify administrator.";
+
+    return false;
+  }
+}
+
+
+function showLogin(){
+
+  document
+    .getElementById("loginScreen")
+    .classList.remove("hidden");
+
+  document
+    .getElementById("app")
+    .classList.add("hidden");
+}
+
+
+function showApp(){
+
+  document
+    .getElementById("loginScreen")
+    .classList.add("hidden");
+
+  document
+    .getElementById("app")
+    .classList.remove("hidden");
+}
+
+
+async function logout(){
+
+  await supabaseClient.auth.signOut();
+
+  currentUser = null;
+
+  showLogin();
+}
+
+
+/* =========================================================
+   PAGE NAVIGATION
+========================================================= */
+
+function showPage(page,button){
+
+  document
+    .querySelectorAll(".page")
+    .forEach(el=>{
+      el.classList.remove("active");
+    });
+
+  document
+    .getElementById("page-"+page)
+    .classList.add("active");
+
+
+  document
+    .querySelectorAll(".nav-btn")
+    .forEach(el=>{
+      el.classList.remove("active");
+    });
+
+  if(button)
+    button.classList.add("active");
+
+
+  const titles = {
+    dashboard:"Dashboard",
+    users:"Users",
+    orders:"Orders",
+    transactions:"Transactions",
+    markup:"Markup Manager"
+  };
+
+  document
+    .getElementById("pageTitle")
+    .textContent =
+      titles[page] || "Dashboard";
+
+
+  document
+    .getElementById("sidebar")
+    .classList.remove("open");
+
+
+  if(page === "users")
+    loadUsers();
+
+  if(page === "orders")
+    loadOrders();
+
+  if(page === "transactions")
+    loadTransactions();
+
+  if(page === "markup")
+    loadMarkupRules();
+}
+
+
+/* =========================================================
+   LOAD EVERYTHING
+========================================================= */
+
+async function loadEverything(){
+
+  await Promise.allSettled([
+    loadUsers(),
+    loadOrders(),
+    loadTransactions(),
+    loadMarkupData()
+  ]);
+
+  updateStats();
+}
+
+
+/* =========================================================
+   USERS
+========================================================= */
+
+async function loadUsers(){
+
+  const body =
+    document.getElementById("usersBody");
+
+  body.innerHTML =
+    `<tr><td colspan="6" class="loading">Loading users...</td></tr>`;
+
+  try{
+
+    const {
+      data,
+      error
+    } =
+      await supabaseClient.rpc("admin_get_users");
+
+    if(error)
+      throw error;
+
+    users =
+      Array.isArray(data) ? data : [];
+
+    renderUsers(users);
+
+    updateStats();
+
+  }catch(err){
+
+    console.error(err);
+
+    body.innerHTML =
+      `<tr><td colspan="6" class="empty">
+        Failed to load users.
+      </td></tr>`;
+
+    showToast(
+      err.message || "Failed to load users.",
+      "error"
+    );
+  }
+}
+
+
+function renderUsers(list){
+
+  const body =
+    document.getElementById("usersBody");
+
+  if(!list.length){
+
+    body.innerHTML =
+      `<tr><td colspan="6" class="empty">
+        No users found.
+      </td></tr>`;
+
+    return;
+  }
+
+  body.innerHTML =
+    list.map(user=>`
+
+      <tr>
+
+        <td>
+          <strong>
+            ${escapeHtml(user.email || "-")}
+          </strong>
+        </td>
+
+        <td>
+          <small>
+            ${escapeHtml(user.user_id || "-")}
+          </small>
+        </td>
+
+        <td>
+          ${formatDate(user.created_at)}
+        </td>
+
+        <td>
+          <strong>
+            ${formatMoney(user.wallet_balance)}
+          </strong>
+        </td>
+
+        <td>
+          ${formatMoney(user.total_spent)}
+        </td>
+
+        <td>
+
+          <div class="action-row">
+
+            <button
+              class="small-btn blue-btn"
+              onclick="viewUser('${escapeJs(user.user_id)}')"
+            >
+              View User
+            </button>
+
+            <button
+              class="small-btn green-btn"
+              onclick="quickWallet('${escapeJs(user.user_id)}','${escapeJs(user.email || "")}','add')"
+            >
+              + Add
+            </button>
+
+            <button
+              class="small-btn orange-btn"
+              onclick="quickWallet('${escapeJs(user.user_id)}','${escapeJs(user.email || "")}','deduct')"
+            >
+              − Deduct
+            </button>
+
+          </div>
+
+        </td>
+
+      </tr>
+
+    `).join("");
+}
+
+
+function filterUsers(){
+
+  const query =
+    document
+      .getElementById("userSearch")
+      .value
+      .trim()
+      .toLowerCase();
+
+  const filtered =
+    users.filter(user=>
+
+      String(user.email || "")
+        .toLowerCase()
+        .includes(query)
+
+      ||
+
+      String(user.user_id || "")
+        .toLowerCase()
+        .includes(query)
+    );
+
+  renderUsers(filtered);
+}
+
+
+/* =========================================================
+   ORDERS
+========================================================= */
+
+async function loadOrders(){
+
+  const body =
+    document.getElementById("ordersBody");
+
+  body.innerHTML =
+    `<tr><td colspan="8" class="loading">Loading orders...</td></tr>`;
+
+  try{
+
+    const {
+      data,
+      error
+    } =
+      await supabaseClient
+        .from("virtual_number_orders")
+        .select("*")
+        .order("created_at",{ascending:false});
+
+    if(error)
+      throw error;
+
+    allOrders =
+      Array.isArray(data) ? data : [];
+
+    renderOrders();
+
+    updateStats();
+
+  }catch(err){
+
+    console.error(err);
+
+    body.innerHTML =
+      `<tr><td colspan="8" class="empty">
+        Failed to load orders.
+      </td></tr>`;
+
+    showToast(
+      err.message || "Failed to load orders.",
+      "error"
+    );
+  }
+}
+
+
+function getUserEmail(userId){
+
+  const user =
+    users.find(
+      item => item.user_id === userId
+    );
+
+  return user
+    ? user.email
+    : userId || "-";
+}
+
+
+function renderOrders(){
+
+  const body =
+    document.getElementById("ordersBody");
+
+  if(!allOrders.length){
+
+    body.innerHTML =
+      `<tr><td colspan="8" class="empty">
+        No orders found.
+      </td></tr>`;
+
+    return;
+  }
+
+  body.innerHTML =
+    allOrders.map(order=>{
+
+      const status =
+        String(order.status || "")
+          .toLowerCase();
+
+      const canCancel =
+        ![
+          "cancelled",
+          "canceled",
+          "refunded",
+          "completed",
+          "success",
+          "successful"
+        ].includes(status);
+
+      return `
+
+        <tr>
+
+          <td>
+            ${formatDate(order.created_at)}
+          </td>
+
+          <td>
+            ${escapeHtml(
+              getUserEmail(order.user_id)
+            )}
+          </td>
+
+          <td>
+            <strong>
+              ${escapeHtml(order.phone_number || "-")}
+            </strong>
+          </td>
+
+          <td>
+            ${escapeHtml(
+              order.country_name ||
+              order.country ||
+              order.country_key ||
+              "-"
+            )}
+          </td>
+
+          <td>
+            ${escapeHtml(
+              order.service_name ||
+              order.service ||
+              order.service_code ||
+              "-"
+            )}
+          </td>
+
+          <td>
+            ${formatMoney(
+              order.customer_price_ngn ||
+              order.price
+            )}
+          </td>
+
+          <td>
+            ${statusBadge(order.status)}
+          </td>
+
+          <td>
+
+            ${
+              canCancel
+              ?
+
+              `<button
+                class="small-btn red-btn"
+                onclick="cancelOrder(
+                  '${escapeJs(order.user_id)}',
+                  '${escapeJs(
+                    order.activation_id ||
+                    order.provider_activation_id ||
+                    ""
+                  )}'
+                )"
+              >
+                Cancel
+              </button>`
+
+              :
+
+              `<span style="color:#94a3b8;font-size:12px">
+                —
+              </span>`
+            }
+
+          </td>
+
+        </tr>
+      `;
+
+    }).join("");
+}
+
+
+/* =========================================================
+   TRANSACTIONS
+========================================================= */
+
+async function loadTransactions(){
+
+  const body =
+    document.getElementById("transactionsBody");
+
+  body.innerHTML =
+    `<tr><td colspan="7" class="loading">
+      Loading transactions...
+    </td></tr>`;
+
+  try{
+
+    const {
+      data,
+      error
+    } =
+      await supabaseClient
+        .from("transactions")
+        .select("*")
+        .order("created_at",{ascending:false});
+
+    if(error)
+      throw error;
+
+    allTransactions =
+      Array.isArray(data)
+      ? data
+      : [];
+
+    renderTransactions();
+
+    updateStats();
+
+  }catch(err){
+
+    console.error(err);
+
+    body.innerHTML =
+      `<tr><td colspan="7" class="empty">
+        Failed to load transactions.
+      </td></tr>`;
+
+    showToast(
+      err.message || "Failed to load transactions.",
+      "error"
+    );
+  }
+}
+
+
+function renderTransactions(){
+
+  const body =
+    document.getElementById("transactionsBody");
+
+  if(!allTransactions.length){
+
+    body.innerHTML =
+      `<tr><td colspan="7" class="empty">
+        No transactions found.
+      </td></tr>`;
+
+    return;
+  }
+
+  body.innerHTML =
+    allTransactions.map(tx=>`
+
+      <tr>
+
+        <td>
+          ${formatDate(tx.created_at)}
+        </td>
+
+        <td>
+          ${escapeHtml(
+            getUserEmail(tx.user_id)
+          )}
+        </td>
+
+        <td>
+          <strong>
+            ${escapeHtml(tx.type || "-")}
+          </strong>
+        </td>
+
+        <td>
+          <strong style="
+            color:${Number(tx.amount || 0) >= 0
+              ? "#15803d"
+              : "#b91c1c"}
+          ">
+            ${Number(tx.amount || 0) >= 0 ? "+" : ""}
+            ${formatMoney(tx.amount)}
+          </strong>
+        </td>
+
+        <td>
+          ${statusBadge(tx.status)}
+        </td>
+
+        <td>
+          ${escapeHtml(tx.description || "-")}
+        </td>
+
+        <td>
+          <small>
+            ${escapeHtml(tx.reference || "-")}
+          </small>
+        </td>
+
+      </tr>
+
+    `).join("");
+}
+
+
+/* =========================================================
+   USER VIEW
+========================================================= */
+
+async function viewUser(userId){
+
+  const user =
+    users.find(
+      item => item.user_id === userId
+    );
+
+  if(!user){
+
+    showToast(
+      "User information could not be found.",
+      "error"
+    );
+
+    return;
+  }
+
+  currentViewedUser = user;
+
+  document.getElementById("userModalTitle").textContent =
+    user.email || "User";
+
+  document.getElementById("viewEmail").textContent =
+    user.email || "-";
+
+  document.getElementById("viewBalance").textContent =
+    formatMoney(user.wallet_balance);
+
+  document.getElementById("viewSpent").textContent =
+    formatMoney(user.total_spent);
+
+  showUserTab("orders");
+
+  openModal("userModal");
+
+  await loadUserOrders();
+
+  await loadUserTransactions();
+}
+
+
+async function loadUserOrders(){
+
+  const body =
+    document.getElementById("userOrdersBody");
+
+  if(!currentViewedUser)
+    return;
+
+  body.innerHTML =
+    `<tr><td colspan="7" class="loading">
+      Loading orders...
+    </td></tr>`;
+
+  try{
+
+    const {
+      data,
+      error
+    } =
+      await supabaseClient.rpc(
+        "admin_get_user_orders",
+        {
+          p_user_id:
+            currentViewedUser.user_id
+        }
+      );
+
+    if(error)
+      throw error;
+
+    const orders =
+      Array.isArray(data) ? data : [];
+
+    if(!orders.length){
+
+      body.innerHTML =
+        `<tr><td colspan="7" class="empty">
+          No orders found.
+        </td></tr>`;
+
+      return;
+    }
+
+    body.innerHTML =
+      orders.map(order=>{
+
+        const status =
+          String(order.status || "")
+            .toLowerCase();
+
+        const canCancel =
+          ![
+            "cancelled",
+            "canceled",
+            "refunded",
+            "completed",
+            "success",
+            "successful"
+          ].includes(status);
+
+        return `
+
+          <tr>
+
+            <td>
+              ${formatDate(order.created_at)}
+            </td>
+
+            <td>
+              ${escapeHtml(
+                order.phone_number || "-"
+              )}
+            </td>
+
+            <td>
+              ${escapeHtml(
+                order.country_name ||
+                order.country ||
+                order.country_key ||
+                "-"
+              )}
+            </td>
+
+            <td>
+              ${escapeHtml(
+                order.service_name ||
+                order.service ||
+                order.service_code ||
+                "-"
+              )}
+            </td>
+
+            <td>
+              ${formatMoney(
+                order.customer_price_ngn ||
+                order.price
+              )}
+            </td>
+
+            <td>
+              ${statusBadge(order.status)}
+            </td>
+
+            <td>
+
+              ${
+                canCancel
+
+                ?
+
+                `<button
+                  class="small-btn red-btn"
+                  onclick="cancelOrder(
+                    '${escapeJs(currentViewedUser.user_id)}',
+                    '${escapeJs(
+                      order.activation_id ||
+                      order.provider_activation_id ||
+                      ""
+                    )}',
+                    true
+                  )"
+                >
+                  Cancel
+                </button>`
+
+                :
+
+                "—"
+              }
+
+            </td>
+
+          </tr>
+
+        `;
+
+      }).join("");
+
+  }catch(err){
+
+    console.error(err);
+
+    body.innerHTML =
+      `<tr><td colspan="7" class="empty">
+        Failed to load orders.
+      </td></tr>`;
+  }
+}
+
+
+async function loadUserTransactions(){
+
+  const body =
+    document.getElementById("userTransactionsBody");
+
+  if(!currentViewedUser)
+    return;
+
+  body.innerHTML =
+    `<tr><td colspan="6" class="loading">
+      Loading transactions...
+    </td></tr>`;
+
+  try{
+
+    const {
+      data,
+      error
+    } =
+      await supabaseClient.rpc(
+        "admin_get_user_transactions",
+        {
+          p_user_id:
+            currentViewedUser.user_id
+        }
+      );
+
+    if(error)
+      throw error;
+
+    const transactions =
+      Array.isArray(data)
+      ? data
+      : [];
+
+    if(!transactions.length){
+
+      body.innerHTML =
+        `<tr><td colspan="6" class="empty">
+          No transactions found.
+        </td></tr>`;
+
+      return;
+    }
+
+    body.innerHTML =
+      transactions.map(tx=>`
+
+        <tr>
+
+          <td>
+            ${formatDate(tx.created_at)}
+          </td>
+
+          <td>
+            ${escapeHtml(tx.type || "-")}
+          </td>
+
+          <td>
+            <strong style="
+              color:${Number(tx.amount || 0) >= 0
+                ? "#15803d"
+                : "#b91c1c"}
+            ">
+              ${Number(tx.amount || 0) >= 0 ? "+" : ""}
+              ${formatMoney(tx.amount)}
+            </strong>
+          </td>
+
+          <td>
+            ${statusBadge(tx.status)}
+          </td>
+
+          <td>
+            ${escapeHtml(tx.description || "-")}
+          </td>
+
+          <td>
+            ${escapeHtml(tx.reference || "-")}
+          </td>
+
+        </tr>
+
+      `).join("");
+
+  }catch(err){
+
+    console.error(err);
+
+    body.innerHTML =
+      `<tr><td colspan="6" class="empty">
+        Failed to load transactions.
+      </td></tr>`;
+  }
+}
+
+
+function showUserTab(tab){
+
+  const ordersTab =
+    document.getElementById("userOrdersTab");
+
+  const transactionsTab =
+    document.getElementById("userTransactionsTab");
+
+  const ordersButton =
+    document.getElementById("userOrdersTabBtn");
+
+  const transactionsButton =
+    document.getElementById(
+      "userTransactionsTabBtn"
+    );
+
+  if(tab === "orders"){
+
+    ordersTab.classList.remove("hidden");
+    transactionsTab.classList.add("hidden");
+
+    ordersButton.classList.add("active");
+    transactionsButton.classList.remove("active");
+
+  }else{
+
+    ordersTab.classList.add("hidden");
+    transactionsTab.classList.remove("hidden");
+
+    ordersButton.classList.remove("active");
+    transactionsButton.classList.add("active");
+  }
+}
+
+
+/* =========================================================
+   WALLET
+========================================================= */
+
+function quickWallet(userId,email,action){
+
+  const user =
+    users.find(
+      item => item.user_id === userId
+    );
+
+  currentViewedUser =
+    user || {
+      user_id:userId,
+      email:email,
+      wallet_balance:0,
+      total_spent:0
+    };
+
+  openWalletAction(action);
+}
+
+
+function openWalletAction(action){
+
+  if(!currentViewedUser){
+
+    showToast(
+      "No user selected.",
+      "error"
+    );
+
+    return;
+  }
+
+  walletAction = action;
+
+  document.getElementById("walletModalTitle").textContent =
+    action === "add"
+      ? "Add Wallet Balance"
+      : "Deduct Wallet Balance";
+
+  document.getElementById("walletAmount").value = "";
+
+  openModal("walletModal");
+}
+
+
+async function submitWalletAction(){
+
+  if(!currentViewedUser)
+    return;
+
+  const amount =
+    Number(
+      document
+        .getElementById("walletAmount")
+        .value
+    );
+
+  if(!Number.isFinite(amount) || amount <= 0){
+
+    showToast(
+      "Enter a valid amount.",
+      "error"
+    );
+
+    return;
+  }
+
+  try{
+
+    const functionName =
+      walletAction === "add"
+        ? "admin_add_wallet"
+        : "admin_deduct_wallet";
+
+    const {
+      data,
+      error
+    } =
+      await supabaseClient.rpc(
+        functionName,
+        {
+          p_user_id:
+            currentViewedUser.user_id,
+
+          p_amount:
+            amount
+        }
+      );
+
+    if(error)
+      throw error;
+
+    closeModal("walletModal");
+
+    showToast(
+      walletAction === "add"
+        ? "Wallet credited successfully."
+        : "Wallet debited successfully."
+    );
+
+    await loadUsers();
+
+    if(
+      currentViewedUser &&
+      currentViewedUser.user_id
+    ){
+
+      const updated =
+        users.find(
+          u =>
+            u.user_id ===
+            currentViewedUser.user_id
+        );
+
+      if(updated)
+        currentViewedUser = updated;
+
+      document.getElementById("viewBalance").textContent =
+        formatMoney(
+          currentViewedUser.wallet_balance
+        );
+
+      document.getElementById("viewSpent").textContent =
+        formatMoney(
+          currentViewedUser.total_spent
+        );
+
+      await loadUserTransactions();
+    }
+
+  }catch(err){
+
+    console.error(err);
+
+    showToast(
+      err.message ||
+      "Wallet operation failed.",
+      "error"
+    );
+  }
+}
+
+
+/* =========================================================
+   CANCEL ORDER
+========================================================= */
+
+async function cancelOrder(
+  userId,
+  activationId,
+  fromUserModal=false
+){
+
+  if(!userId || !activationId){
+
+    showToast(
+      "Missing user or activation ID.",
+      "error"
+    );
+
+    return;
+  }
+
+  const confirmed =
+    confirm(
+      "Cancel this virtual number and refund the customer?"
+    );
+
+  if(!confirmed)
+    return;
+
+  try{
+
+    const {
+      data,
+      error
+    } =
+      await supabaseClient.rpc(
+        "admin_cancel_virtual_number",
+        {
+          p_user_id:userId,
+          p_activation_id:activationId
+        }
+      );
+
+    if(error)
+      throw error;
+
+    if(
+      data &&
+      data.ok === false
+    ){
+      throw new Error(
+        data.message ||
+        "Cancellation failed."
+      );
+    }
+
+    showToast(
+      "Number cancelled and refunded successfully."
+    );
+
+    await loadOrders();
+    await loadUsers();
+
+    if(fromUserModal){
+
+      await loadUserOrders();
+      await loadUserTransactions();
+
+      const updated =
+        users.find(
+          u => u.user_id === userId
+        );
+
+      if(updated){
+
+        currentViewedUser = updated;
+
+        document.getElementById("viewBalance").textContent =
+          formatMoney(
+            updated.wallet_balance
+          );
+
+        document.getElementById("viewSpent").textContent =
+          formatMoney(
+            updated.total_spent
+          );
+      }
+    }
+
+  }catch(err){
+
+    console.error(err);
+
+    showToast(
+      err.message ||
+      "Unable to cancel order.",
+      "error"
+    );
+  }
+}
+
+
+/* =========================================================
+   MARKUP PROVIDER DATA
+========================================================= */
+
+async function grizzlyRequest(payload){
+
+  const response =
+    await fetch(
+      GRIZZLY_URL,
+      {
+        method:"POST",
+
+        headers:{
+          "Content-Type":
+            "application/json"
+        },
+
+        body:
+          JSON.stringify(payload)
+      }
+    );
+
+  const text =
+    await response.text();
+
+  let data;
+
+  try{
+    data = JSON.parse(text);
+  }catch{
+    data = text;
+  }
+
+  if(!response.ok){
+
+    const message =
+      typeof data === "object"
+        ? (
+            data.message ||
+            data.error ||
+            JSON.stringify(data)
+          )
+        : data;
+
+    throw new Error(
+      message || "Provider request failed."
+    );
+  }
+
+  return data;
+}
+
+
+function normalizeArrayResponse(data){
+
+  if(Array.isArray(data))
+    return data;
+
+  if(!data || typeof data !== "object")
+    return [];
+
+  const possibleKeys = [
+    "countries",
+    "services",
+    "data",
+    "results",
+    "items",
+    "list"
+  ];
+
+  for(const key of possibleKeys){
+
+    if(Array.isArray(data[key]))
+      return data[key];
+  }
+
+  return [];
+}
+
+
+function normalizeCountry(item){
+
+  if(typeof item === "string"){
+
+    return {
+      id:item,
+      key:item,
+      name:item
+    };
+  }
+
+  if(!item || typeof item !== "object")
+    return null;
+
+  const id =
+    item.id ??
+    item.country_id ??
+    item.countryId ??
+    item.key ??
+    item.country ??
+    item.code;
+
+  const key =
+    item.key ??
+    item.country_key ??
+    item.countryKey ??
+    item.country ??
+    id;
+
+  const name =
+    item.name ??
+    item.country_name ??
+    item.countryName ??
+    item.title ??
+    item.country ??
+    key;
+
+  if(id === undefined && key === undefined)
+    return null;
+
+  return {
+    id:String(id ?? key),
+    key:String(key ?? id),
+    name:String(name ?? key ?? id)
+  };
+}
+
+
+function normalizeService(item){
+
+  if(typeof item === "string"){
+
+    return {
+      code:item,
+      key:item,
+      name:item
+    };
+  }
+
+  if(!item || typeof item !== "object")
+    return null;
+
+  const code =
+    item.code ??
+    item.service_code ??
+    item.serviceCode ??
+    item.key ??
+    item.service ??
+    item.id;
+
+  const key =
+    item.key ??
+    item.service_code ??
+    item.serviceCode ??
+    item.service ??
+    code;
+
+  const name =
+    item.name ??
+    item.service_name ??
+    item.serviceName ??
+    item.title ??
+    item.service ??
+    key;
+
+  if(code === undefined && key === undefined)
+    return null;
+
+  return {
+    code:String(code ?? key),
+    key:String(key ?? code),
+    name:String(name ?? key ?? code)
+  };
+}
+
+
+async function loadMarkupData(){
+
+  await Promise.allSettled([
+    loadProviderCountries(),
+    loadProviderServices()
+  ]);
+
+  populateMarkupSelects();
+
+  await loadMarkupRules();
+}
+
+
+async function loadProviderCountries(){
+
+  try{
+
+    const data =
+      await grizzlyRequest({
+        action:"countries"
+      });
+
+    providerCountries =
+      normalizeArrayResponse(data)
+        .map(normalizeCountry)
+        .filter(Boolean);
+
+  }catch(err){
+
+    console.error(
+      "Countries error:",
+      err
+    );
+
+    providerCountries = [];
+  }
+}
+
+
+async function loadProviderServices(){
+
+  try{
+
+    const data =
+      await grizzlyRequest({
+        action:"services"
+      });
+
+    providerServices =
+      normalizeArrayResponse(data)
+        .map(normalizeService)
+        .filter(Boolean);
+
+  }catch(err){
+
+    console.error(
+      "Services error:",
+      err
+    );
+
+    providerServices = [];
+  }
+}
+
+
+function populateMarkupSelects(){
+
+  const countrySelect =
+    document.getElementById(
+      "markupCountry"
+    );
+
+  const serviceSelect =
+    document.getElementById(
+      "markupService"
+    );
+
+  const currentCountry =
+    countrySelect.value;
+
+  const currentService =
+    serviceSelect.value;
+
+
+  countrySelect.innerHTML =
+    `<option value="">Overall</option>`;
+
+
+  const uniqueCountries = new Map();
+
+  providerCountries.forEach(country=>{
+
+    const key =
+      String(
+        country.key ??
+        country.id ??
+        ""
+      );
+
+    if(!key)
+      return;
+
+    if(!uniqueCountries.has(key)){
+
+      uniqueCountries.set(
+        key,
+        country
+      );
+    }
+  });
+
+
+  Array.from(
+    uniqueCountries.values()
+  )
+  .sort((a,b)=>
+    a.name.localeCompare(
+      b.name
+    )
+  )
+  .forEach(country=>{
+
+    const option =
+      document.createElement("option");
+
+    option.value =
+      country.key;
+
+    option.textContent =
+      country.name +
+      (
+        country.id &&
+        String(country.id) !==
+        String(country.key)
+          ? ` (${country.id})`
+          : ""
+      );
+
+    countrySelect.appendChild(option);
+  });
+
+
+  serviceSelect.innerHTML =
+    `<option value="">Overall</option>`;
+
+
+  const uniqueServices = new Map();
+
+  providerServices.forEach(service=>{
+
+    const key =
+      String(
+        service.code ??
+        service.key ??
+        ""
+      );
+
+    if(!key)
+      return;
+
+    if(!uniqueServices.has(key)){
+
+      uniqueServices.set(
+        key,
+        service
+      );
+    }
+  });
+
+
+  Array.from(
+    uniqueServices.values()
+  )
+  .sort((a,b)=>
+    a.name.localeCompare(
+      b.name
+    )
+  )
+  .forEach(service=>{
+
+    const option =
+      document.createElement("option");
+
+    option.value =
+      service.code;
+
+    option.textContent =
+      service.name +
+      (
+        service.code &&
+        String(service.code) !==
+        String(service.name)
+          ? ` (${service.code})`
+          : ""
+      );
+
+    serviceSelect.appendChild(option);
+  });
+
+
+  if(
+    Array.from(countrySelect.options)
+      .some(o=>o.value === currentCountry)
+  ){
+    countrySelect.value =
+      currentCountry;
+  }
+
+  if(
+    Array.from(serviceSelect.options)
+      .some(o=>o.value === currentService)
+  ){
+    serviceSelect.value =
+      currentService;
+  }
+}
+
+
+/* =========================================================
+   MARKUP RULES
+========================================================= */
+
+async function loadMarkupRules(){
+
+  const body =
+    document.getElementById("markupBody");
+
+  body.innerHTML =
+    `<tr><td colspan="6" class="loading">
+      Loading markup rules...
+    </td></tr>`;
+
+  try{
+
+    const {
+      data,
+      error
+    } =
+      await supabaseClient
+        .from("virtual_number_markup_rules")
+        .select(
+          "id,country_key,service_code,markup_percent,is_active,created_at,updated_at"
+        )
+        .eq("is_active",true)
+        .order("created_at",{ascending:false});
+
+    if(error)
+      throw error;
+
+    markupRules =
+      Array.isArray(data)
+      ? data
+      : [];
+
+    renderMarkupRules();
+
+  }catch(err){
+
+    console.error(err);
+
+    body.innerHTML =
+      `<tr><td colspan="6" class="empty">
+        Failed to load markup rules.
+      </td></tr>`;
+
+    showToast(
+      err.message ||
+      "Failed to load markup rules.",
+      "error"
+    );
+  }
+}
+
+
+function renderMarkupRules(){
+
+  const body =
+    document.getElementById("markupBody");
+
+  if(!markupRules.length){
+
+    body.innerHTML =
+      `<tr><td colspan="6" class="empty">
+        No active markup rules found.
+      </td></tr>`;
+
+    return;
+  }
+
+
+  body.innerHTML =
+    markupRules.map(rule=>{
+
+      const country =
+        rule.country_key
+          ? escapeHtml(rule.country_key)
+          : `<span class="overall">Overall</span>`;
+
+      const service =
+        rule.service_code
+          ? escapeHtml(rule.service_code)
+          : `<span class="overall">Overall</span>`;
+
+      return `
+
+        <tr>
+
+          <td>
+            <span class="rule-text">
+              ${country}
+            </span>
+          </td>
+
+          <td>
+            <span class="rule-text">
+              ${service}
+            </span>
+          </td>
+
+          <td>
+            <strong>
+              ${formatNumber(
+                rule.markup_percent
+              )}%
+            </strong>
+          </td>
+
+          <td>
+            ${formatDate(
+              rule.created_at
+            )}
+          </td>
+
+          <td>
+            ${formatDate(
+              rule.updated_at
+            )}
+          </td>
+
+          <td>
+
+            <div class="action-row">
+
+              <button
+                class="small-btn blue-btn"
+                onclick="editMarkup('${escapeJs(rule.id)}')"
+              >
+                ✏️ Edit
+              </button>
+
+              <button
+                class="small-btn red-btn"
+                onclick="deleteMarkup('${escapeJs(rule.id)}')"
+              >
+                🗑️ Delete
+              </button>
+
+            </div>
+
+          </td>
+
+        </tr>
+
+      `;
+
+    }).join("");
+}
+
+
+/* =========================================================
+   ADD / EDIT MARKUP
+========================================================= */
+
+function resetMarkupForm(){
+
+  editingMarkupRuleId = null;
+
+  const country =
+    document.getElementById(
+      "markupCountry"
+    );
+
+  const service =
+    document.getElementById(
+      "markupService"
+    );
+
+  const percent =
+    document.getElementById(
+      "markupPercent"
+    );
+
+  country.disabled = false;
+  service.disabled = false;
+
+  country.value = "";
+  service.value = "";
+  percent.value = "";
+
+  document.getElementById(
+    "markupFormTitle"
+  ).textContent =
+    "Add Markup Price";
+
+  document.getElementById(
+    "markupSaveBtn"
+  ).textContent =
+    "Save Markup";
+
+  document.getElementById(
+    "markupCancelBtn"
+  ).classList.add("hidden");
+}
+
+
+function editMarkup(ruleId){
+
+  const rule =
+    markupRules.find(
+      item => item.id === ruleId
+    );
+
+  if(!rule){
+
+    showToast(
+      "Markup rule could not be found.",
+      "error"
+    );
+
+    return;
+  }
+
+  editingMarkupRuleId =
+    rule.id;
+
+
+  const country =
+    document.getElementById(
+      "markupCountry"
+    );
+
+  const service =
+    document.getElementById(
+      "markupService"
+    );
+
+  const percent =
+    document.getElementById(
+      "markupPercent"
+    );
+
+
+  country.value =
+    rule.country_key || "";
+
+  service.value =
+    rule.service_code || "";
+
+  percent.value =
+    rule.markup_percent;
+
+
+  /*
+    During Edit, country and service are locked.
+    This prevents accidentally creating a second
+    rule with the same combination.
+    The dedicated admin_update_markup RPC updates
+    this exact rule ID.
+  */
+
+  country.disabled = true;
+  service.disabled = true;
+
+
+  document.getElementById(
+    "markupFormTitle"
+  ).textContent =
+    "Edit Markup Price";
+
+  document.getElementById(
+    "markupSaveBtn"
+  ).textContent =
+    "Update Markup";
+
+  document.getElementById(
+    "markupCancelBtn"
+  ).classList.remove("hidden");
+
+
+  document
+    .getElementById("page-markup")
+    .scrollIntoView({
+      behavior:"smooth",
+      block:"start"
+    });
+}
+
+
+async function saveMarkup(){
+
+  const country =
+    document
+      .getElementById("markupCountry")
+      .value
+      .trim();
+
+  const service =
+    document
+      .getElementById("markupService")
+      .value
+      .trim();
+
+  const percent =
+    Number(
+      document
+        .getElementById("markupPercent")
+        .value
+    );
+
+
+  if(!Number.isFinite(percent) || percent < 0){
+
+    showToast(
+      "Enter a valid markup percentage.",
+      "error"
+    );
+
+    return;
+  }
+
+
+  try{
+
+    if(editingMarkupRuleId){
+
+      const {
+        data,
+        error
+      } =
+        await supabaseClient.rpc(
+          "admin_update_markup",
+          {
+            p_rule_id:
+              editingMarkupRuleId,
+
+            p_country_key:
+              country,
+
+            p_service_code:
+              service,
+
+            p_markup_percent:
+              percent
+          }
+        );
+
+      if(error)
+        throw error;
+
+
+      showToast(
+        "Markup updated successfully."
+      );
+
+    }else{
+
+      const {
+        data,
+        error
+      } =
+        await supabaseClient.rpc(
+          "admin_set_markup",
+          {
+            p_country_key:
+              country,
+
+            p_service_code:
+              service,
+
+            p_markup_percent:
+              percent
+          }
+        );
+
+      if(error)
+        throw error;
+
+
+      showToast(
+        "Markup added successfully."
+      );
+    }
+
+
+    resetMarkupForm();
+
+    await loadMarkupRules();
+
+  }catch(err){
+
+    console.error(err);
+
+    showToast(
+      err.message ||
+      "Unable to save markup.",
+      "error"
+    );
+  }
+}
+
+
+/* =========================================================
+   DELETE MARKUP
+========================================================= */
+
+async function deleteMarkup(ruleId){
+
+  const rule =
+    markupRules.find(
+      item => item.id === ruleId
+    );
+
+  if(!rule){
+
+    showToast(
+      "Markup rule could not be found.",
+      "error"
+    );
+
+    return;
+  }
+
+
+  const country =
+    rule.country_key ||
+    "Overall";
+
+  const service =
+    rule.service_code ||
+    "Overall";
+
+
+  const confirmed =
+    confirm(
+      `Delete this markup rule?\n\nCountry: ${country}\nService: ${service}\nMarkup: ${rule.markup_percent}%`
+    );
+
+
+  if(!confirmed)
+    return;
+
+
+  try{
+
+    const {
+      data,
+      error
+    } =
+      await supabaseClient.rpc(
+        "admin_delete_markup",
+        {
+          p_rule_id:
+            ruleId
+        }
+      );
+
+    if(error)
+      throw error;
+
+
+    if(editingMarkupRuleId === ruleId)
+      resetMarkupForm();
+
+
+    showToast(
+      "Markup deleted successfully."
+    );
+
+
+    await loadMarkupRules();
+
+  }catch(err){
+
+    console.error(err);
+
+    showToast(
+      err.message ||
+      "Unable to delete markup.",
+      "error"
+    );
+  }
+}
+
+
+/* =========================================================
+   STATS
+========================================================= */
+
+function updateStats(){
+
+  document.getElementById(
+    "statUsers"
+  ).textContent =
+    users.length;
+
+
+  const totalBalance =
+    users.reduce(
+      (sum,user)=>
+        sum +
+        Number(
+          user.wallet_balance || 0
+        ),
+      0
+    );
+
+  document.getElementById(
+    "statBalance"
+  ).textContent =
+    formatMoney(totalBalance);
+
+
+  document.getElementById(
+    "statOrders"
+  ).textContent =
+    allOrders.length;
+
+
+  document.getElementById(
+    "statTransactions"
+  ).textContent =
+    allTransactions.length;
+}
+
+
+/* =========================================================
+   JS STRING ESCAPING
+========================================================= */
+
+function escapeJs(value){
+
+  return String(value ?? "")
+    .replace(/\\/g,"\\\\")
+    .replace(/'/g,"\\'")
+    .replace(/"/g,'\\"')
+    .replace(/\n/g,"\\n")
+    .replace(/\r/g,"\\r");
+}
+
+
+/* =========================================================
+   INITIALIZATION
+========================================================= */
+
+document.addEventListener(
+  "DOMContentLoaded",
+  async ()=>{
+
+    const {
+      data
+    } =
+      await supabaseClient.auth.getSession();
+
+    if(data.session){
+
+      await checkAdminAccess();
+
+    }else{
+
+      showLogin();
+    }
+
+
+    supabaseClient.auth.onAuthStateChange(
+      async (event,session)=>{
+
+        if(
+          event === "SIGNED_OUT"
+        ){
+
+          currentUser = null;
+
+          showLogin();
+
+          return;
+        }
+
+        if(
+          event === "SIGNED_IN" &&
+          session
+        ){
+
+          currentUser =
+            session.user;
+
+          await checkAdminAccess();
+        }
+
+      }
+    );
+
+  }
+);
+</script>
+
+</body>
+</html>
