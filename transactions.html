@@ -43,6 +43,123 @@ main{max-width:620px;margin:auto;padding:18px 15px 95px}
 .loading{text-align:center;color:#718096;padding:35px 12px}
 .loading-spinner{width:25px;height:25px;border:3px solid #dbeafe;border-top-color:var(--blue);border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 10px}
 @keyframes spin{to{transform:rotate(360deg)}}
+
+/* Support chooser */
+.support-overlay{
+position:fixed;
+inset:0;
+background:rgba(15,32,51,.35);
+display:none;
+align-items:flex-end;
+justify-content:center;
+padding:16px;
+z-index:100;
+}
+
+.support-overlay.show{
+display:flex;
+}
+
+.support-box{
+width:100%;
+max-width:620px;
+background:#fff;
+border-radius:22px;
+padding:18px;
+box-shadow:0 18px 50px rgba(20,50,90,.22);
+animation:supportUp .2s ease-out;
+}
+
+@keyframes supportUp{
+from{transform:translateY(20px);opacity:0}
+to{transform:translateY(0);opacity:1}
+}
+
+.support-head{
+display:flex;
+align-items:flex-start;
+justify-content:space-between;
+gap:12px;
+margin-bottom:14px;
+}
+
+.support-head-text h3{
+margin:0;
+font-size:18px;
+font-weight:800;
+color:var(--text);
+}
+
+.support-head-text p{
+margin:5px 0 0;
+font-size:12px;
+color:var(--muted);
+}
+
+.support-close{
+width:36px;
+height:36px;
+border:0;
+border-radius:11px;
+background:var(--blue-soft);
+color:var(--blue);
+font-size:22px;
+cursor:pointer;
+line-height:1;
+}
+
+.support-option{
+width:100%;
+display:flex;
+align-items:center;
+gap:12px;
+border:1px solid var(--border);
+background:#fff;
+border-radius:15px;
+padding:14px;
+margin-top:10px;
+text-align:left;
+cursor:pointer;
+color:var(--text);
+}
+
+.support-option:hover{
+background:var(--blue-soft);
+border-color:#cfe2ff;
+}
+
+.support-icon{
+width:40px;
+height:40px;
+border-radius:12px;
+background:var(--blue-soft);
+color:var(--blue);
+display:flex;
+align-items:center;
+justify-content:center;
+font-size:19px;
+font-weight:800;
+flex-shrink:0;
+}
+
+.support-option strong{
+display:block;
+font-size:14px;
+font-weight:800;
+margin-bottom:3px;
+}
+
+.support-option span:not(.support-icon):not(.support-arrow){
+font-size:11px;
+color:var(--muted);
+}
+
+.support-arrow{
+margin-left:auto;
+font-size:25px;
+color:#9aa8ba;
+}
+
 .bottom-nav{position:fixed;left:0;right:0;bottom:0;height:70px;background:#fff;border-top:1px solid var(--border);display:flex;justify-content:center;z-index:30}
 .bottom-nav-inner{width:100%;max-width:620px;display:grid;grid-template-columns:repeat(4,1fr)}
 .nav-item{border:0;background:transparent;color:#8290a3;font-size:11px;font-weight:700;cursor:pointer;padding:8px 3px}
@@ -52,6 +169,7 @@ main{max-width:620px;margin:auto;padding:18px 15px 95px}
 </style>
 </head>
 <body>
+
 <header>
 <button class="header-back" type="button" onclick="goDashboard()" aria-label="Back">‹</button>
 <h1>Transactions</h1>
@@ -76,6 +194,40 @@ main{max-width:620px;margin:auto;padding:18px 15px 95px}
 </section>
 </main>
 
+<!-- Support chooser -->
+<div id="supportOverlay" class="support-overlay" onclick="handleSupportOverlayClick(event)" aria-hidden="true">
+<div class="support-box" role="dialog" aria-modal="true" aria-labelledby="supportTitle">
+
+<div class="support-head">
+<div class="support-head-text">
+<h3 id="supportTitle">Contact Support</h3>
+<p>Choose how you would like to contact us.</p>
+</div>
+
+<button class="support-close" type="button" onclick="closeSupport()" aria-label="Close">×</button>
+</div>
+
+<button class="support-option" type="button" onclick="contactTelegram()">
+<span class="support-icon">✈</span>
+<span>
+<strong>Contact us on Telegram</strong>
+<span>Chat with our support team on Telegram</span>
+</span>
+<span class="support-arrow">›</span>
+</button>
+
+<button class="support-option" type="button" onclick="contactWhatsApp()">
+<span class="support-icon">◉</span>
+<span>
+<strong>Contact us on WhatsApp</strong>
+<span>Chat with our support team on WhatsApp</span>
+</span>
+<span class="support-arrow">›</span>
+</button>
+
+</div>
+</div>
+
 <nav class="bottom-nav">
 <div class="bottom-nav-inner">
 <button class="nav-item" type="button" onclick="goDashboard()"><span class="icon">⌂</span>Dashboard</button>
@@ -94,10 +246,44 @@ let currentUser=null;
 
 function goDashboard(){location.href="dashboard.html"}
 function goOrders(){location.href="orders.html"}
+
 function openSupport(){
-  const choice=confirm("Choose Support:\n\nOK = Telegram\nCancel = WhatsApp");
-  if(choice){window.open("https://t.me/GustodigitsSupportbot","_blank")}else{window.open("https://wa.me/2347038064570?text=Hello%20Gustodigits%20Support","_blank")}
+  const overlay=document.getElementById("supportOverlay");
+  if(!overlay)return;
+
+  overlay.classList.add("show");
+  overlay.setAttribute("aria-hidden","false");
 }
+
+function closeSupport(){
+  const overlay=document.getElementById("supportOverlay");
+  if(!overlay)return;
+
+  overlay.classList.remove("show");
+  overlay.setAttribute("aria-hidden","true");
+}
+
+function handleSupportOverlayClick(event){
+  if(event.target===event.currentTarget){
+    closeSupport();
+  }
+}
+
+function contactTelegram(){
+  closeSupport();
+  window.open("https://t.me/GustodigitsSupportbot","_blank","noopener,noreferrer");
+}
+
+function contactWhatsApp(){
+  closeSupport();
+  window.open("https://wa.me/2347038064570?text=Hello%20Gustodigits%20Support","_blank","noopener,noreferrer");
+}
+
+document.addEventListener("keydown",function(event){
+  if(event.key==="Escape"){
+    closeSupport();
+  }
+});
 
 async function getCurrentUser(){
   const {data,error}=await supabaseClient.auth.getUser();
