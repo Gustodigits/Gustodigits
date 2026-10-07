@@ -3,7 +3,6 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="theme-color" content="#eaf6ff">
 <title>Dashboard - Gustodigits</title>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -16,1412 +15,1039 @@
 }
 
 :root{
-  --blue:#1689e8;
-  --blue-dark:#0874ca;
-  --blue-light:#eaf6ff;
-  --blue-soft:#f4faff;
+  --blue:#1687f8;
+  --blue-dark:#086bd1;
+  --blue-light:#eaf5ff;
+  --blue-soft:#f4f9ff;
   --white:#ffffff;
-  --text:#102337;
-  --muted:#718096;
-  --border:#dcecf8;
-  --success:#18a957;
-  --danger:#e84b4b;
-  --warning:#f3a712;
-  --shadow:0 12px 35px rgba(19,120,190,.10);
-  --radius:20px;
-}
-
-html{
-  scroll-behavior:smooth;
+  --text:#152235;
+  --muted:#708096;
+  --border:#e3edf7;
+  --green:#16a66a;
+  --red:#e5484d;
+  --shadow:0 8px 28px rgba(28,91,145,.09);
 }
 
 body{
-  min-height:100vh;
-  background:var(--blue-soft);
+  font-family:Arial,Helvetica,sans-serif;
+  background:#f6faff;
   color:var(--text);
-  font-family:
-    Inter,
-    -apple-system,
-    BlinkMacSystemFont,
-    "Segoe UI",
-    Roboto,
-    Arial,
-    sans-serif;
+  min-height:100vh;
+  padding-bottom:82px;
 }
 
 button,
-input,
-select{
+input{
   font:inherit;
 }
 
 button{
-  border:0;
   cursor:pointer;
 }
 
-a{
-  color:inherit;
-  text-decoration:none;
+.hidden{
+  display:none!important;
 }
 
-/* =========================================================
-   LOADING SCREEN
-========================================================= */
-
-#pageLoader{
-  position:fixed;
-  inset:0;
-  background:#f4faff;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  z-index:99999;
-  transition:.25s ease;
-}
-
-.loaderBox{
-  text-align:center;
-}
-
-.loaderLogo{
-  width:64px;
-  height:64px;
-  border-radius:18px;
-  background:linear-gradient(135deg,#1689e8,#56b8ff);
-  color:#fff;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  font-size:26px;
-  font-weight:900;
-  margin:0 auto 16px;
-  box-shadow:0 12px 30px rgba(22,137,232,.25);
-}
-
-.spinner{
-  width:34px;
-  height:34px;
-  border:3px solid #d8edf9;
-  border-top-color:var(--blue);
-  border-radius:50%;
-  animation:spin .8s linear infinite;
-  margin:auto;
-}
-
-@keyframes spin{
-  to{
-    transform:rotate(360deg);
-  }
-}
-
-/* =========================================================
-   HEADER
-========================================================= */
+/* =========================
+HEADER
+========================= */
 
 .header{
-  position:sticky;
-  top:0;
-  z-index:1000;
-  height:72px;
-  background:rgba(255,255,255,.96);
-  backdrop-filter:blur(14px);
+  height:64px;
+  background:var(--white);
   border-bottom:1px solid var(--border);
   display:flex;
   align-items:center;
   justify-content:space-between;
   padding:0 16px;
-}
-
-.headerLeft{
-  display:flex;
-  align-items:center;
-  gap:12px;
-}
-
-.menuBtn{
-  width:42px;
-  height:42px;
-  border-radius:13px;
-  background:#eef8ff;
-  color:var(--blue);
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  font-size:22px;
+  position:sticky;
+  top:0;
+  z-index:50;
 }
 
 .brand{
-  display:flex;
-  flex-direction:column;
-  line-height:1;
-}
-
-.brandName{
   font-size:20px;
   font-weight:900;
-  letter-spacing:-.5px;
-  color:#0c2539;
-}
-
-.brandSub{
-  font-size:8px;
-  color:var(--blue);
-  font-weight:800;
-  letter-spacing:1.3px;
-  margin-top:4px;
-}
-
-.headerRight{
-  display:flex;
-  align-items:center;
-  gap:8px;
-}
-
-.headerIcon{
-  width:40px;
-  height:40px;
-  border-radius:12px;
-  background:#f1f8fd;
-  color:#537088;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  font-size:18px;
-}
-
-/* =========================================================
-   SIDE MENU
-========================================================= */
-
-.menuOverlay{
-  position:fixed;
-  inset:0;
-  background:rgba(7,30,48,.42);
-  z-index:3000;
-  opacity:0;
-  pointer-events:none;
-  transition:.25s ease;
-}
-
-.menuOverlay.open{
-  opacity:1;
-  pointer-events:auto;
-}
-
-.sideMenu{
-  position:absolute;
-  left:0;
-  top:0;
-  bottom:0;
-  width:min(310px,86vw);
-  background:#fff;
-  transform:translateX(-100%);
-  transition:.28s ease;
-  box-shadow:20px 0 45px rgba(0,0,0,.12);
-  overflow-y:auto;
-}
-
-.menuOverlay.open .sideMenu{
-  transform:translateX(0);
-}
-
-.menuTop{
-  padding:26px 20px 20px;
-  background:linear-gradient(145deg,#1689e8,#49b3fa);
-  color:#fff;
-}
-
-.menuBrand{
-  font-size:25px;
-  font-weight:900;
-}
-
-.menuCaption{
-  opacity:.85;
-  font-size:12px;
-  margin-top:5px;
-}
-
-.menuClose{
-  position:absolute;
-  right:15px;
-  top:15px;
-  width:38px;
-  height:38px;
-  border-radius:12px;
-  background:rgba(255,255,255,.18);
-  color:#fff;
-  font-size:21px;
-}
-
-.menuItems{
-  padding:14px;
-}
-
-.menuItem{
-  width:100%;
-  display:flex;
-  align-items:center;
-  gap:13px;
-  padding:14px;
-  border-radius:14px;
-  margin-bottom:5px;
-  color:#314b60;
-  background:transparent;
-  text-align:left;
-}
-
-.menuItem:hover{
-  background:#eef8ff;
-  color:var(--blue);
-}
-
-.menuIcon{
-  width:38px;
-  height:38px;
-  border-radius:11px;
-  background:#edf8ff;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  font-size:17px;
-}
-
-.menuItem strong{
-  font-size:14px;
-}
-
-.logoutItem{
-  color:#df4444;
-}
-
-.logoutItem .menuIcon{
-  background:#fff1f1;
-}
-
-/* =========================================================
-   MAIN
-========================================================= */
-
-.main{
-  width:min(1050px,100%);
-  margin:auto;
-  padding:18px 14px 110px;
-}
-
-.greeting{
-  margin:4px 2px 15px;
-}
-
-.greetingSmall{
-  color:var(--muted);
-  font-size:13px;
-  margin-bottom:4px;
-}
-
-.greetingTitle{
-  font-size:25px;
-  font-weight:900;
+  color:#101c2c;
   letter-spacing:-.7px;
 }
 
-/* =========================================================
-   WALLET CARD
-========================================================= */
-
-.walletCard{
-  position:relative;
-  overflow:hidden;
-  background:linear-gradient(135deg,#0e82dc,#43b4fa);
-  color:#fff;
-  border-radius:24px;
-  padding:22px;
-  box-shadow:0 18px 40px rgba(20,137,220,.24);
-  margin-bottom:18px;
-}
-
-.walletCard:before,
-.walletCard:after{
-  content:"";
-  position:absolute;
-  border:1px solid rgba(255,255,255,.15);
-  border-radius:50%;
-}
-
-.walletCard:before{
-  width:180px;
-  height:180px;
-  right:-75px;
-  top:-90px;
-}
-
-.walletCard:after{
-  width:120px;
-  height:120px;
-  right:35px;
-  bottom:-75px;
-}
-
-.walletLabel{
-  font-size:12px;
-  opacity:.85;
-}
-
-.walletBalance{
-  font-size:31px;
-  font-weight:900;
-  margin-top:5px;
-  letter-spacing:-1px;
-}
-
-.walletBottom{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  margin-top:20px;
-  position:relative;
-  z-index:2;
-}
-
-.walletStatus{
-  font-size:11px;
-  opacity:.85;
-}
-
-.fundBtn{
-  background:#fff;
-  color:var(--blue-dark);
-  padding:11px 16px;
-  border-radius:12px;
-  font-weight:800;
-  font-size:13px;
-}
-
-/* =========================================================
-   SEARCH
-========================================================= */
-
-.sectionTitle{
-  font-size:17px;
-  font-weight:900;
-  margin:21px 2px 10px;
-}
-
-.searchBox{
-  position:relative;
-  margin-bottom:12px;
-}
-
-.searchBox input{
-  width:100%;
-  border:1px solid var(--border);
-  background:#fff;
-  height:52px;
-  border-radius:15px;
-  outline:none;
-  padding:0 15px 0 45px;
-  color:var(--text);
-  box-shadow:0 5px 18px rgba(30,110,160,.05);
-}
-
-.searchBox input:focus{
-  border-color:#7bc7f7;
-  box-shadow:0 0 0 4px rgba(22,137,232,.08);
-}
-
-.searchIcon{
-  position:absolute;
-  left:16px;
-  top:50%;
-  transform:translateY(-50%);
-  color:#7a91a3;
-  font-size:18px;
-}
-
-/* =========================================================
-   STEPS
-========================================================= */
-
-.steps{
-  display:grid;
-  grid-template-columns:repeat(3,1fr);
-  gap:8px;
-  margin:18px 0;
-}
-
-.step{
-  min-width:0;
-  border-radius:15px;
-  background:#fff;
-  border:1px solid var(--border);
-  padding:12px 7px;
-  text-align:center;
-  color:#7a8e9f;
-  transition:.2s ease;
-}
-
-.stepNumber{
-  width:28px;
-  height:28px;
-  border-radius:50%;
-  margin:0 auto 7px;
-  background:#edf6fc;
-  color:#7a91a3;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  font-size:12px;
-  font-weight:900;
-}
-
-.stepText{
-  font-size:11px;
-  font-weight:800;
-}
-
-.step.active{
-  border-color:#a6d9f8;
-  background:#eff9ff;
+.brand span{
   color:var(--blue);
 }
 
-.step.active .stepNumber{
-  background:var(--blue);
-  color:#fff;
-}
-
-.step.done{
-  border-color:#bdebd0;
-  background:#f1fff6;
-  color:var(--success);
-}
-
-.step.done .stepNumber{
-  background:var(--success);
-  color:#fff;
-}
-
-/* =========================================================
-   COUNTRY/SERVICE/SERVER PANELS
-========================================================= */
-
-.panel{
-  background:#fff;
-  border:1px solid var(--border);
-  border-radius:20px;
-  padding:15px;
-  box-shadow:var(--shadow);
-  margin-bottom:15px;
-}
-
-.panelHeader{
+.header-right{
   display:flex;
-  justify-content:space-between;
   align-items:center;
-  gap:10px;
+  gap:8px;
+}
+
+.icon-btn{
+  width:38px;
+  height:38px;
+  border:none;
+  border-radius:12px;
+  background:var(--blue-light);
+  color:var(--blue-dark);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:18px;
+}
+
+/* =========================
+MAIN
+========================= */
+
+.main{
+  width:min(100%,720px);
+  margin:auto;
+  padding:16px 14px 30px;
+}
+
+/* =========================
+WELCOME
+========================= */
+
+.welcome{
   margin-bottom:13px;
 }
 
-.panelTitle{
-  font-size:16px;
-  font-weight:900;
+.welcome small{
+  color:var(--muted);
+  font-size:13px;
 }
 
-.panelHint{
+.welcome h1{
+  font-size:22px;
+  margin-top:3px;
+  font-weight:800;
+}
+
+/* =========================
+WALLET
+========================= */
+
+.wallet-card{
+  background:linear-gradient(135deg,#1687f8,#096dd8);
+  border-radius:18px;
+  padding:17px;
+  color:white;
+  box-shadow:0 10px 25px rgba(22,135,248,.18);
+  margin-bottom:16px;
+}
+
+.wallet-top{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
+
+.wallet-label{
+  font-size:12px;
+  opacity:.85;
+}
+
+.wallet-balance{
+  font-size:27px;
+  font-weight:900;
+  margin-top:4px;
+}
+
+.fund-btn{
+  border:none;
+  background:white;
+  color:var(--blue-dark);
+  border-radius:11px;
+  padding:10px 13px;
+  font-size:12px;
+  font-weight:800;
+}
+
+.wallet-bottom{
+  margin-top:14px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  font-size:11px;
+  opacity:.88;
+}
+
+/* =========================
+NUMBER BOX
+========================= */
+
+.number-box{
+  background:white;
+  border:1px solid var(--border);
+  border-radius:18px;
+  padding:17px;
+  box-shadow:var(--shadow);
+}
+
+.box-heading{
+  display:flex;
+  justify-content:space-between;
+  align-items:flex-start;
+  margin-bottom:15px;
+}
+
+.box-heading h2{
+  font-size:17px;
+  font-weight:800;
+}
+
+.box-heading p{
   color:var(--muted);
   font-size:11px;
   margin-top:3px;
 }
 
-.refreshBtn{
-  width:38px;
-  height:38px;
-  border-radius:11px;
-  background:#eff8fe;
-  color:var(--blue);
-  font-size:17px;
+/* =========================
+STEPS
+========================= */
+
+.steps{
+  display:flex;
+  gap:7px;
+  margin-bottom:16px;
 }
 
-.countryList,
-.serviceList,
-.serverList{
-  display:grid;
-  gap:9px;
+.step{
+  flex:1;
+  height:6px;
+  border-radius:20px;
+  background:#e7eef7;
 }
 
-.countryItem,
-.serviceItem,
-.serverItem{
-  width:100%;
-  border:1px solid #e2eef6;
+.step.active{
+  background:var(--blue);
+}
+
+.step.done{
+  background:#70b8fa;
+}
+
+/* =========================
+SELECTOR
+========================= */
+
+.selector{
+  border:1px solid var(--border);
   background:#fbfdff;
-  border-radius:15px;
+  border-radius:13px;
   padding:13px;
   display:flex;
-  align-items:center;
   justify-content:space-between;
-  gap:10px;
-  text-align:left;
-  transition:.18s ease;
-}
-
-.countryItem:hover,
-.serviceItem:hover,
-.serverItem:hover{
-  border-color:#9fd5f5;
-  background:#f2faff;
-}
-
-.countryLeft,
-.serviceLeft,
-.serverLeft{
-  min-width:0;
-  display:flex;
   align-items:center;
-  gap:11px;
+  min-height:55px;
 }
 
-.countryFlag{
-  width:40px;
-  height:40px;
-  border-radius:12px;
-  background:#edf8ff;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  font-size:20px;
-}
-
-.itemText{
+.selector-left{
   min-width:0;
 }
 
-.itemName{
-  font-weight:850;
+.selector-label{
+  display:block;
+  font-size:10px;
+  color:var(--muted);
+  margin-bottom:4px;
+}
+
+.selector-value{
   font-size:14px;
+  font-weight:700;
   white-space:nowrap;
   overflow:hidden;
   text-overflow:ellipsis;
 }
 
-.itemSub{
-  color:var(--muted);
-  font-size:11px;
-  margin-top:3px;
-}
-
-.arrow{
-  color:#86a0b3;
+.selector-arrow{
   font-size:18px;
-}
-
-.serviceBadge,
-.serverBadge{
-  width:42px;
-  height:42px;
-  border-radius:12px;
-  background:#eaf6ff;
   color:var(--blue);
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  font-weight:900;
-  flex:none;
+  margin-left:10px;
 }
 
-.serverItem{
-  align-items:center;
+.selector:active{
+  background:var(--blue-light);
 }
 
-.serverPrice{
-  text-align:right;
-  flex:none;
+/* =========================
+SELECTION PANEL
+========================= */
+
+.selection-panel{
+  margin-top:8px;
+  border:1px solid var(--border);
+  background:white;
+  border-radius:14px;
+  overflow:hidden;
 }
 
-.serverPrice strong{
-  display:block;
-  font-size:14px;
-  color:var(--blue-dark);
+.panel-search{
+  padding:9px;
+  border-bottom:1px solid var(--border);
 }
 
-.serverPrice span{
-  display:block;
-  font-size:10px;
-  color:#7d93a4;
-  margin-top:3px;
-}
-
-.buyBtn{
-  background:var(--blue);
-  color:#fff;
-  padding:10px 13px;
-  border-radius:11px;
-  font-size:12px;
-  font-weight:900;
-  margin-top:7px;
-}
-
-.buyBtn:disabled{
-  opacity:.55;
-  cursor:not-allowed;
-}
-
-/* =========================================================
-   EMPTY / LOADING
-========================================================= */
-
-.emptyState{
-  text-align:center;
-  padding:27px 15px;
-  color:var(--muted);
-}
-
-.emptyIcon{
-  width:52px;
-  height:52px;
-  border-radius:16px;
-  background:#eff8fe;
-  color:#78a1ba;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  margin:0 auto 10px;
-  font-size:22px;
-}
-
-.emptyState strong{
-  display:block;
-  color:#476075;
-  font-size:14px;
-  margin-bottom:4px;
-}
-
-.emptyState p{
-  font-size:11px;
-  line-height:1.5;
-}
-
-.miniLoader{
-  width:25px;
-  height:25px;
-  border:3px solid #dbeefa;
-  border-top-color:var(--blue);
-  border-radius:50%;
-  animation:spin .7s linear infinite;
-  margin:12px auto;
-}
-
-/* =========================================================
-   PURCHASE RESULT
-========================================================= */
-
-.purchaseResult{
-  display:none;
-  background:#fff;
-  border:1px solid #bfead1;
-  border-radius:20px;
-  padding:17px;
-  margin-bottom:16px;
-  box-shadow:0 10px 30px rgba(23,169,87,.08);
-}
-
-.purchaseResult.show{
-  display:block;
-}
-
-.purchaseSuccess{
-  display:flex;
-  align-items:center;
-  gap:11px;
-  margin-bottom:15px;
-}
-
-.successIcon{
-  width:43px;
-  height:43px;
-  border-radius:13px;
-  background:#e8fff1;
-  color:var(--success);
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  font-size:21px;
-  font-weight:900;
-}
-
-.purchaseSuccess strong{
-  font-size:15px;
-}
-
-.purchaseSuccess span{
-  display:block;
-  color:var(--muted);
-  font-size:11px;
-  margin-top:3px;
-}
-
-.numberBox{
-  background:#f4faff;
-  border:1px dashed #acd9f4;
-  border-radius:15px;
-  padding:15px;
-  text-align:center;
-}
-
-.numberLabel{
-  font-size:10px;
-  color:#7890a1;
-  font-weight:700;
-}
-
-.numberValue{
-  font-size:25px;
-  font-weight:900;
-  color:#0d4e78;
-  margin:5px 0 10px;
-  letter-spacing:.5px;
-  word-break:break-word;
-}
-
-.resultActions{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:8px;
-}
-
-.resultBtn{
-  min-height:44px;
-  border-radius:12px;
-  font-weight:850;
+.panel-search input{
+  width:100%;
+  border:1px solid var(--border);
+  outline:none;
+  border-radius:10px;
+  padding:10px 11px;
+  background:#f7fbff;
   font-size:12px;
 }
 
-.getCodeBtn{
-  background:var(--blue);
-  color:#fff;
+.panel-list{
+  max-height:270px;
+  overflow-y:auto;
 }
 
-.cancelBtn{
-  background:#fff1f1;
-  color:#dc4646;
-}
-
-/* =========================================================
-   RECENT ORDERS
-========================================================= */
-
-.recentHeader{
+.option{
+  width:100%;
+  border:0;
+  background:white;
+  padding:12px 13px;
   display:flex;
   justify-content:space-between;
   align-items:center;
-  margin:22px 2px 10px;
+  text-align:left;
+  border-bottom:1px solid #f0f4f8;
 }
 
-.recentHeader .sectionTitle{
-  margin:0;
+.option:last-child{
+  border-bottom:0;
 }
 
-.seeMore{
-  color:var(--blue);
+.option:hover{
+  background:#f3f9ff;
+}
+
+.option-name{
+  font-size:13px;
+  font-weight:700;
+}
+
+.option-sub{
+  display:block;
+  font-size:10px;
+  color:var(--muted);
+  margin-top:3px;
+}
+
+.option-arrow{
+  color:#a4b2c2;
+}
+
+/* =========================
+BACK
+========================= */
+
+.back-row{
+  margin-bottom:9px;
+}
+
+.back-btn{
+  border:0;
+  background:transparent;
+  color:var(--blue-dark);
   font-size:12px;
-  font-weight:850;
+  font-weight:800;
+  padding:4px 0;
 }
 
-.orderCard{
-  background:#fff;
-  border:1px solid var(--border);
-  border-radius:18px;
-  padding:15px;
-  margin-bottom:10px;
-  box-shadow:0 6px 22px rgba(30,110,160,.05);
-}
+/* =========================
+SERVER
+========================= */
 
-.orderTop{
+.server-list{
   display:flex;
-  align-items:flex-start;
+  flex-direction:column;
+  gap:8px;
+  max-height:285px;
+  overflow-y:auto;
+}
+
+.server-card{
+  border:1px solid var(--border);
+  background:#fbfdff;
+  border-radius:13px;
+  padding:12px;
+  display:flex;
+  align-items:center;
   justify-content:space-between;
   gap:10px;
 }
 
-.orderCountry{
+.server-left{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  min-width:0;
+}
+
+.server-number{
+  width:32px;
+  height:32px;
+  border-radius:10px;
+  background:var(--blue-light);
+  color:var(--blue-dark);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:11px;
+  font-weight:900;
+  flex:none;
+}
+
+.server-name{
+  font-size:13px;
+  font-weight:800;
+}
+
+.server-stock{
+  font-size:10px;
+  color:var(--muted);
+  margin-top:3px;
+}
+
+.server-right{
+  text-align:right;
+  flex:none;
+}
+
+.server-price{
+  font-size:13px;
+  font-weight:900;
+  color:var(--text);
+  margin-bottom:5px;
+}
+
+.buy-btn{
+  border:0;
+  background:var(--blue);
+  color:white;
+  border-radius:9px;
+  padding:8px 12px;
+  font-size:11px;
+  font-weight:800;
+}
+
+.buy-btn:disabled{
+  opacity:.55;
+}
+
+/* =========================
+LOADING
+========================= */
+
+.loading{
+  padding:22px 10px;
+  text-align:center;
+  color:var(--muted);
+  font-size:12px;
+}
+
+.spinner{
+  width:25px;
+  height:25px;
+  border:3px solid #dbeeff;
+  border-top-color:var(--blue);
+  border-radius:50%;
+  margin:0 auto 9px;
+  animation:spin .8s linear infinite;
+}
+
+@keyframes spin{
+  to{transform:rotate(360deg)}
+}
+
+/* =========================
+CURRENT NUMBER
+========================= */
+
+.result-card{
+  margin-top:14px;
+  border-radius:15px;
+  border:1px solid #d8ebff;
+  background:#f4faff;
+  padding:15px;
+}
+
+.result-success{
+  display:flex;
+  align-items:center;
+  gap:9px;
+  color:var(--green);
+  font-size:13px;
+  font-weight:900;
+  margin-bottom:12px;
+}
+
+.success-dot{
+  width:24px;
+  height:24px;
+  border-radius:50%;
+  background:#dff8ed;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+
+.number-label{
+  color:var(--muted);
+  font-size:10px;
+}
+
+.phone-number{
+  font-size:23px;
+  font-weight:900;
+  letter-spacing:.5px;
+  margin-top:3px;
+  word-break:break-all;
+}
+
+.code-box{
+  margin-top:12px;
+  background:white;
+  border:1px solid var(--border);
+  border-radius:11px;
+  padding:11px;
+}
+
+.code-label{
+  font-size:10px;
+  color:var(--muted);
+}
+
+.otp{
+  font-size:20px;
+  font-weight:900;
+  margin-top:4px;
+  letter-spacing:3px;
+}
+
+.result-actions{
+  display:flex;
+  gap:8px;
+  margin-top:12px;
+}
+
+.action-btn{
+  flex:1;
+  border:none;
+  border-radius:10px;
+  padding:11px;
+  font-size:11px;
+  font-weight:800;
+}
+
+.get-code{
+  background:var(--blue);
+  color:white;
+}
+
+.cancel-code{
+  background:#ffecee;
+  color:#d9363e;
+}
+
+/* =========================
+RECENT ORDERS
+========================= */
+
+.recent{
+  margin-top:17px;
+}
+
+.recent-title{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:9px;
+}
+
+.recent-title h3{
+  font-size:15px;
+}
+
+.see-more{
+  border:0;
+  background:transparent;
+  color:var(--blue);
+  font-size:11px;
+  font-weight:800;
+}
+
+.order-card{
+  background:white;
+  border:1px solid var(--border);
+  border-radius:13px;
+  padding:12px;
+  margin-bottom:8px;
+}
+
+.order-top{
+  display:flex;
+  justify-content:space-between;
+  gap:8px;
+}
+
+.order-main{
+  min-width:0;
+}
+
+.order-country{
+  font-size:12px;
+  font-weight:800;
+}
+
+.order-service{
+  color:var(--muted);
+  font-size:10px;
+  margin-top:3px;
+}
+
+.order-number{
+  font-size:13px;
+  font-weight:800;
+  margin-top:8px;
+}
+
+.status{
+  height:max-content;
+  border-radius:20px;
+  padding:5px 8px;
+  font-size:9px;
+  font-weight:900;
+  white-space:nowrap;
+}
+
+.status.waiting{
+  color:#b85b00;
+  background:#fff3df;
+}
+
+.status.received,
+.status.completed{
+  color:#08794d;
+  background:#e4f8ef;
+}
+
+.status.cancelled{
+  color:#c72e37;
+  background:#ffe9eb;
+}
+
+/* =========================
+EMPTY
+========================= */
+
+.empty{
+  padding:22px 10px;
+  text-align:center;
+  color:var(--muted);
+  font-size:12px;
+}
+
+/* =========================
+ERROR
+========================= */
+
+.inline-error{
+  padding:11px 12px;
+  border-radius:11px;
+  background:#fff0f1;
+  color:#c82f38;
+  font-size:11px;
+  line-height:1.45;
+  margin-top:9px;
+}
+
+/* =========================
+WHATSAPP
+========================= */
+
+.whatsapp{
+  position:fixed;
+  right:16px;
+  bottom:82px;
+  width:51px;
+  height:51px;
+  border-radius:50%;
+  background:#25D366;
+  color:white;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  text-decoration:none;
+  box-shadow:0 7px 20px rgba(37,211,102,.28);
+  z-index:100;
+  font-size:27px;
+  font-weight:900;
+}
+
+.whatsapp span{
+  font-size:25px;
+}
+
+/* =========================
+BOTTOM NAV
+========================= */
+
+.bottom-nav{
+  position:fixed;
+  left:0;
+  right:0;
+  bottom:0;
+  height:66px;
+  background:white;
+  border-top:1px solid var(--border);
+  display:flex;
+  justify-content:space-around;
+  align-items:center;
+  z-index:90;
+}
+
+.nav-item{
+  border:0;
+  background:transparent;
+  color:#8492a5;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:4px;
+  font-size:9px;
+  font-weight:700;
+}
+
+.nav-icon{
+  font-size:18px;
+}
+
+.nav-item.active{
+  color:var(--blue);
+}
+
+/* =========================
+MENU
+========================= */
+
+.menu-overlay{
+  position:fixed;
+  inset:0;
+  background:rgba(10,30,50,.28);
+  z-index:150;
+  display:none;
+}
+
+.menu-overlay.open{
+  display:block;
+}
+
+.side-menu{
+  position:absolute;
+  left:0;
+  top:0;
+  bottom:0;
+  width:min(82%,330px);
+  background:white;
+  padding:20px 15px;
+  box-shadow:10px 0 30px rgba(0,0,0,.12);
+}
+
+.menu-brand{
+  font-size:21px;
+  font-weight:900;
+  margin-bottom:25px;
+}
+
+.menu-brand span{
+  color:var(--blue);
+}
+
+.menu-item{
+  width:100%;
+  border:0;
+  background:white;
+  padding:13px 11px;
+  border-radius:11px;
+  display:flex;
+  align-items:center;
+  gap:11px;
+  text-align:left;
+  font-size:13px;
+  font-weight:700;
+  color:var(--text);
+  margin-bottom:4px;
+}
+
+.menu-item:hover{
+  background:var(--blue-light);
+  color:var(--blue-dark);
+}
+
+.menu-close{
+  position:absolute;
+  right:14px;
+  top:15px;
+  border:0;
+  background:#f1f6fb;
+  width:34px;
+  height:34px;
+  border-radius:10px;
+}
+
+/* =========================
+SMALL VERIFICATION POPUP
+========================= */
+
+.notice-overlay{
+  position:fixed;
+  inset:0;
+  background:rgba(10,25,42,.16);
+  z-index:300;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:18px;
+}
+
+.notice-card{
+  width:min(100%,315px);
+  background:white;
+  border-radius:16px;
+  box-shadow:0 15px 45px rgba(0,0,0,.17);
+  border:1px solid #dcecfb;
+  overflow:hidden;
+}
+
+.notice-head{
+  background:var(--blue);
+  color:white;
+  padding:12px 14px;
   display:flex;
   align-items:center;
   gap:9px;
 }
 
-.orderFlag{
-  width:36px;
-  height:36px;
-  border-radius:10px;
-  background:#eff8ff;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-}
-
-.orderCountry strong{
-  font-size:13px;
-}
-
-.orderCountry span{
-  display:block;
-  color:var(--muted);
-  font-size:10px;
-  margin-top:3px;
-}
-
-.status{
-  padding:6px 9px;
-  border-radius:20px;
-  font-size:10px;
-  font-weight:900;
-}
-
-.status.waiting{
-  color:#a66b00;
-  background:#fff6df;
-}
-
-.status.received,
-.status.completed{
-  color:#118a49;
-  background:#e8fff1;
-}
-
-.status.cancelled{
-  color:#d84343;
-  background:#fff0f0;
-}
-
-.orderNumber{
-  margin-top:13px;
-  background:#f7fbfe;
-  border-radius:12px;
-  padding:11px;
-}
-
-.orderNumberLabel{
-  color:#8297a7;
-  font-size:9px;
-  text-transform:uppercase;
-  letter-spacing:.6px;
-}
-
-.orderNumberValue{
-  font-size:15px;
-  font-weight:900;
-  margin-top:3px;
-}
-
-.orderBottom{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  margin-top:10px;
-}
-
-.orderService{
-  font-size:11px;
-  color:#62798a;
-}
-
-.orderActions{
-  display:flex;
-  gap:6px;
-}
-
-.smallBtn{
-  padding:8px 10px;
+.notice-icon{
+  width:29px;
+  height:29px;
   border-radius:9px;
-  font-size:10px;
-  font-weight:850;
-}
-
-.smallGet{
-  background:#eaf6ff;
-  color:var(--blue);
-}
-
-.smallCancel{
-  background:#fff0f0;
-  color:#d84343;
-}
-
-/* =========================================================
-   OTP POPUP
-========================================================= */
-
-.codeBox{
-  display:none;
-  margin-top:10px;
-  padding:12px;
-  border-radius:13px;
-  background:#eafff1;
-  color:#118a49;
-  text-align:center;
-}
-
-.codeBox.show{
-  display:block;
-}
-
-.codeBox small{
-  display:block;
-  font-size:9px;
-  margin-bottom:3px;
-}
-
-.codeBox strong{
-  font-size:23px;
-  letter-spacing:2px;
-}
-
-/* =========================================================
-   VERIFICATION POPUP
-========================================================= */
-
-.verificationOverlay{
-  position:fixed;
-  inset:0;
-  z-index:9000;
-  background:rgba(6,26,42,.72);
-  backdrop-filter:blur(7px);
+  background:rgba(255,255,255,.18);
   display:flex;
   align-items:center;
   justify-content:center;
-  padding:14px;
-  opacity:0;
-  pointer-events:none;
-  transition:.25s ease;
-}
-
-.verificationOverlay.show{
-  opacity:1;
-  pointer-events:auto;
-}
-
-.verificationModal{
-  width:min(640px,100%);
-  max-height:94vh;
-  overflow-y:auto;
-  background:#fff;
-  border:1px solid #cce9f8;
-  border-radius:25px;
-  box-shadow:0 25px 80px rgba(0,0,0,.25);
-  transform:translateY(20px) scale(.98);
-  transition:.25s ease;
-}
-
-.verificationOverlay.show .verificationModal{
-  transform:translateY(0) scale(1);
-}
-
-.verificationHead{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap:10px;
-  padding:18px 18px;
-  border-bottom:1px solid #e3f0f7;
-}
-
-.verificationTitleWrap{
-  display:flex;
-  align-items:center;
-  gap:12px;
-}
-
-.megaphone{
-  width:44px;
-  height:44px;
-  border-radius:14px;
-  background:#eaf6ff;
-  color:var(--blue);
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  font-size:22px;
-}
-
-.verificationTitle{
-  font-size:19px;
-  font-weight:900;
-}
-
-.closeVerification{
-  width:40px;
-  height:40px;
-  border-radius:50%;
-  background:#f3f8fb;
-  color:#617a8c;
-  font-size:23px;
-}
-
-.verificationBody{
-  padding:16px 18px 18px;
-}
-
-.shield{
-  width:82px;
-  height:82px;
-  border-radius:25px;
-  background:#eff9ff;
-  border:1px solid #d5edf9;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  margin:0 auto 18px;
-  font-size:43px;
-}
-
-.bestHeading{
-  display:flex;
-  align-items:center;
-  gap:10px;
-  font-size:16px;
-  font-weight:900;
-  margin-bottom:10px;
-}
-
-.spark{
-  width:40px;
-  height:40px;
-  border-radius:12px;
-  background:#eaf6ff;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  font-size:20px;
-}
-
-.verificationItem{
-  border:1px solid #e3edf3;
-  border-radius:16px;
-  padding:12px;
-  display:flex;
-  gap:11px;
-  margin-bottom:9px;
-  background:#fff;
-}
-
-.verificationItemIcon{
-  width:39px;
-  height:39px;
-  border-radius:11px;
-  background:#f2f8fc;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  flex:none;
-  font-size:19px;
-}
-
-.verificationItem strong{
-  display:block;
-  font-size:14px;
-  margin-bottom:4px;
-}
-
-.verificationItem p{
-  color:#728494;
-  font-size:12px;
-  line-height:1.45;
-}
-
-.providerTip{
-  background:#eff9ff;
-  border:1px solid #cdeafa;
-  border-radius:16px;
-  padding:13px;
-  display:flex;
-  gap:11px;
-  margin-top:10px;
-}
-
-.providerTip .verificationItemIcon{
-  background:#dff3ff;
-}
-
-.providerTip strong{
-  color:#0b75c5;
-}
-
-.providerTip p{
-  color:#557084;
-  font-size:12px;
-  line-height:1.5;
-  margin-top:3px;
-}
-
-.understandBtn{
-  width:100%;
-  min-height:52px;
-  border-radius:15px;
-  background:linear-gradient(135deg,#1689e8,#48b3fa);
-  color:#fff;
-  font-weight:900;
   font-size:15px;
-  margin-top:16px;
-  box-shadow:0 10px 25px rgba(22,137,232,.22);
 }
 
-/* =========================================================
-   GENERIC ALERT MODAL
-========================================================= */
-
-.alertOverlay{
-  position:fixed;
-  inset:0;
-  z-index:9500;
-  background:rgba(6,26,42,.65);
-  backdrop-filter:blur(5px);
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  padding:20px;
-  opacity:0;
-  pointer-events:none;
-  transition:.2s ease;
-}
-
-.alertOverlay.show{
-  opacity:1;
-  pointer-events:auto;
-}
-
-.alertModal{
-  width:min(410px,100%);
-  background:#fff;
-  border-radius:22px;
-  padding:21px;
-  box-shadow:0 25px 70px rgba(0,0,0,.25);
-  text-align:center;
-}
-
-.alertIcon{
-  width:56px;
-  height:56px;
-  border-radius:18px;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  margin:0 auto 12px;
-  font-size:25px;
-}
-
-.alertIcon.error{
-  background:#fff0f0;
-  color:#df4747;
-}
-
-.alertIcon.success{
-  background:#eafff1;
-  color:#16a157;
-}
-
-.alertIcon.info{
-  background:#eaf6ff;
-  color:var(--blue);
-}
-
-.alertTitle{
-  font-size:18px;
-  font-weight:900;
-  margin-bottom:7px;
-}
-
-.alertMessage{
-  color:#6d8191;
+.notice-head strong{
   font-size:13px;
+}
+
+.notice-body{
+  padding:13px 14px 14px;
+}
+
+.notice-body p{
+  color:#56677b;
+  font-size:11px;
   line-height:1.55;
-  white-space:pre-line;
 }
 
-.alertActions{
-  display:flex;
-  gap:8px;
-  margin-top:17px;
-}
-
-.alertAction{
-  flex:1;
-  min-height:45px;
-  border-radius:12px;
-  font-weight:850;
-  font-size:12px;
-}
-
-.alertPrimary{
-  background:var(--blue);
-  color:#fff;
-}
-
-.alertSecondary{
-  background:#eef7fc;
-  color:#527086;
-}
-
-/* =========================================================
-   CONFIRM MODAL
-========================================================= */
-
-.confirmOverlay{
-  position:fixed;
-  inset:0;
-  z-index:9600;
-  background:rgba(6,26,42,.65);
-  backdrop-filter:blur(5px);
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  padding:20px;
-  opacity:0;
-  pointer-events:none;
-  transition:.2s ease;
-}
-
-.confirmOverlay.show{
-  opacity:1;
-  pointer-events:auto;
-}
-
-.confirmModal{
-  width:min(400px,100%);
-  background:#fff;
-  border-radius:22px;
-  padding:22px;
-  box-shadow:0 25px 70px rgba(0,0,0,.25);
-}
-
-.confirmModal h3{
-  font-size:18px;
-  margin-bottom:7px;
-}
-
-.confirmModal p{
-  color:#6d8191;
-  font-size:13px;
-  line-height:1.5;
-}
-
-.confirmActions{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:8px;
-  margin-top:18px;
-}
-
-.confirmYes{
-  background:#fff0f0;
-  color:#d84242;
-  min-height:45px;
-  border-radius:12px;
-  font-weight:850;
-}
-
-.confirmNo{
-  background:#eaf6ff;
-  color:var(--blue);
-  min-height:45px;
-  border-radius:12px;
-  font-weight:850;
-}
-
-/* =========================================================
-   BOTTOM NAV
-========================================================= */
-
-.bottomNav{
-  position:fixed;
-  left:50%;
-  bottom:0;
-  transform:translateX(-50%);
-  width:min(1050px,100%);
-  height:68px;
-  background:rgba(255,255,255,.97);
-  backdrop-filter:blur(14px);
-  border-top:1px solid var(--border);
-  z-index:2000;
-  display:grid;
-  grid-template-columns:repeat(4,1fr);
-}
-
-.navItem{
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  justify-content:center;
-  gap:4px;
-  color:#8295a4;
+.notice-watermark{
+  margin-top:8px;
+  color:var(--blue-dark);
   font-size:10px;
   font-weight:800;
 }
 
-.navItem span:first-child{
-  font-size:19px;
+.notice-close{
+  width:100%;
+  margin-top:11px;
+  border:0;
+  background:var(--blue-light);
+  color:var(--blue-dark);
+  padding:9px;
+  border-radius:9px;
+  font-size:11px;
+  font-weight:800;
 }
 
-.navItem.active{
+/* =========================
+TOAST
+========================= */
+
+.toast-wrap{
+  position:fixed;
+  left:50%;
+  top:14px;
+  transform:translateX(-50%);
+  width:min(calc(100% - 28px),360px);
+  z-index:500;
+  pointer-events:none;
+}
+
+.toast{
+  background:white;
+  border-radius:13px;
+  border:1px solid var(--border);
+  box-shadow:0 12px 35px rgba(20,55,90,.17);
+  padding:12px 13px;
+  display:flex;
+  align-items:flex-start;
+  gap:10px;
+  margin-bottom:7px;
+  animation:toastIn .22s ease;
+  pointer-events:auto;
+}
+
+@keyframes toastIn{
+  from{
+    opacity:0;
+    transform:translateY(-8px);
+  }
+  to{
+    opacity:1;
+    transform:translateY(0);
+  }
+}
+
+.toast.success .toast-mark{
+  color:var(--green);
+}
+
+.toast.error .toast-mark{
+  color:var(--red);
+}
+
+.toast.info .toast-mark{
   color:var(--blue);
 }
 
-/* =========================================================
-   WHATSAPP
-========================================================= */
+.toast-mark{
+  font-size:17px;
+  font-weight:900;
+}
 
-.whatsappFloat{
+.toast-content{
+  flex:1;
+}
+
+.toast-title{
+  font-size:12px;
+  font-weight:900;
+}
+
+.toast-message{
+  font-size:10px;
+  color:var(--muted);
+  line-height:1.45;
+  margin-top:2px;
+}
+
+/* =========================
+PURCHASE MODAL
+========================= */
+
+.confirm-overlay{
   position:fixed;
-  right:17px;
-  bottom:84px;
-  width:53px;
-  height:53px;
-  border-radius:50%;
-  background:#25D366;
-  color:#fff;
-  z-index:2100;
+  inset:0;
+  background:rgba(10,25,42,.22);
+  z-index:250;
   display:flex;
   align-items:center;
   justify-content:center;
-  font-size:27px;
-  box-shadow:0 10px 25px rgba(37,211,102,.35);
-  border:3px solid #fff;
+  padding:18px;
 }
 
-.whatsappFloat:active{
-  transform:scale(.95);
+.confirm-card{
+  width:min(100%,330px);
+  background:white;
+  border-radius:17px;
+  padding:17px;
+  box-shadow:0 18px 45px rgba(0,0,0,.18);
 }
 
-/* =========================================================
-   RESPONSIVE
-========================================================= */
+.confirm-card h3{
+  font-size:16px;
+}
+
+.confirm-card p{
+  font-size:11px;
+  color:var(--muted);
+  line-height:1.5;
+  margin-top:6px;
+}
+
+.confirm-price{
+  background:var(--blue-light);
+  border-radius:11px;
+  padding:11px;
+  margin-top:12px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
+
+.confirm-price span{
+  font-size:11px;
+  color:var(--muted);
+}
+
+.confirm-price strong{
+  font-size:15px;
+  color:var(--blue-dark);
+}
+
+.confirm-actions{
+  display:flex;
+  gap:8px;
+  margin-top:13px;
+}
+
+.confirm-actions button{
+  flex:1;
+  border:0;
+  border-radius:10px;
+  padding:10px;
+  font-size:11px;
+  font-weight:800;
+}
+
+.confirm-cancel{
+  background:#f0f4f8;
+  color:#617184;
+}
+
+.confirm-buy{
+  background:var(--blue);
+  color:white;
+}
+
+/* =========================
+RESPONSIVE
+========================= */
 
 @media(min-width:700px){
   .main{
-    padding-left:25px;
-    padding-right:25px;
+    padding-top:24px;
   }
 
-  .countryList{
-    grid-template-columns:repeat(2,1fr);
-  }
-
-  .serviceList{
-    grid-template-columns:repeat(2,1fr);
-  }
-
-  .serverList{
-    grid-template-columns:repeat(2,1fr);
-  }
-
-  .bottomNav{
-    border-left:1px solid var(--border);
-    border-right:1px solid var(--border);
+  .bottom-nav{
+    width:520px;
+    left:50%;
+    transform:translateX(-50%);
+    border:1px solid var(--border);
+    border-bottom:0;
     border-radius:18px 18px 0 0;
   }
 
-  .whatsappFloat{
-    right:30px;
+  .whatsapp{
+    right:calc(50% - 340px);
   }
 }
 </style>
@@ -1429,622 +1055,286 @@ a{
 
 <body>
 
-<!-- =======================================================
-     PAGE LOADER
-======================================================= -->
-
-<div id="pageLoader">
-  <div class="loaderBox">
-    <div class="loaderLogo">G</div>
-    <div class="spinner"></div>
-  </div>
-</div>
-
-<!-- =======================================================
-     HEADER
-======================================================= -->
-
 <header class="header">
+  <button class="icon-btn" id="menuBtn" aria-label="Menu">☰</button>
 
-  <div class="headerLeft">
-
-    <button
-      class="menuBtn"
-      id="menuBtn"
-      aria-label="Open menu"
-    >
-      ☰
-    </button>
-
-    <div class="brand">
-      <div class="brandName">Gustodigits</div>
-      <div class="brandSub">VIRTUAL NUMBERS</div>
-    </div>
-
+  <div class="brand">
+    <span>Gusto</span>digits
   </div>
 
-  <div class="headerRight">
-
-    <button
-      class="headerIcon"
-      id="headerRefresh"
-      title="Refresh"
-    >
-      ↻
-    </button>
-
+  <div class="header-right">
+    <button class="icon-btn" id="refreshBtn" aria-label="Refresh">↻</button>
   </div>
-
 </header>
 
-<!-- =======================================================
-     SIDE MENU
-======================================================= -->
+<main class="main">
 
-<div class="menuOverlay" id="menuOverlay">
+  <section class="welcome">
+    <small id="welcomeSmall">Welcome back</small>
+    <h1 id="welcomeName">Hello 👋</h1>
+  </section>
 
-  <aside class="sideMenu">
+  <section class="wallet-card">
+    <div class="wallet-top">
+      <div>
+        <div class="wallet-label">Wallet Balance</div>
+        <div class="wallet-balance" id="walletBalance">₦0</div>
+      </div>
 
-    <button class="menuClose" id="menuClose">×</button>
-
-    <div class="menuTop">
-      <div class="menuBrand">Gustodigits</div>
-      <div class="menuCaption">Virtual Number Dashboard</div>
+      <button class="fund-btn" id="fundBtn">
+        + Fund Wallet
+      </button>
     </div>
 
-    <div class="menuItems">
+    <div class="wallet-bottom">
+      <span>Virtual Numbers</span>
+      <span>Secure & Fast</span>
+    </div>
+  </section>
 
-      <button
-        class="menuItem"
-        onclick="goTo('dashboard.html')"
-      >
-        <span class="menuIcon">⌂</span>
-        <strong>Dashboard</strong>
-      </button>
+  <section class="number-box">
 
-      <button
-        class="menuItem"
-        onclick="goTo('orders.html')"
-      >
-        <span class="menuIcon">▣</span>
-        <strong>Orders</strong>
-      </button>
+    <div class="box-heading">
+      <div>
+        <h2>Get a Virtual Number</h2>
+        <p>Select country, service and server</p>
+      </div>
+    </div>
 
-      <button
-        class="menuItem"
-        onclick="goTo('transactions.html')"
-      >
-        <span class="menuIcon">↔</span>
-        <strong>Transactions</strong>
-      </button>
+    <div class="steps">
+      <div class="step active" id="step1"></div>
+      <div class="step" id="step2"></div>
+      <div class="step" id="step3"></div>
+    </div>
 
-      <button
-        class="menuItem"
-        onclick="goTo('wallet.html')"
-      >
-        <span class="menuIcon">₦</span>
-        <strong>Fund Wallet</strong>
-      </button>
+    <!-- COUNTRY -->
+    <div id="countryStep">
 
-      <button
-        class="menuItem"
-        onclick="contactSupport()"
-      >
-        <span class="menuIcon">◉</span>
-        <strong>Contact Support</strong>
-      </button>
+      <div class="selector" id="countrySelector">
+        <div class="selector-left">
+          <span class="selector-label">Country</span>
+          <span class="selector-value" id="countryValue">
+            Choose Country
+          </span>
+        </div>
+        <span class="selector-arrow">⌄</span>
+      </div>
 
-      <button
-        class="menuItem"
-        onclick="goTo('profile.html')"
-      >
-        <span class="menuIcon">●</span>
-        <strong>Profile</strong>
-      </button>
+      <div class="selection-panel hidden" id="countryPanel">
+        <div class="panel-search">
+          <input
+            type="text"
+            id="countrySearch"
+            placeholder="Search country..."
+            autocomplete="off"
+          >
+        </div>
 
-      <button
-        class="menuItem logoutItem"
-        id="logoutBtn"
-      >
-        <span class="menuIcon">↪</span>
-        <strong>Logout</strong>
-      </button>
+        <div class="panel-list" id="countryList"></div>
+      </div>
 
     </div>
+
+    <!-- SERVICE -->
+    <div id="serviceStep" class="hidden">
+
+      <div class="back-row">
+        <button class="back-btn" id="backToCountry">
+          ← Back to Country
+        </button>
+      </div>
+
+      <div class="selector" id="serviceSelector">
+        <div class="selector-left">
+          <span class="selector-label">Service</span>
+          <span class="selector-value" id="serviceValue">
+            Choose Service
+          </span>
+        </div>
+        <span class="selector-arrow">⌄</span>
+      </div>
+
+      <div class="selection-panel hidden" id="servicePanel">
+        <div class="panel-search">
+          <input
+            type="text"
+            id="serviceSearch"
+            placeholder="Search service..."
+            autocomplete="off"
+          >
+        </div>
+
+        <div class="panel-list" id="serviceList"></div>
+      </div>
+
+    </div>
+
+    <!-- SERVER -->
+    <div id="serverStep" class="hidden">
+
+      <div class="back-row">
+        <button class="back-btn" id="backToService">
+          ← Back to Service
+        </button>
+      </div>
+
+      <div style="margin-bottom:10px">
+        <span class="selector-label">Available Servers</span>
+      </div>
+
+      <div class="server-list" id="serverList">
+        <div class="loading">
+          <div class="spinner"></div>
+          Loading servers...
+        </div>
+      </div>
+
+      <div id="serverError" class="inline-error hidden"></div>
+
+    </div>
+
+    <!-- PURCHASE RESULT -->
+    <div id="purchaseResult" class="result-card hidden">
+
+      <div class="result-success">
+        <span class="success-dot">✓</span>
+        Number successfully purchased
+      </div>
+
+      <div>
+        <div class="number-label">Your Number</div>
+        <div class="phone-number" id="purchasedNumber">—</div>
+      </div>
+
+      <div class="code-box">
+        <div class="code-label">Verification Code</div>
+        <div class="otp" id="otpCode">Waiting...</div>
+      </div>
+
+      <div class="result-actions">
+        <button class="action-btn get-code" id="getCodeBtn">
+          Get Code
+        </button>
+
+        <button class="action-btn cancel-code" id="cancelBtn">
+          Cancel
+        </button>
+      </div>
+
+    </div>
+
+  </section>
+
+  <!-- RECENT ORDERS -->
+  <section class="recent">
+    <div class="recent-title">
+      <h3>Recent Orders</h3>
+      <button class="see-more" id="seeOrders">
+        See more →
+      </button>
+    </div>
+
+    <div id="recentOrders">
+      <div class="empty">No recent orders yet.</div>
+    </div>
+  </section>
+
+</main>
+
+<!-- WHATSAPP -->
+<a
+  class="whatsapp"
+  id="whatsappBtn"
+  href="#"
+  target="_blank"
+  rel="noopener"
+  aria-label="Contact Support on WhatsApp"
+>
+  <span>◉</span>
+</a>
+
+<!-- BOTTOM NAV -->
+<nav class="bottom-nav">
+  <button class="nav-item active" id="homeNav">
+    <span class="nav-icon">⌂</span>
+    <span>Home</span>
+  </button>
+
+  <button class="nav-item" id="ordersNav">
+    <span class="nav-icon">▤</span>
+    <span>Orders</span>
+  </button>
+
+  <button class="nav-item" id="transactionsNav">
+    <span class="nav-icon">₦</span>
+    <span>Transactions</span>
+  </button>
+
+  <button class="nav-item" id="supportNav">
+    <span class="nav-icon">◌</span>
+    <span>Support</span>
+  </button>
+</nav>
+
+<!-- MENU -->
+<div class="menu-overlay" id="menuOverlay">
+
+  <aside class="side-menu">
+
+    <button class="menu-close" id="menuClose">✕</button>
+
+    <div class="menu-brand">
+      <span>Gusto</span>digits
+    </div>
+
+    <button class="menu-item" id="profileMenu">
+      👤 <span>Profile</span>
+    </button>
+
+    <button class="menu-item" id="ordersMenu">
+      📋 <span>Orders</span>
+    </button>
+
+    <button class="menu-item" id="transactionsMenu">
+      ₦ <span>Transactions</span>
+    </button>
+
+    <button class="menu-item" id="walletMenu">
+      💳 <span>Fund Wallet</span>
+    </button>
+
+    <button class="menu-item" id="supportMenu">
+      💬 <span>Contact Support</span>
+    </button>
 
   </aside>
 
 </div>
 
-<!-- =======================================================
-     MAIN
-======================================================= -->
+<!-- VERIFICATION NOTICE -->
+<div class="notice-overlay" id="noticeOverlay">
 
-<main class="main">
+  <div class="notice-card">
 
-  <div class="greeting">
-    <div class="greetingSmall">Welcome back 👋</div>
-    <div class="greetingTitle" id="greetingName">
-      Welcome to Gustodigits
-    </div>
-  </div>
-
-  <!-- WALLET -->
-
-  <section class="walletCard">
-
-    <div class="walletLabel">
-      Available Wallet Balance
+    <div class="notice-head">
+      <div class="notice-icon">✓</div>
+      <strong>Verification Notice</strong>
     </div>
 
-    <div
-      class="walletBalance"
-      id="walletBalance"
-    >
-      ₦0
-    </div>
+    <div class="notice-body">
 
-    <div class="walletBottom">
+      <p>
+        Welcome to Gustodigits. Use the available numbers
+        for your verification needs. Please keep your account
+        and wallet details secure.
+      </p>
 
-      <div class="walletStatus">
-        Ready for your next number
+      <div class="notice-watermark">
+        All services are for educational purposes.
       </div>
 
-      <button
-        class="fundBtn"
-        onclick="goTo('wallet.html')"
-      >
-        + Fund Wallet
-      </button>
-
-    </div>
-
-  </section>
-
-  <!-- PURCHASE RESULT -->
-
-  <section
-    class="purchaseResult"
-    id="purchaseResult"
-  >
-
-    <div class="purchaseSuccess">
-
-      <div class="successIcon">✓</div>
-
-      <div>
-        <strong>Number successfully purchased</strong>
-        <span>Your number is ready.</span>
-      </div>
-
-    </div>
-
-    <div class="numberBox">
-
-      <div class="numberLabel">
-        YOUR NUMBER
-      </div>
-
-      <div
-        class="numberValue"
-        id="purchasedNumber"
-      >
-        —
-      </div>
-
-      <div class="resultActions">
-
-        <button
-          class="resultBtn getCodeBtn"
-          id="mainGetCodeBtn"
-        >
-          Get Code
-        </button>
-
-        <button
-          class="resultBtn cancelBtn"
-          id="mainCancelBtn"
-        >
-          Cancel
-        </button>
-
-      </div>
-
-      <div
-        class="codeBox"
-        id="mainCodeBox"
-      >
-        <small>VERIFICATION CODE</small>
-        <strong id="mainCode">—</strong>
-      </div>
-
-    </div>
-
-  </section>
-
-  <!-- STEPS -->
-
-  <div class="steps">
-
-    <div
-      class="step active"
-      id="step1"
-    >
-      <div class="stepNumber">1</div>
-      <div class="stepText">Country</div>
-    </div>
-
-    <div
-      class="step"
-      id="step2"
-    >
-      <div class="stepNumber">2</div>
-      <div class="stepText">Service</div>
-    </div>
-
-    <div
-      class="step"
-      id="step3"
-    >
-      <div class="stepNumber">3</div>
-      <div class="stepText">Server</div>
-    </div>
-
-  </div>
-
-  <!-- COUNTRY -->
-
-  <section
-    class="panel"
-    id="countryPanel"
-  >
-
-    <div class="panelHeader">
-
-      <div>
-        <div class="panelTitle">
-          Choose Country
-        </div>
-
-        <div class="panelHint">
-          Select where you want to receive your number.
-        </div>
-      </div>
-
-      <button
-        class="refreshBtn"
-        id="countryRefresh"
-      >
-        ↻
-      </button>
-
-    </div>
-
-    <div class="searchBox">
-
-      <span class="searchIcon">⌕</span>
-
-      <input
-        type="search"
-        id="countrySearch"
-        placeholder="Search country..."
-        autocomplete="off"
-      >
-
-    </div>
-
-    <div
-      class="countryList"
-      id="countryList"
-    >
-      <div class="miniLoader"></div>
-    </div>
-
-  </section>
-
-  <!-- SERVICE -->
-
-  <section
-    class="panel"
-    id="servicePanel"
-    style="display:none;"
-  >
-
-    <div class="panelHeader">
-
-      <div>
-        <div class="panelTitle">
-          Choose Service
-        </div>
-
-        <div
-          class="panelHint"
-          id="selectedCountryText"
-        >
-          Select a service.
-        </div>
-      </div>
-
-      <button
-        class="refreshBtn"
-        id="serviceRefresh"
-      >
-        ↻
-      </button>
-
-    </div>
-
-    <div
-      class="serviceList"
-      id="serviceList"
-    ></div>
-
-  </section>
-
-  <!-- SERVER -->
-
-  <section
-    class="panel"
-    id="serverPanel"
-    style="display:none;"
-  >
-
-    <div class="panelHeader">
-
-      <div>
-        <div class="panelTitle">
-          Choose Server
-        </div>
-
-        <div
-          class="panelHint"
-          id="selectedServiceText"
-        >
-          Available servers are shown below.
-        </div>
-      </div>
-
-      <button
-        class="refreshBtn"
-        id="serverRefresh"
-      >
-        ↻
-      </button>
-
-    </div>
-
-    <div
-      class="serverList"
-      id="serverList"
-    ></div>
-
-  </section>
-
-  <!-- RECENT ORDERS -->
-
-  <div class="recentHeader">
-
-    <div class="sectionTitle">
-      Recent Purchases
-    </div>
-
-    <a
-      href="orders.html"
-      class="seeMore"
-    >
-      See more →
-    </a>
-
-  </div>
-
-  <section id="recentOrders">
-
-    <div class="panel">
-      <div class="miniLoader"></div>
-    </div>
-
-  </section>
-
-</main>
-
-<!-- =======================================================
-     BOTTOM NAV
-======================================================= -->
-
-<nav class="bottomNav">
-
-  <a
-    class="navItem active"
-    href="dashboard.html"
-  >
-    <span>⌂</span>
-    <span>Home</span>
-  </a>
-
-  <a
-    class="navItem"
-    href="orders.html"
-  >
-    <span>▣</span>
-    <span>Orders</span>
-  </a>
-
-  <a
-    class="navItem"
-    href="transactions.html"
-  >
-    <span>↔</span>
-    <span>Transactions</span>
-  </a>
-
-  <button
-    class="navItem"
-    onclick="contactSupport()"
-  >
-    <span>◉</span>
-    <span>Support</span>
-  </button>
-
-</nav>
-
-<!-- =======================================================
-     WHATSAPP
-======================================================= -->
-
-<a
-  class="whatsappFloat"
-  href="https://wa.me/2347038064570"
-  target="_blank"
-  rel="noopener noreferrer"
-  aria-label="WhatsApp Support"
-  title="WhatsApp Support"
->
-  ☎
-</a>
-
-<!-- =======================================================
-     VERIFICATION POPUP
-======================================================= -->
-
-<div
-  class="verificationOverlay"
-  id="verificationOverlay"
->
-
-  <div class="verificationModal">
-
-    <div class="verificationHead">
-
-      <div class="verificationTitleWrap">
-
-        <div class="megaphone">
-          📣
-        </div>
-
-        <div class="verificationTitle">
-          Important Verification
-        </div>
-
-      </div>
-
-      <button
-        class="closeVerification"
-        id="closeVerification"
-      >
-        ×
-      </button>
-
-    </div>
-
-    <div class="verificationBody">
-
-      <div class="shield">
-        🛡️
-      </div>
-
-      <div class="bestHeading">
-
-        <div class="spark">
-          ✨
-        </div>
-
-        <span>Best Practices for Success</span>
-
-      </div>
-
-      <div class="verificationItem">
-
-        <div class="verificationItemIcon">
-          🔄
-        </div>
-
-        <div>
-          <strong>Fresh Installation</strong>
-
-          <p>
-            Uninstall the app and clear its cache
-            before requesting a new number.
-          </p>
-        </div>
-
-      </div>
-
-      <div class="verificationItem">
-
-        <div class="verificationItemIcon">
-          📱
-        </div>
-
-        <div>
-          <strong>Official Apps Only</strong>
-
-          <p>
-            Use the standard official app version.
-            Modified versions often fail verification.
-          </p>
-        </div>
-
-      </div>
-
-      <div class="verificationItem">
-
-        <div class="verificationItemIcon">
-          🌐
-        </div>
-
-        <div>
-          <strong>Location Match</strong>
-
-          <p>
-            Keep your device settings and connection
-            consistent with the selected country while waiting.
-          </p>
-        </div>
-
-      </div>
-
-      <div class="verificationItem">
-
-        <div class="verificationItemIcon">
-          📶
-        </div>
-
-        <div>
-          <strong>Stay Connected</strong>
-
-          <p>
-            Keep the app open and maintain a stable connection.
-          </p>
-        </div>
-
-      </div>
-
-      <div class="providerTip">
-
-        <div class="verificationItemIcon">
-          💡
-        </div>
-
-        <div>
-
-          <strong>Provider Tip</strong>
-
-          <p>
-            If a server does not receive a code,
-            please try another server. Each server
-            shows its availability. Cancel when
-            cancellation is available to receive your refund.
-          </p>
-
-        </div>
-
-      </div>
-
-      <button
-        class="understandBtn"
-        id="understandBtn"
-      >
-        I Understand
+      <button class="notice-close" id="noticeClose">
+        Continue
       </button>
 
     </div>
@@ -2053,136 +1343,72 @@ a{
 
 </div>
 
-<!-- =======================================================
-     ALERT MODAL
-======================================================= -->
+<!-- CONFIRM PURCHASE -->
+<div class="confirm-overlay hidden" id="confirmOverlay">
 
-<div
-  class="alertOverlay"
-  id="alertOverlay"
->
+  <div class="confirm-card">
 
-  <div class="alertModal">
+    <h3>Purchase Number</h3>
 
-    <div
-      class="alertIcon info"
-      id="alertIcon"
-    >
-      !
-    </div>
-
-    <div
-      class="alertTitle"
-      id="alertTitle"
-    >
-      Notice
-    </div>
-
-    <div
-      class="alertMessage"
-      id="alertMessage"
-    ></div>
-
-    <div class="alertActions">
-
-      <button
-        class="alertAction alertSecondary"
-        id="alertClose"
-      >
-        Close
-      </button>
-
-      <button
-        class="alertAction alertPrimary"
-        id="alertPrimary"
-        style="display:none;"
-      >
-        Fund Wallet
-      </button>
-
-    </div>
-
-  </div>
-
-</div>
-
-<!-- =======================================================
-     CONFIRM CANCEL
-======================================================= -->
-
-<div
-  class="confirmOverlay"
-  id="confirmOverlay"
->
-
-  <div class="confirmModal">
-
-    <h3>Cancel this number?</h3>
-
-    <p>
-      If cancellation is available, the number will be
-      cancelled and the amount will be refunded to your wallet.
+    <p id="confirmText">
+      Confirm that you want to purchase this number.
     </p>
 
-    <div class="confirmActions">
+    <div class="confirm-price">
+      <span>Price</span>
+      <strong id="confirmPrice">₦0</strong>
+    </div>
 
-      <button
-        class="confirmNo"
-        id="confirmNo"
-      >
-        Keep Number
+    <div class="confirm-actions">
+      <button class="confirm-cancel" id="confirmCancel">
+        Cancel
       </button>
 
-      <button
-        class="confirmYes"
-        id="confirmYes"
-      >
-        Cancel Number
+      <button class="confirm-buy" id="confirmBuy">
+        Buy Number
       </button>
-
     </div>
 
   </div>
 
 </div>
+
+<!-- TOAST -->
+<div class="toast-wrap" id="toastWrap"></div>
 
 <script>
 /* =========================================================
-   GUSTODIGITS CONFIGURATION
+   SUPABASE
 ========================================================= */
 
 const SUPABASE_URL =
   "https://gvuaxtsdpmrragkkjowv.supabase.co";
 
-const SUPABASE_PUBLISHABLE_KEY =
+const SUPABASE_KEY =
   "sb_publishable_oDAsADaZzLDiFX0cXogUyw_tTQYCa2k";
-
-/*
-  This must match the deployed name of the Grizzly Edge Function.
-  The frontend never receives the Grizzly API key.
-*/
-const GRIZZLY_FUNCTION_NAME = "grizzly";
-
-const GRIZZLY_FUNCTION_URL =
-  `${SUPABASE_URL}/functions/v1/${GRIZZLY_FUNCTION_NAME}`;
-
-const WHATSAPP_NUMBER =
-  "2347038064570";
-
-const WHATSAPP_URL =
-  `https://wa.me/${WHATSAPP_NUMBER}`;
-
-
-/* =========================================================
-   SUPABASE
-========================================================= */
 
 const supabaseClient =
   window.supabase.createClient(
     SUPABASE_URL,
-    SUPABASE_PUBLISHABLE_KEY
+    SUPABASE_KEY
   );
 
+/* =========================================================
+   EDGE FUNCTION
+========================================================= */
+
+const GRIZZLY_FUNCTION =
+  `${SUPABASE_URL}/functions/v1/grizzly`;
+
+/* =========================================================
+   SUPPORT
+========================================================= */
+
+const SUPPORT_NUMBER =
+  "2347038064570";
+
+const SUPPORT_LINK =
+  `https://wa.me/${SUPPORT_NUMBER}`;
 
 /* =========================================================
    STATE
@@ -2190,379 +1416,276 @@ const supabaseClient =
 
 let currentUser = null;
 
+let walletBalance = 0;
+
 let countries = [];
-let filteredCountries = [];
+
+let services = [];
+
+let servers = [];
 
 let selectedCountry = null;
+
 let selectedService = null;
+
 let selectedServer = null;
 
-let currentActivationId = null;
-let currentOrderId = null;
-let currentPhoneNumber = null;
+let activeActivationId = null;
 
-let orders = [];
+let activeOrderId = null;
 
-let pollingTimer = null;
+let statusTimer = null;
 
-
-/* =========================================================
-   DOM HELPERS
-========================================================= */
-
-const $ = (id) =>
-  document.getElementById(id);
-
+let pendingPurchaseServer = null;
 
 /* =========================================================
-   FORMATTERS
+   HELPERS
 ========================================================= */
 
-function formatNaira(value){
-  const amount =
-    Number(value);
+function money(value){
+  const number = Number(value || 0);
 
-  if(!Number.isFinite(amount)){
-    return "₦0";
+  return `₦${Math.max(0, number).toLocaleString(
+    "en-NG",
+    {
+      maximumFractionDigits:0
+    }
+  )}`;
+}
+
+function clean(value){
+  if(
+    value === null ||
+    value === undefined
+  ){
+    return "";
   }
 
-  return "₦" +
-    Math.round(amount)
-      .toLocaleString("en-NG");
+  return String(value).trim();
 }
 
-function escapeHTML(value){
+function escapeHtml(value){
   return String(value ?? "")
-    .replace(/&/g,"&amp;")
-    .replace(/</g,"&lt;")
-    .replace(/>/g,"&gt;")
-    .replace(/"/g,"&quot;")
-    .replace(/'/g,"&#039;");
+    .replaceAll("&","&amp;")
+    .replaceAll("<","&lt;")
+    .replaceAll(">","&gt;")
+    .replaceAll('"',"&quot;")
+    .replaceAll("'","&#039;");
 }
 
-function getFlag(country){
-  const code =
-    String(country?.code || country?.country_id || "")
-      .toUpperCase();
-
-  const flags = {
-    NG:"🇳🇬",
-    US:"🇺🇸",
-    GB:"🇬🇧",
-    UK:"🇬🇧",
-    CA:"🇨🇦",
-    DE:"🇩🇪",
-    FR:"🇫🇷",
-    IT:"🇮🇹",
-    ES:"🇪🇸",
-    BR:"🇧🇷",
-    AU:"🇦🇺",
-    IN:"🇮🇳",
-    ZA:"🇿🇦",
-    GH:"🇬🇭",
-    KE:"🇰🇪",
-    AE:"🇦🇪",
-    TR:"🇹🇷",
-    NL:"🇳🇱",
-    BE:"🇧🇪",
-    SE:"🇸🇪",
-    NO:"🇳🇴",
-    FI:"🇫🇮",
-    PL:"🇵🇱",
-    RO:"🇷🇴",
-    MX:"🇲🇽",
-    AR:"🇦🇷",
-    CO:"🇨🇴",
-    ID:"🇮🇩",
-    PH:"🇵🇭",
-    MY:"🇲🇾",
-    SG:"🇸🇬",
-    JP:"🇯🇵",
-    KR:"🇰🇷",
-    VN:"🇻🇳",
-    TH:"🇹🇭",
-    PK:"🇵🇰",
-    BD:"🇧🇩",
-    EG:"🇪🇬",
-    MA:"🇲🇦",
-    DZ:"🇩🇿"
-  };
-
-  return flags[code] || "🌍";
-}
-
-
-/* =========================================================
-   NAVIGATION
-========================================================= */
-
-function goTo(page){
-  window.location.href = page;
-}
-
-function contactSupport(){
-  window.open(
-    WHATSAPP_URL,
-    "_blank",
-    "noopener,noreferrer"
-  );
-}
-
-
-/* =========================================================
-   MENU
-========================================================= */
-
-function openMenu(){
-  $("menuOverlay")
-    .classList
-    .add("open");
-}
-
-function closeMenu(){
-  $("menuOverlay")
-    .classList
-    .remove("open");
-}
-
-$("menuBtn").addEventListener(
-  "click",
-  openMenu
-);
-
-$("menuClose").addEventListener(
-  "click",
-  closeMenu
-);
-
-$("menuOverlay").addEventListener(
-  "click",
-  (event) => {
+function firstValue(...values){
+  for(const value of values){
     if(
-      event.target === $("menuOverlay")
+      value !== undefined &&
+      value !== null &&
+      String(value).trim() !== ""
     ){
-      closeMenu();
+      return value;
     }
   }
-);
 
+  return "";
+}
 
-/* =========================================================
-   ALERTS
-========================================================= */
-
-let alertPrimaryAction = null;
-
-function showAlert(
+function showToast(
   title,
   message,
-  type = "info",
-  primaryText = "",
-  primaryAction = null
+  type="info"
 ){
+  const wrap =
+    document.getElementById("toastWrap");
 
-  $("alertTitle").textContent =
-    title;
+  const toast =
+    document.createElement("div");
 
-  $("alertMessage").textContent =
-    message;
+  toast.className =
+    `toast ${type}`;
 
-  const icon =
-    $("alertIcon");
-
-  icon.className =
-    "alertIcon " +
-    (
-      type === "error"
-        ? "error"
-        : type === "success"
-          ? "success"
-          : "info"
-    );
-
-  icon.textContent =
-    type === "error"
-      ? "!"
-      : type === "success"
-        ? "✓"
+  const mark =
+    type === "success"
+      ? "✓"
+      : type === "error"
+        ? "!"
         : "i";
 
-  alertPrimaryAction =
-    primaryAction;
+  toast.innerHTML = `
+    <div class="toast-mark">${mark}</div>
 
-  const primary =
-    $("alertPrimary");
+    <div class="toast-content">
+      <div class="toast-title">
+        ${escapeHtml(title)}
+      </div>
 
-  if(
-    primaryText &&
-    typeof primaryAction === "function"
-  ){
-    primary.style.display =
-      "block";
+      <div class="toast-message">
+        ${escapeHtml(message)}
+      </div>
+    </div>
+  `;
 
-    primary.textContent =
-      primaryText;
-  }else{
-    primary.style.display =
-      "none";
-  }
+  wrap.appendChild(toast);
 
-  $("alertOverlay")
-    .classList
-    .add("show");
+  setTimeout(()=>{
+    toast.remove();
+  },4200);
 }
 
-function closeAlert(){
-  $("alertOverlay")
-    .classList
-    .remove("show");
-
-  alertPrimaryAction =
-    null;
+function setLoading(
+  element,
+  text="Loading..."
+){
+  element.innerHTML = `
+    <div class="loading">
+      <div class="spinner"></div>
+      ${escapeHtml(text)}
+    </div>
+  `;
 }
 
-$("alertClose").addEventListener(
-  "click",
-  closeAlert
-);
+function getCountryName(item){
+  return clean(
+    firstValue(
+      item?.name,
+      item?.country_name,
+      item?.countryName,
+      item?.label,
+      item?.title,
+      item?.code
+    )
+  );
+}
 
-$("alertPrimary").addEventListener(
-  "click",
-  () => {
-    if(
-      typeof alertPrimaryAction ===
-      "function"
-    ){
-      alertPrimaryAction();
-    }
+function getCountryCode(item){
+  return clean(
+    firstValue(
+      item?.id,
+      item?.country_id,
+      item?.country_key,
+      item?.code
+    )
+  );
+}
 
-    closeAlert();
-  }
-);
+function getServiceName(item){
+  return clean(
+    firstValue(
+      item?.name,
+      item?.service_name,
+      item?.serviceName,
+      item?.label,
+      item?.title,
+      item?.service
+    )
+  );
+}
 
+function getServiceCode(item){
+  return clean(
+    firstValue(
+      item?.service,
+      item?.service_code,
+      item?.code,
+      item?.id,
+      item?.product
+    )
+  );
+}
+
+function getServerId(item){
+  return clean(
+    firstValue(
+      item?.server_id,
+      item?.provider_id,
+      item?.operator_id,
+      item?.id,
+      item?.raw_provider_id
+    )
+  );
+}
+
+function getServerName(item,index){
+  return clean(
+    firstValue(
+      item?.server_name,
+      item?.server_label,
+      item?.name,
+      item?.label,
+      item?.operator_name,
+      `Server ${index + 1}`
+    )
+  );
+}
+
+function getServerPrice(item){
+  return Number(
+    firstValue(
+      item?.customer_price_ngn,
+      item?.selling_price_ngn,
+      item?.price_ngn,
+      item?.price
+    ) || 0
+  );
+}
+
+function getServerStock(item){
+  return Number(
+    firstValue(
+      item?.available,
+      item?.stock
+    ) || 0
+  );
+}
 
 /* =========================================================
-   VERIFICATION POPUP
+   AUTH
 ========================================================= */
 
-function openVerificationPopup(){
-
-  $("verificationOverlay")
-    .classList
-    .add("show");
-}
-
-function closeVerificationPopup(){
-
-  $("verificationOverlay")
-    .classList
-    .remove("show");
-}
-
-$("closeVerification")
-  .addEventListener(
-    "click",
-    closeVerificationPopup
-  );
-
-$("understandBtn")
-  .addEventListener(
-    "click",
-    closeVerificationPopup
-  );
-
-
-/*
-  The popup is intentionally NOT saved in localStorage.
-  Therefore it appears again every time the dashboard
-  document is loaded/refreshed.
-*/
-
-
-/* =========================================================
-   SESSION
-========================================================= */
-
-async function loadSession(){
+async function requireUser(){
 
   const {
     data,
     error
   } =
-    await supabaseClient
-      .auth
-      .getSession();
+    await supabaseClient.auth.getSession();
 
   if(
     error ||
-    !data?.session
+    !data?.session ||
+    !data.session.user
   ){
     window.location.href =
       "login.html";
 
-    return false;
+    return null;
   }
 
   currentUser =
     data.session.user;
 
-  const firstName =
-    currentUser.user_metadata?.first_name ||
-    "";
-
-  const lastName =
-    currentUser.user_metadata?.last_name ||
-    "";
-
-  const fullName =
-    `${firstName} ${lastName}`
-      .trim();
-
-  if(fullName){
-    $("greetingName")
-      .textContent =
-        `Welcome back, ${fullName} 👋`;
-  }else{
-    $("greetingName")
-      .textContent =
-        "Welcome back 👋";
-  }
-
-  return true;
+  return currentUser;
 }
 
-
 /* =========================================================
-   AUTH HEADER
+   EDGE REQUEST
 ========================================================= */
 
-async function getAccessToken(){
-
-  const {
-    data
-  } =
-    await supabaseClient
-      .auth
-      .getSession();
-
-  return data?.session?.access_token ||
-    "";
-}
-
-
-/* =========================================================
-   GRIZZLY EDGE FUNCTION REQUEST
-========================================================= */
-
-async function callGrizzly(
+async function edgeRequest(
   action,
-  payload = {}
+  body={}
 ){
 
-  const token =
-    await getAccessToken();
+  const {
+    data,
+    error
+  } =
+    await supabaseClient.auth.getSession();
 
-  if(!token){
+  if(
+    error ||
+    !data?.session?.access_token
+  ){
+    window.location.href =
+      "login.html";
+
     throw new Error(
       "Your session has expired. Please login again."
     );
@@ -2570,7 +1693,7 @@ async function callGrizzly(
 
   const response =
     await fetch(
-      GRIZZLY_FUNCTION_URL,
+      GRIZZLY_FUNCTION,
       {
         method:"POST",
 
@@ -2579,48 +1702,69 @@ async function callGrizzly(
             "application/json",
 
           "Authorization":
-            `Bearer ${token}`
+            `Bearer ${data.session.access_token}`
         },
 
         body:JSON.stringify({
           action,
-          ...payload
+          ...body
         })
       }
     );
 
-  let data = null;
+  let result = null;
 
   try{
-    data =
+    result =
       await response.json();
   }catch{
-    throw new Error(
-      "The server returned an invalid response."
-    );
+    result = null;
   }
 
   if(
     !response.ok
   ){
-
-    if(
-      data?.error ===
-      "PROVIDER_BALANCE"
-    ){
-      return data;
-    }
-
     throw new Error(
-      data?.message ||
-      data?.error ||
+      clean(
+        result?.message ||
+        result?.error
+      ) ||
       "Request failed."
     );
   }
 
-  return data;
-}
+  if(
+    result &&
+    result.ok === false
+  ){
+    const error =
+      clean(
+        result.error
+      );
 
+    const message =
+      clean(
+        result.message
+      );
+
+    const custom =
+      new Error(
+        message ||
+        error ||
+        "Request failed."
+      );
+
+    custom.code =
+      error;
+
+    custom.data =
+      result;
+
+    throw custom;
+  }
+
+  return result || {};
+}
 
 /* =========================================================
    WALLET
@@ -2640,110 +1784,137 @@ async function loadWallet(){
     } =
       await supabaseClient
         .from("wallet")
-        .select("balance")
+        .select("balance, amount")
         .eq(
           "user-id",
           currentUser.id
         )
         .maybeSingle();
 
-    if(error){
-      console.error(
-        "Wallet error:",
-        error
-      );
-
-      $("walletBalance")
-        .textContent =
-        "₦0";
-
-      return;
+    if(
+      error
+    ){
+      throw error;
     }
 
-    const balance =
+    walletBalance =
       Number(
-        data?.balance || 0
-      );
-
-    $("walletBalance")
-      .textContent =
-      formatNaira(balance);
+        firstValue(
+          data?.balance,
+          data?.amount,
+          0
+        )
+      ) || 0;
 
   }catch(error){
 
-    console.error(
-      "Wallet loading error:",
-      error
-    );
+    /*
+      The Grizzly function itself reads
+      the wallet server-side.
+
+      If direct wallet reading is not available
+      because of RLS, don't break the dashboard.
+    */
+
+    walletBalance = 0;
 
   }
+
+  document.getElementById(
+    "walletBalance"
+  ).textContent =
+    money(walletBalance);
 }
 
-
 /* =========================================================
-   COUNTRY
+   COUNTRIES
 ========================================================= */
 
 async function loadCountries(){
 
   const list =
-    $("countryList");
+    document.getElementById(
+      "countryList"
+    );
 
-  list.innerHTML =
-    `<div class="miniLoader"></div>`;
+  setLoading(
+    list,
+    "Loading countries..."
+  );
 
   try{
 
-    const data =
-      await callGrizzly(
+    const result =
+      await edgeRequest(
         "countries"
       );
 
     countries =
       Array.isArray(
-        data?.countries
+        result?.countries
       )
-        ? data.countries
+        ? result.countries
         : [];
-
-    filteredCountries =
-      [...countries];
 
     renderCountries();
 
   }catch(error){
 
-    console.error(error);
-
     list.innerHTML = `
-      <div class="emptyState">
-        <div class="emptyIcon">⚠</div>
-        <strong>Unable to load countries</strong>
-        <p>
-          Please refresh and try again.
-        </p>
+      <div class="empty">
+        Unable to load countries.
       </div>
     `;
+
+    showToast(
+      "Unable to load countries",
+      error.message,
+      "error"
+    );
   }
 }
 
-
-function renderCountries(){
+function renderCountries(
+  search=""
+){
 
   const list =
-    $("countryList");
+    document.getElementById(
+      "countryList"
+    );
 
-  if(
-    !filteredCountries.length
-  ){
+  const query =
+    search
+      .trim()
+      .toLowerCase();
+
+  const filtered =
+    countries.filter(
+      country => {
+
+        const name =
+          getCountryName(
+            country
+          ).toLowerCase();
+
+        const code =
+          getCountryCode(
+            country
+          ).toLowerCase();
+
+        return (
+          !query ||
+          name.includes(query) ||
+          code.includes(query)
+        );
+      }
+    );
+
+  if(!filtered.length){
 
     list.innerHTML = `
-      <div class="emptyState">
-        <div class="emptyIcon">🌍</div>
-        <strong>No country found</strong>
-        <p>
-          Try another country name.
-        </p>
+      <div class="empty">
+        No country found.
       </div>
     `;
 
@@ -2751,154 +1922,72 @@ function renderCountries(){
   }
 
   list.innerHTML =
-    filteredCountries
-      .map(
-        country => {
+    filtered.map(
+      country => {
 
-          const name =
-            country.name ||
-            country.country_name ||
-            country.code ||
-            "Unknown Country";
+        const name =
+          getCountryName(
+            country
+          );
 
-          const code =
-            country.code ||
-            country.country_id ||
-            "";
+        const code =
+          getCountryCode(
+            country
+          );
 
-          return `
-            <button
-              class="countryItem"
-              data-country-code="${escapeHTML(code)}"
-            >
+        return `
+          <button
+            class="option"
+            data-country="${escapeHtml(code)}"
+          >
+            <span>
+              <span class="option-name">
+                ${escapeHtml(name)}
+              </span>
 
-              <div class="countryLeft">
+              <span class="option-sub">
+                Select ${escapeHtml(name)}
+              </span>
+            </span>
 
-                <div class="countryFlag">
-                  ${getFlag(country)}
-                </div>
-
-                <div class="itemText">
-
-                  <div class="itemName">
-                    ${escapeHTML(name)}
-                  </div>
-
-                  <div class="itemSub">
-                    Select country
-                  </div>
-
-                </div>
-
-              </div>
-
-              <div class="arrow">
-                ›
-              </div>
-
-            </button>
-          `;
-        }
-      )
-      .join("");
+            <span class="option-arrow">›</span>
+          </button>
+        `;
+      }
+    ).join("");
 
   list
     .querySelectorAll(
-      ".countryItem"
+      "[data-country]"
     )
-    .forEach(
-      button => {
+    .forEach(button => {
 
-        button.addEventListener(
-          "click",
-          () => {
+      button.addEventListener(
+        "click",
+        ()=>{
+          const code =
+            button.dataset.country;
 
-            const code =
-              button.dataset.countryCode;
+          const country =
+            countries.find(
+              item =>
+                getCountryCode(item)
+                === code
+            );
 
-            const country =
-              countries.find(
-                item =>
-                  String(
-                    item.code ||
-                    item.country_id ||
-                    ""
-                  ) ===
-                  String(code)
-              );
-
-            if(country){
-              selectCountry(country);
-            }
-
+          if(country){
+            selectCountry(
+              country
+            );
           }
-        );
-
-      }
-    );
+        }
+      );
+    });
 }
 
-
-/* =========================================================
-   COUNTRY SEARCH
-========================================================= */
-
-$("countrySearch")
-  .addEventListener(
-    "input",
-    event => {
-
-      const search =
-        event.target.value
-          .trim()
-          .toLowerCase();
-
-      if(!search){
-
-        filteredCountries =
-          [...countries];
-
-      }else{
-
-        filteredCountries =
-          countries.filter(
-            country => {
-
-              const name =
-                String(
-                  country.name ||
-                  country.country_name ||
-                  ""
-                )
-                .toLowerCase();
-
-              const code =
-                String(
-                  country.code ||
-                  country.country_id ||
-                  ""
-                )
-                .toLowerCase();
-
-              return (
-                name.includes(search) ||
-                code.includes(search)
-              );
-            }
-          );
-      }
-
-      renderCountries();
-
-    }
-  );
-
-
-/* =========================================================
-   SELECT COUNTRY
-========================================================= */
-
-async function selectCountry(country){
+async function selectCountry(
+  country
+){
 
   selectedCountry =
     country;
@@ -2909,112 +1998,152 @@ async function selectCountry(country){
   selectedServer =
     null;
 
-  const name =
-    country.name ||
-    country.country_name ||
-    country.code ||
-    "Selected country";
+  document.getElementById(
+    "countryValue"
+  ).textContent =
+    getCountryName(
+      country
+    );
 
-  $("selectedCountryText")
-    .textContent =
-      name;
+  document.getElementById(
+    "countryPanel"
+  ).classList.add(
+    "hidden"
+  );
 
-  $("countryPanel")
-    .style.display =
-      "none";
+  document.getElementById(
+    "countryStep"
+  ).classList.add(
+    "hidden"
+  );
 
-  $("servicePanel")
-    .style.display =
-      "block";
-
-  $("serverPanel")
-    .style.display =
-      "none";
+  document.getElementById(
+    "serviceStep"
+  ).classList.remove(
+    "hidden"
+  );
 
   setStep(2);
 
-  await loadServices();
-
-  window.scrollTo({
-    top:0,
-    behavior:"smooth"
-  });
+  await loadServices(
+    getCountryCode(
+      country
+    )
+  );
 }
-
 
 /* =========================================================
    SERVICES
 ========================================================= */
 
-async function loadServices(){
-
-  const list =
-    $("serviceList");
-
-  list.innerHTML =
-    `<div class="miniLoader"></div>`;
-
-  try{
-
-    const countryCode =
-      selectedCountry?.code ||
-      selectedCountry?.country_id ||
-      selectedCountry?.country_key;
-
-    const data =
-      await callGrizzly(
-        "services",
-        {
-          country:
-            countryCode
-        }
-      );
-
-    const services =
-      Array.isArray(
-        data?.services
-      )
-        ? data.services
-        : [];
-
-    renderServices(
-      services
-    );
-
-  }catch(error){
-
-    console.error(error);
-
-    list.innerHTML = `
-      <div class="emptyState">
-        <div class="emptyIcon">⚠</div>
-        <strong>Unable to load services</strong>
-        <p>
-          Please refresh and try again.
-        </p>
-      </div>
-    `;
-  }
-}
-
-
-function renderServices(
-  services
+async function loadServices(
+  country
 ){
 
   const list =
-    $("serviceList");
+    document.getElementById(
+      "serviceList"
+    );
 
-  if(!services.length){
+  setLoading(
+    list,
+    "Loading services..."
+  );
+
+  document.getElementById(
+    "servicePanel"
+  ).classList.remove(
+    "hidden"
+  );
+
+  try{
+
+    const result =
+      await edgeRequest(
+        "services",
+        {
+          country
+        }
+      );
+
+    services =
+      Array.isArray(
+        result?.services
+      )
+        ? result.services
+        : [];
+
+    document.getElementById(
+      "servicePanel"
+    ).classList.add(
+      "hidden"
+    );
+
+    renderServices();
+
+  }catch(error){
 
     list.innerHTML = `
-      <div class="emptyState">
-        <div class="emptyIcon">▣</div>
-        <strong>No services available</strong>
-        <p>
-          No service is currently available
-          for this country.
-        </p>
+      <div class="empty">
+        Unable to load services.
+      </div>
+    `;
+
+    document.getElementById(
+      "servicePanel"
+    ).classList.remove(
+      "hidden"
+    );
+
+    showToast(
+      "Unable to load services",
+      error.message,
+      "error"
+    );
+  }
+}
+
+function renderServices(
+  search=""
+){
+
+  const list =
+    document.getElementById(
+      "serviceList"
+    );
+
+  const query =
+    search
+      .trim()
+      .toLowerCase();
+
+  const filtered =
+    services.filter(
+      service => {
+
+        const name =
+          getServiceName(
+            service
+          ).toLowerCase();
+
+        const code =
+          getServiceCode(
+            service
+          ).toLowerCase();
+
+        return (
+          !query ||
+          name.includes(query) ||
+          code.includes(query)
+        );
+      }
+    );
+
+  if(!filtered.length){
+
+    list.innerHTML = `
+      <div class="empty">
+        No service found.
       </div>
     `;
 
@@ -3022,104 +2151,68 @@ function renderServices(
   }
 
   list.innerHTML =
-    services
-      .map(
-        (service,index) => {
+    filtered.map(
+      service => {
 
-          const code =
-            service.service_code ||
-            service.code ||
-            service.service ||
-            service.product ||
-            "";
+        const name =
+          getServiceName(
+            service
+          );
 
-          const name =
-            service.service_name ||
-            service.name ||
-            service.label ||
-            code ||
-            "Service";
+        const code =
+          getServiceCode(
+            service
+          );
 
-          return `
-            <button
-              class="serviceItem"
-              data-service-code="${escapeHTML(code)}"
-            >
+        return `
+          <button
+            class="option"
+            data-service="${escapeHtml(code)}"
+          >
+            <span>
+              <span class="option-name">
+                ${escapeHtml(name)}
+              </span>
 
-              <div class="serviceLeft">
+              <span class="option-sub">
+                Available service
+              </span>
+            </span>
 
-                <div class="serviceBadge">
-                  ${String(index + 1)}
-                </div>
-
-                <div class="itemText">
-
-                  <div class="itemName">
-                    ${escapeHTML(name)}
-                  </div>
-
-                  <div class="itemSub">
-                    Select service
-                  </div>
-
-                </div>
-
-              </div>
-
-              <div class="arrow">
-                ›
-              </div>
-
-            </button>
-          `;
-        }
-      )
-      .join("");
+            <span class="option-arrow">›</span>
+          </button>
+        `;
+      }
+    ).join("");
 
   list
     .querySelectorAll(
-      ".serviceItem"
+      "[data-service]"
     )
-    .forEach(
-      button => {
+    .forEach(button => {
 
-        button.addEventListener(
-          "click",
-          () => {
+      button.addEventListener(
+        "click",
+        ()=>{
+          const code =
+            button.dataset.service;
 
-            const code =
-              button.dataset.serviceCode;
+          const service =
+            services.find(
+              item =>
+                getServiceCode(item)
+                === code
+            );
 
-            const service =
-              services.find(
-                item =>
-                  String(
-                    item.service_code ||
-                    item.code ||
-                    item.service ||
-                    item.product ||
-                    ""
-                  ) ===
-                  String(code)
-              );
-
-            if(service){
-              selectService(
-                service
-              );
-            }
-
+          if(service){
+            selectService(
+              service
+            );
           }
-        );
-
-      }
-    );
+        }
+      );
+    });
 }
-
-
-/* =========================================================
-   SELECT SERVICE
-========================================================= */
 
 async function selectService(
   service
@@ -3131,36 +2224,35 @@ async function selectService(
   selectedServer =
     null;
 
-  const name =
-    service.service_name ||
-    service.name ||
-    service.label ||
-    service.service ||
-    service.code ||
-    "Selected service";
+  document.getElementById(
+    "serviceValue"
+  ).textContent =
+    getServiceName(
+      service
+    );
 
-  $("selectedServiceText")
-    .textContent =
-      name;
+  document.getElementById(
+    "servicePanel"
+  ).classList.add(
+    "hidden"
+  );
 
-  $("servicePanel")
-    .style.display =
-      "none";
+  document.getElementById(
+    "serviceStep"
+  ).classList.add(
+    "hidden"
+  );
 
-  $("serverPanel")
-    .style.display =
-      "block";
+  document.getElementById(
+    "serverStep"
+  ).classList.remove(
+    "hidden"
+  );
 
   setStep(3);
 
   await loadServers();
-
-  window.scrollTo({
-    top:0,
-    behavior:"smooth"
-  });
 }
-
 
 /* =========================================================
    SERVERS
@@ -3169,88 +2261,83 @@ async function selectService(
 async function loadServers(){
 
   const list =
-    $("serverList");
+    document.getElementById(
+      "serverList"
+    );
 
-  list.innerHTML =
-    `<div class="miniLoader"></div>`;
+  const errorBox =
+    document.getElementById(
+      "serverError"
+    );
+
+  errorBox.classList.add(
+    "hidden"
+  );
+
+  setLoading(
+    list,
+    "Loading available servers..."
+  );
 
   try{
 
-    const countryCode =
-      selectedCountry?.code ||
-      selectedCountry?.country_id ||
-      selectedCountry?.country_key;
-
-    const serviceCode =
-      selectedService?.service_code ||
-      selectedService?.code ||
-      selectedService?.service ||
-      selectedService?.product;
-
-    const data =
-      await callGrizzly(
+    const result =
+      await edgeRequest(
         "servers",
         {
           country:
-            countryCode,
+            getCountryCode(
+              selectedCountry
+            ),
 
           service:
-            serviceCode
+            getServiceCode(
+              selectedService
+            )
         }
       );
 
-    /*
-      The Edge Function already limits
-      real available servers to five.
-
-      We also cap it here so the dashboard
-      never exposes more than five.
-    */
-
-    const servers =
+    servers =
       Array.isArray(
-        data?.servers
+        result?.servers
       )
-        ? data.servers.slice(0,5)
+        ? result.servers.slice(0,5)
         : [];
 
-    renderServers(
-      servers
-    );
+    renderServers();
 
   }catch(error){
 
-    console.error(error);
+    servers = [];
 
     list.innerHTML = `
-      <div class="emptyState">
-        <div class="emptyIcon">⚠</div>
-        <strong>Unable to load servers</strong>
-        <p>
-          Please refresh and try again.
-        </p>
+      <div class="empty">
+        No servers available right now.
       </div>
     `;
+
+    errorBox.textContent =
+      error.message;
+
+    errorBox.classList.remove(
+      "hidden"
+    );
   }
 }
 
-
-function renderServers(
-  servers
-){
+function renderServers(){
 
   const list =
-    $("serverList");
+    document.getElementById(
+      "serverList"
+    );
 
   if(!servers.length){
 
     list.innerHTML = `
-      <div class="emptyState">
-        <div class="emptyIcon">⌁</div>
-        <strong>No server currently available</strong>
-        <p>
-          Please refresh and try again later.
-        </p>
+      <div class="empty">
+        No servers available right now.
+        Please refresh and try again.
       </div>
     `;
 
@@ -3258,299 +2345,377 @@ function renderServers(
   }
 
   list.innerHTML =
-    servers
-      .map(
-        (server,index) => {
+    servers.map(
+      (server,index)=>{
 
-          /*
-            IMPORTANT:
-            Do NOT expose:
-            provider_id
-            raw_provider_id
-            provider_usd
-            price_usd
-            markup_percent
-            exchange_rate
-            provider name
+        const name =
+          getServerName(
+            server,
+            index
+          );
 
-            The customer only sees:
-            Server 1-5
-            Customer selling price
-          */
+        const price =
+          getServerPrice(
+            server
+          );
 
-          const serverId =
-            server.server_id ||
-            server.id ||
-            server.operator_id ||
-            server.provider_id ||
-            "";
+        const stock =
+          getServerStock(
+            server
+          );
 
-          const price =
-            Number(
-              server.customer_price_ngn ??
-              server.selling_price_ngn ??
-              server.price_ngn ??
-              0
-            );
+        return `
+          <div class="server-card">
 
-          const stock =
-            Number(
-              server.available ??
-              server.stock ??
-              0
-            );
+            <div class="server-left">
 
-          return `
-            <div class="serverItem">
-
-              <div class="serverLeft">
-
-                <div class="serverBadge">
-                  ${index + 1}
-                </div>
-
-                <div class="itemText">
-
-                  <div class="itemName">
-                    Server ${index + 1}
-                  </div>
-
-                  <div class="itemSub">
-                    ${stock > 0
-                      ? "Available"
-                      : "Currently unavailable"}
-                  </div>
-
-                </div>
-
+              <div class="server-number">
+                ${index + 1}
               </div>
 
-              <div class="serverPrice">
+              <div>
+                <div class="server-name">
+                  ${escapeHtml(name)}
+                </div>
 
-                <strong>
-                  ${formatNaira(price)}
-                </strong>
-
-                <span>
+                <div class="server-stock">
                   ${stock > 0
-                    ? "Available"
-                    : "Unavailable"}
-                </span>
-
-                <button
-                  class="buyBtn"
-                  data-server-id="${escapeHTML(serverId)}"
-                  data-server-index="${index}"
-                  ${stock <= 0 ? "disabled" : ""}
-                >
-                  Buy
-                </button>
-
+                    ? `${stock} available`
+                    : "Currently unavailable"}
+                </div>
               </div>
 
             </div>
-          `;
-        }
-      )
-      .join("");
+
+            <div class="server-right">
+
+              <div class="server-price">
+                ${money(price)}
+              </div>
+
+              <button
+                class="buy-btn"
+                data-server-index="${index}"
+                ${stock <= 0 ? "disabled" : ""}
+              >
+                Buy
+              </button>
+
+            </div>
+
+          </div>
+        `;
+      }
+    ).join("");
 
   list
     .querySelectorAll(
-      ".buyBtn"
+      "[data-server-index]"
     )
-    .forEach(
-      button => {
+    .forEach(button => {
 
-        button.addEventListener(
-          "click",
-          () => {
-
-            const serverId =
-              button.dataset.serverId;
-
-            const index =
-              Number(
-                button.dataset.serverIndex
-              );
-
-            const server =
-              servers[index];
-
-            if(!server){
-              return;
-            }
-
-            buyNumber(
-              server,
-              serverId,
-              button
+      button.addEventListener(
+        "click",
+        ()=>{
+          const index =
+            Number(
+              button.dataset.serverIndex
             );
 
-          }
-        );
+          const server =
+            servers[index];
 
-      }
-    );
+          if(server){
+            openPurchaseConfirmation(
+              server
+            );
+          }
+        }
+      );
+    });
 }
 
+/* =========================================================
+   PURCHASE CONFIRMATION
+========================================================= */
+
+function openPurchaseConfirmation(
+  server
+){
+
+  pendingPurchaseServer =
+    server;
+
+  const price =
+    getServerPrice(
+      server
+    );
+
+  const name =
+    getServerName(
+      server,
+      servers.indexOf(server)
+    );
+
+  document.getElementById(
+    "confirmText"
+  ).textContent =
+    `You are purchasing a ${getServiceName(
+      selectedService
+    )} number for ${getCountryName(
+      selectedCountry
+    )} using ${name}.`;
+
+  document.getElementById(
+    "confirmPrice"
+  ).textContent =
+    money(price);
+
+  document.getElementById(
+    "confirmOverlay"
+  ).classList.remove(
+    "hidden"
+  );
+}
+
+function closePurchaseConfirmation(){
+
+  pendingPurchaseServer =
+    null;
+
+  document.getElementById(
+    "confirmOverlay"
+  ).classList.add(
+    "hidden"
+  );
+}
 
 /* =========================================================
    BUY NUMBER
 ========================================================= */
 
-async function buyNumber(
-  server,
-  serverId,
-  button
-){
-
-  if(!selectedCountry){
-    showAlert(
-      "Select a country",
-      "Please select a country first.",
-      "error"
-    );
-    return;
-  }
-
-  if(!selectedService){
-    showAlert(
-      "Select a service",
-      "Please select a service first.",
-      "error"
-    );
-    return;
-  }
-
-  const customerPrice =
-    Number(
-      server.customer_price_ngn ??
-      server.selling_price_ngn ??
-      server.price_ngn ??
-      0
-    );
+async function purchaseNumber(){
 
   if(
-    !Number.isFinite(customerPrice) ||
-    customerPrice <= 0
+    !selectedCountry ||
+    !selectedService ||
+    !pendingPurchaseServer
+  ){
+    return;
+  }
+
+  const server =
+    pendingPurchaseServer;
+
+  const price =
+    getServerPrice(
+      server
+    );
+
+  closePurchaseConfirmation();
+
+  /*
+    Client-side wallet check is only for
+    an immediate friendly message.
+
+    The Edge Function performs the real
+    secure wallet check server-side.
+  */
+
+  if(
+    Number.isFinite(price) &&
+    price > 0 &&
+    walletBalance > 0 &&
+    walletBalance < price
   ){
 
-    showAlert(
-      "Number unavailable",
-      "The price for this number is currently unavailable. Please refresh and try again.",
+    const needed =
+      Math.ceil(
+        price - walletBalance
+      );
+
+    showToast(
+      "Insufficient funds",
+      `Please add ${money(needed)} to your wallet.`,
       "error"
     );
 
     return;
   }
 
-  button.disabled =
-    true;
+  if(
+    Number.isFinite(price) &&
+    price > 0 &&
+    walletBalance === 0
+  ){
 
-  const oldText =
-    button.textContent;
+    showToast(
+      "Insufficient balance",
+      `Please add ${money(price)} to your wallet.`,
+      "error"
+    );
 
-  button.textContent =
-    "Buying...";
+    return;
+  }
+
+  showToast(
+    "Processing",
+    "Getting your number...",
+    "info"
+  );
 
   try{
 
-    const countryCode =
-      selectedCountry.code ||
-      selectedCountry.country_id ||
-      selectedCountry.country_key;
-
-    const serviceCode =
-      selectedService.service_code ||
-      selectedService.code ||
-      selectedService.service ||
-      selectedService.product;
-
-    const data =
-      await callGrizzly(
+    const result =
+      await edgeRequest(
         "buy",
         {
           country:
-            countryCode,
+            getCountryCode(
+              selectedCountry
+            ),
 
           service:
-            serviceCode,
+            getServiceCode(
+              selectedService
+            ),
 
           server_id:
-            serverId
+            getServerId(
+              server
+            ),
+
+          provider_id:
+            getServerId(
+              server
+            ),
+
+          operator_id:
+            getServerId(
+              server
+            )
         }
       );
 
-    /* ==========================================
-       CUSTOMER WALLET INSUFFICIENT
-    ========================================== */
+    const phone =
+      clean(
+        firstValue(
+          result?.phone_number,
+          result?.phoneNumber,
+          result?.number
+        )
+      );
+
+    const activation =
+      clean(
+        firstValue(
+          result?.activation_id,
+          result?.activationId
+        )
+      );
+
+    activeActivationId =
+      activation;
+
+    activeOrderId =
+      clean(
+        firstValue(
+          result?.order_id,
+          result?.orderId
+        )
+      );
+
+    document.getElementById(
+      "purchasedNumber"
+    ).textContent =
+      phone || "Number received";
+
+    document.getElementById(
+      "otpCode"
+    ).textContent =
+      "Waiting...";
+
+    document.getElementById(
+      "purchaseResult"
+    ).classList.remove(
+      "hidden"
+    );
+
+    showToast(
+      "Number purchased",
+      "Your number was successfully purchased.",
+      "success"
+    );
+
+    await loadWallet();
+
+    await loadRecentOrders();
+
+    startStatusPolling();
+
+  }catch(error){
+
+    const code =
+      clean(
+        error?.code
+      );
+
+    const data =
+      error?.data || {};
 
     if(
-      data?.error ===
+      code ===
       "INSUFFICIENT_WALLET"
     ){
 
       const needed =
         Number(
-          data.needed || 0
+          data?.needed
         );
 
-      if(needed > 0){
+      if(
+        Number.isFinite(needed) &&
+        needed > 0
+      ){
 
-        showAlert(
+        showToast(
           "Insufficient funds",
-          `Please add ${formatNaira(needed)} to your wallet to complete this purchase.`,
-          "error",
-          "Fund Wallet",
-          () => goTo("wallet.html")
+          `Please add ${money(needed)} to your wallet.`,
+          "error"
         );
 
       }else{
 
-        showAlert(
+        showToast(
           "Insufficient funds",
-          "Please fund your wallet to complete this purchase.",
-          "error",
-          "Fund Wallet",
-          () => goTo("wallet.html")
+          "Please fund your wallet to continue.",
+          "error"
         );
-
       }
 
       return;
     }
 
-    /* ==========================================
-       PROVIDER HAS NO FUNDS
-       CUSTOMER MUST NOT SEE PROVIDER NAME.
-    ========================================== */
-
     if(
-      data?.error ===
+      code ===
       "PROVIDER_BALANCE"
     ){
 
-      showAlert(
+      showToast(
         "Insufficient funds",
         "Please contact support.",
-        "error",
-        "Contact Support",
-        contactSupport
+        "error"
       );
 
       return;
     }
 
-    /* ==========================================
-       NO NUMBER
-    ========================================== */
-
     if(
-      data?.error ===
+      code ===
       "NO_NUMBERS"
     ){
 
-      showAlert(
+      showToast(
         "Number unavailable",
         "No number is currently available. Please refresh and try again.",
         "error"
@@ -3559,112 +2724,218 @@ async function buyNumber(
       return;
     }
 
-    /* ==========================================
-       SUCCESS
-    ========================================== */
+    showToast(
+      "Purchase failed",
+      error.message ||
+        "Unable to purchase the number.",
+      "error"
+    );
+  }
+}
 
-    if(
-      data?.ok === true &&
-      (
-        data?.success === true ||
-        data?.phone_number ||
-        data?.phoneNumber ||
-        data?.number
-      )
-    ){
+/* =========================================================
+   STATUS
+========================================================= */
 
-      currentActivationId =
-        data.activation_id ||
-        data.activationId ||
-        null;
+function startStatusPolling(){
 
-      currentPhoneNumber =
-        data.phone_number ||
-        data.phoneNumber ||
-        data.number ||
-        "";
+  stopStatusPolling();
 
-      currentOrderId =
-        data.order_id ||
-        data.orderId ||
-        null;
+  if(!activeActivationId){
+    return;
+  }
 
-      showPurchaseResult(
-        currentPhoneNumber
+  checkCurrentStatus();
+
+  statusTimer =
+    setInterval(
+      checkCurrentStatus,
+      7000
+    );
+}
+
+function stopStatusPolling(){
+
+  if(statusTimer){
+    clearInterval(
+      statusTimer
+    );
+
+    statusTimer =
+      null;
+  }
+}
+
+async function checkCurrentStatus(){
+
+  if(!activeActivationId){
+    return;
+  }
+
+  try{
+
+    const result =
+      await edgeRequest(
+        "status",
+        {
+          activation_id:
+            activeActivationId,
+
+          order_id:
+            activeOrderId
+        }
       );
 
-      await loadWallet();
+    const status =
+      clean(
+        result?.status
+      ).toLowerCase();
 
-      await loadRecentOrders();
+    const code =
+      clean(
+        firstValue(
+          result?.otp_code,
+          result?.sms_code,
+          result?.code
+        )
+      );
 
-      startMainPolling();
+    if(code){
 
-      showAlert(
-        "Purchase successful",
-        "Number successfully purchased.",
+      document.getElementById(
+        "otpCode"
+      ).textContent =
+        code;
+
+      showToast(
+        "Code received",
+        "Your verification code is ready.",
         "success"
       );
+
+      stopStatusPolling();
+
+      await loadRecentOrders();
 
       return;
     }
 
-    /* ==========================================
-       GENERIC ERROR
-    ========================================== */
+    if(
+      status === "cancelled"
+    ){
 
-    throw new Error(
-      data?.message ||
-      data?.error ||
-      "Unable to purchase the number."
-    );
+      document.getElementById(
+        "otpCode"
+      ).textContent =
+        "Cancelled";
+
+      stopStatusPolling();
+
+      await loadRecentOrders();
+
+      return;
+    }
+
+    if(
+      status === "completed"
+    ){
+
+      stopStatusPolling();
+
+      await loadRecentOrders();
+
+    }
 
   }catch(error){
 
-    console.error(
-      "Purchase error:",
-      error
-    );
-
-    const message =
-      String(
-        error?.message ||
-        error ||
-        ""
-      );
-
-    const lower =
-      message.toLowerCase();
-
     /*
-      Never expose backend/provider
-      implementation details to customers.
+      Don't interrupt the customer with
+      repeated polling errors.
     */
 
-    if(
-      lower.includes("balance") ||
-      lower.includes("no_money") ||
-      lower.includes("not enough") ||
-      lower.includes("no funds") ||
-      lower.includes("insufficient")
-    ){
+    console.warn(
+      "Status check:",
+      error
+    );
+  }
+}
 
-      showAlert(
-        "Insufficient funds",
-        "Please contact support.",
-        "error",
-        "Contact Support",
-        contactSupport
+/* =========================================================
+   CANCEL NUMBER
+========================================================= */
+
+async function cancelCurrentNumber(){
+
+  if(
+    !activeActivationId &&
+    !activeOrderId
+  ){
+    showToast(
+      "No active number",
+      "There is no active number to cancel.",
+      "error"
+    );
+
+    return;
+  }
+
+  const button =
+    document.getElementById(
+      "cancelBtn"
+    );
+
+  button.disabled =
+    true;
+
+  button.textContent =
+    "Cancelling...";
+
+  try{
+
+    const result =
+      await edgeRequest(
+        "cancel",
+        {
+          activation_id:
+            activeActivationId,
+
+          order_id:
+            activeOrderId
+        }
       );
 
-    }else{
+    document.getElementById(
+      "otpCode"
+    ).textContent =
+      "Cancelled";
 
-      showAlert(
-        "Purchase failed",
-        "We could not complete the purchase right now. Please refresh and try again.",
-        "error"
-      );
+    showToast(
+      "Number cancelled",
+      result?.message ||
+        "Number cancelled and refund processed.",
+      "success"
+    );
 
-    }
+    stopStatusPolling();
+
+    activeActivationId =
+      null;
+
+    activeOrderId =
+      null;
+
+    await loadWallet();
+
+    await loadRecentOrders();
+
+  }catch(error){
+
+    showToast(
+      "Cancellation failed",
+      error.message ||
+        "Unable to cancel this number.",
+      "error"
+    );
 
   }finally{
 
@@ -3672,508 +2943,95 @@ async function buyNumber(
       false;
 
     button.textContent =
-      oldText;
-
+      "Cancel";
   }
 }
 
-
 /* =========================================================
-   PURCHASE RESULT
-========================================================= */
-
-function showPurchaseResult(
-  phoneNumber
-){
-
-  $("purchaseResult")
-    .classList
-    .add("show");
-
-  $("purchasedNumber")
-    .textContent =
-      phoneNumber ||
-      "Number unavailable";
-
-  $("mainCodeBox")
-    .classList
-    .remove("show");
-
-  $("mainCode")
-    .textContent =
-      "—";
-
-  $("purchaseResult")
-    .scrollIntoView({
-      behavior:"smooth",
-      block:"center"
-    });
-}
-
-
-/* =========================================================
-   MAIN GET CODE
-========================================================= */
-
-$("mainGetCodeBtn")
-  .addEventListener(
-    "click",
-    async () => {
-
-      if(!currentActivationId){
-
-        showAlert(
-          "Unable to check code",
-          "The activation could not be found. Please refresh your orders.",
-          "error"
-        );
-
-        return;
-      }
-
-      const button =
-        $("mainGetCodeBtn");
-
-      const oldText =
-        button.textContent;
-
-      button.disabled =
-        true;
-
-      button.textContent =
-        "Checking...";
-
-      try{
-
-        const data =
-          await callGrizzly(
-            "status",
-            {
-              activation_id:
-                currentActivationId
-            }
-          );
-
-        handleMainStatus(
-          data
-        );
-
-      }catch(error){
-
-        console.error(error);
-
-        showAlert(
-          "Unable to get code",
-          "Please try again in a moment.",
-          "error"
-        );
-
-      }finally{
-
-        button.disabled =
-          false;
-
-        button.textContent =
-          oldText;
-
-      }
-
-    }
-  );
-
-
-/* =========================================================
-   MAIN STATUS
-========================================================= */
-
-function handleMainStatus(
-  data
-){
-
-  const status =
-    String(
-      data?.status ||
-      "waiting"
-    )
-    .toLowerCase();
-
-  const code =
-    data?.otp_code ||
-    data?.sms_code ||
-    data?.code ||
-    "";
-
-  if(code){
-
-    $("mainCode")
-      .textContent =
-      code;
-
-    $("mainCodeBox")
-      .classList
-      .add("show");
-
-    showAlert(
-      "Code received",
-      `Your verification code is ${code}.`,
-      "success"
-    );
-
-    return;
-  }
-
-  if(
-    status === "cancelled"
-  ){
-
-    showAlert(
-      "Number cancelled",
-      "This number has been cancelled.",
-      "error"
-    );
-
-    return;
-  }
-
-  if(
-    status === "completed"
-  ){
-
-    showAlert(
-      "Order completed",
-      "This order has been completed.",
-      "success"
-    );
-
-    return;
-  }
-
-  showAlert(
-    "Code not received yet",
-    "The code has not arrived yet. Please keep the app open and try Get Code again.",
-    "info"
-  );
-}
-
-
-/* =========================================================
-   CANCEL
-========================================================= */
-
-$("mainCancelBtn")
-  .addEventListener(
-    "click",
-    () => {
-
-      if(!currentActivationId){
-        showAlert(
-          "Unable to cancel",
-          "The activation could not be found.",
-          "error"
-        );
-
-        return;
-      }
-
-      openCancelConfirm(
-        currentActivationId,
-        currentOrderId
-      );
-
-    }
-  );
-
-
-let cancelActivationId = null;
-let cancelOrderId = null;
-
-function openCancelConfirm(
-  activationId,
-  orderId
-){
-
-  cancelActivationId =
-    activationId;
-
-  cancelOrderId =
-    orderId;
-
-  $("confirmOverlay")
-    .classList
-    .add("show");
-}
-
-function closeCancelConfirm(){
-
-  $("confirmOverlay")
-    .classList
-    .remove("show");
-
-  cancelActivationId =
-    null;
-
-  cancelOrderId =
-    null;
-}
-
-$("confirmNo")
-  .addEventListener(
-    "click",
-    closeCancelConfirm
-  );
-
-$("confirmYes")
-  .addEventListener(
-    "click",
-    async () => {
-
-      const activation =
-        cancelActivationId;
-
-      const order =
-        cancelOrderId;
-
-      closeCancelConfirm();
-
-      if(!activation){
-        return;
-      }
-
-      const button =
-        $("mainCancelBtn");
-
-      button.disabled =
-        true;
-
-      button.textContent =
-        "Cancelling...";
-
-      try{
-
-        const payload = {
-          activation_id:
-            activation
-        };
-
-        if(order){
-          payload.order_id =
-            order;
-        }
-
-        const data =
-          await callGrizzly(
-            "cancel",
-            payload
-          );
-
-        if(
-          data?.ok === true
-        ){
-
-          $("purchaseResult")
-            .classList
-            .remove("show");
-
-          currentActivationId =
-            null;
-
-          currentOrderId =
-            null;
-
-          currentPhoneNumber =
-            null;
-
-          await loadWallet();
-
-          await loadRecentOrders();
-
-          showAlert(
-            "Number cancelled",
-            "Number cancelled and refund processed.",
-            "success"
-          );
-
-        }else{
-
-          throw new Error(
-            data?.message ||
-            "Cancellation failed."
-          );
-
-        }
-
-      }catch(error){
-
-        console.error(error);
-
-        showAlert(
-          "Cancellation failed",
-          "We could not cancel this number right now. Please try again.",
-          "error"
-        );
-
-      }finally{
-
-        button.disabled =
-          false;
-
-        button.textContent =
-          "Cancel";
-
-      }
-
-    }
-  );
-
-
-/* =========================================================
-   RECENT ORDERS
+   ORDERS
 ========================================================= */
 
 async function loadRecentOrders(){
 
   const container =
-    $("recentOrders");
+    document.getElementById(
+      "recentOrders"
+    );
 
   try{
 
-    const data =
-      await callGrizzly(
+    const result =
+      await edgeRequest(
         "orders"
       );
 
-    orders =
+    const orders =
       Array.isArray(
-        data?.orders
+        result?.orders
       )
-        ? data.orders
-        : Array.isArray(
-            data?.data
-          )
-          ? data.data
-          : [];
+        ? result.orders
+        : [];
 
-    orders =
-      [...orders]
-        .sort(
-          (a,b) => {
-
-            const aDate =
-              new Date(
-                a.created_at ||
-                a.updated_at ||
-                a.purchased_at ||
-                0
-              ).getTime();
-
-            const bDate =
-              new Date(
-                b.created_at ||
-                b.updated_at ||
-                b.purchased_at ||
-                0
-              ).getTime();
-
-            return bDate - aDate;
-          }
-        );
-
-    renderRecentOrders();
+    renderRecentOrders(
+      orders.slice(0,4)
+    );
 
   }catch(error){
 
-    console.error(error);
-
     container.innerHTML = `
-      <div class="panel">
-        <div class="emptyState">
-          <div class="emptyIcon">▣</div>
-          <strong>Unable to load recent purchases</strong>
-          <p>
-            Please refresh and try again.
-          </p>
-        </div>
+      <div class="empty">
+        No recent orders yet.
       </div>
     `;
   }
 }
 
-
 function normalizeOrderStatus(
   order
 ){
 
-  const raw =
-    String(
-      order?.status ||
-      order?.state ||
-      "waiting"
-    )
-    .toLowerCase();
+  const status =
+    clean(
+      order?.status
+    ).toLowerCase();
 
   if(
-    raw.includes("cancel")
+    status.includes("cancel")
   ){
     return "cancelled";
   }
 
   if(
-    raw.includes("receive") ||
-    raw.includes("code")
+    status.includes("received") ||
+    status.includes("complete") ||
+    clean(
+      firstValue(
+        order?.otp_code,
+        order?.sms_code,
+        order?.code
+      )
+    )
   ){
     return "received";
-  }
-
-  if(
-    raw.includes("finish") ||
-    raw.includes("complete")
-  ){
-    return "completed";
   }
 
   return "waiting";
 }
 
-
-function statusLabel(
-  status
+function renderRecentOrders(
+  orders
 ){
 
-  if(status === "received"){
-    return "Received";
-  }
-
-  if(status === "completed"){
-    return "Completed";
-  }
-
-  if(status === "cancelled"){
-    return "Cancelled";
-  }
-
-  return "Pending";
-}
-
-
-function renderRecentOrders(){
-
   const container =
-    $("recentOrders");
+    document.getElementById(
+      "recentOrders"
+    );
 
-  const recent =
-    orders.slice(0,3);
-
-  if(!recent.length){
+  if(!orders.length){
 
     container.innerHTML = `
-      <div class="panel">
-        <div class="emptyState">
-          <div class="emptyIcon">▣</div>
-          <strong>No purchases yet</strong>
-          <p>
-            Your recent number purchases will appear here.
-          </p>
-        </div>
+      <div class="empty">
+        No recent orders yet.
       </div>
     `;
 
@@ -4181,548 +3039,234 @@ function renderRecentOrders(){
   }
 
   container.innerHTML =
-    recent
-      .map(
-        (order,index) =>
-          renderOrderCard(
-            order,
-            index
-          )
-      )
-      .join("");
-
-  attachOrderButtons();
-}
-
-
-/* =========================================================
-   ORDER CARD
-========================================================= */
-
-function renderOrderCard(
-  order,
-  index
-){
-
-  const status =
-    normalizeOrderStatus(
-      order
-    );
-
-  const countryName =
-    order.country_name ||
-    order.country ||
-    "Unknown country";
-
-  const serviceName =
-    order.service_name ||
-    order.service ||
-    "Service";
-
-  const phone =
-    order.phone_number ||
-    order.phoneNumber ||
-    order.number ||
-    "Number unavailable";
-
-  const code =
-    order.otp_code ||
-    order.sms_code ||
-    order.code ||
-    "";
-
-  const activation =
-    order.activation_id ||
-    order.activationId ||
-    "";
-
-  const orderId =
-    order.order_id ||
-    order.id ||
-    "";
-
-  /*
-    Provider/server names intentionally
-    never appear here.
-  */
-
-  return `
-    <div class="orderCard">
-
-      <div class="orderTop">
-
-        <div class="orderCountry">
-
-          <div class="orderFlag">
-            ${getFlag({
-              code:
-                order.country_id ||
-                order.country ||
-                ""
-            })}
-          </div>
-
-          <div>
-
-            <strong>
-              ${escapeHTML(countryName)}
-            </strong>
-
-            <span>
-              ${escapeHTML(serviceName)}
-            </span>
-
-          </div>
-
-        </div>
-
-        <div class="status ${status}">
-          ${statusLabel(status)}
-        </div>
-
-      </div>
-
-      <div class="orderNumber">
-
-        <div class="orderNumberLabel">
-          Phone Number
-        </div>
-
-        <div class="orderNumberValue">
-          ${escapeHTML(phone)}
-        </div>
-
-        ${
-          code
-            ? `
-              <div
-                class="codeBox show"
-                style="margin-top:8px;"
-              >
-                <small>VERIFICATION CODE</small>
-                <strong>${escapeHTML(code)}</strong>
-              </div>
-            `
-            : ""
-        }
-
-      </div>
-
-      <div class="orderBottom">
-
-        <div class="orderService">
-          ${escapeHTML(serviceName)}
-        </div>
-
-        ${
-          status === "waiting"
-            ? `
-              <div class="orderActions">
-
-                <button
-                  class="smallBtn smallGet orderGetBtn"
-                  data-activation="${escapeHTML(activation)}"
-                  data-index="${index}"
-                >
-                  Get Code
-                </button>
-
-                <button
-                  class="smallBtn smallCancel orderCancelBtn"
-                  data-activation="${escapeHTML(activation)}"
-                  data-order="${escapeHTML(orderId)}"
-                  data-index="${index}"
-                >
-                  Cancel
-                </button>
-
-              </div>
-            `
-            : ""
-        }
-
-        ${
-          status === "received"
-            ? `
-              <div class="orderActions">
-
-                <button
-                  class="smallBtn smallGet orderGetBtn"
-                  data-activation="${escapeHTML(activation)}"
-                  data-index="${index}"
-                >
-                  Get Code
-                </button>
-
-              </div>
-            `
-            : ""
-        }
-
-      </div>
-
-    </div>
-  `;
-}
-
-
-/* =========================================================
-   ORDER BUTTONS
-========================================================= */
-
-function attachOrderButtons(){
-
-  document
-    .querySelectorAll(
-      ".orderGetBtn"
-    )
-    .forEach(
-      button => {
-
-        button.addEventListener(
-          "click",
-          () => {
-
-            checkOrderCode(
-              button
-            );
-
-          }
-        );
-
-      }
-    );
-
-  document
-    .querySelectorAll(
-      ".orderCancelBtn"
-    )
-    .forEach(
-      button => {
-
-        button.addEventListener(
-          "click",
-          () => {
-
-            openCancelConfirm(
-              button.dataset.activation,
-              button.dataset.order
-            );
-
-          }
-        );
-
-      }
-    );
-}
-
-
-async function checkOrderCode(
-  button
-){
-
-  const activation =
-    button.dataset.activation;
-
-  if(!activation){
-
-    showAlert(
-      "Unable to check code",
-      "Activation information is unavailable.",
-      "error"
-    );
-
-    return;
-  }
-
-  const oldText =
-    button.textContent;
-
-  button.disabled =
-    true;
-
-  button.textContent =
-    "Checking...";
-
-  try{
-
-    const data =
-      await callGrizzly(
-        "status",
-        {
-          activation_id:
-            activation
-        }
-      );
-
-    const code =
-      data?.otp_code ||
-      data?.sms_code ||
-      data?.code ||
-      "";
-
-    const status =
-      String(
-        data?.status ||
-        "waiting"
-      ).toLowerCase();
-
-    if(code){
-
-      showAlert(
-        "Code received",
-        `Your verification code is ${code}.`,
-        "success"
-      );
-
-      await loadRecentOrders();
-
-    }else if(
-      status === "cancelled"
-    ){
-
-      showAlert(
-        "Number cancelled",
-        "This number has been cancelled.",
-        "error"
-      );
-
-      await loadRecentOrders();
-
-    }else{
-
-      showAlert(
-        "Code not received yet",
-        "The code has not arrived yet. Please try again later.",
-        "info"
-      );
-
-    }
-
-  }catch(error){
-
-    console.error(error);
-
-    showAlert(
-      "Unable to get code",
-      "Please try again in a moment.",
-      "error"
-    );
-
-  }finally{
-
-    button.disabled =
-      false;
-
-    button.textContent =
-      oldText;
-
-  }
-}
-
-
-/* =========================================================
-   POLLING
-========================================================= */
-
-function stopMainPolling(){
-
-  if(pollingTimer){
-
-    clearInterval(
-      pollingTimer
-    );
-
-    pollingTimer =
-      null;
-  }
-}
-
-
-function startMainPolling(){
-
-  stopMainPolling();
-
-  if(!currentActivationId){
-    return;
-  }
-
-  pollingTimer =
-    setInterval(
-      async () => {
-
-        if(!currentActivationId){
-          stopMainPolling();
-          return;
-        }
-
-        try{
-
-          const data =
-            await callGrizzly(
-              "status",
-              {
-                activation_id:
-                  currentActivationId
-              }
-            );
-
-          const code =
-            data?.otp_code ||
-            data?.sms_code ||
-            data?.code ||
-            "";
-
-          const status =
-            String(
-              data?.status ||
-              "waiting"
-            ).toLowerCase();
-
-          if(code){
-
-            $("mainCode")
-              .textContent =
-              code;
-
-            $("mainCodeBox")
-              .classList
-              .add("show");
-
-            stopMainPolling();
-
-            await loadRecentOrders();
-
-            showAlert(
-              "Code received",
-              `Your verification code is ${code}.`,
-              "success"
-            );
-
-          }else if(
-            status === "cancelled" ||
-            status === "completed"
-          ){
-
-            stopMainPolling();
-
-            await loadRecentOrders();
-
-          }
-
-        }catch(error){
-
-          console.warn(
-            "Status polling:",
-            error
+    orders.map(
+      order => {
+
+        const status =
+          normalizeOrderStatus(
+            order
           );
 
-        }
+        const country =
+          firstValue(
+            order?.country_name,
+            order?.country,
+            "Country"
+          );
 
-      },
-      10000
-    );
+        const service =
+          firstValue(
+            order?.service_name,
+            order?.service,
+            "Service"
+          );
+
+        const number =
+          firstValue(
+            order?.phone_number,
+            order?.phoneNumber,
+            order?.number,
+            "—"
+          );
+
+        const code =
+          firstValue(
+            order?.otp_code,
+            order?.sms_code,
+            order?.code
+          );
+
+        const statusText =
+          status === "cancelled"
+            ? "Cancelled"
+            : status === "received"
+              ? "Received"
+              : "Pending";
+
+        return `
+          <div class="order-card">
+
+            <div class="order-top">
+
+              <div class="order-main">
+
+                <div class="order-country">
+                  ${escapeHtml(country)}
+                </div>
+
+                <div class="order-service">
+                  ${escapeHtml(service)}
+                </div>
+
+                <div class="order-number">
+                  ${escapeHtml(number)}
+                </div>
+
+                ${
+                  code
+                    ? `
+                      <div
+                        style="
+                          margin-top:5px;
+                          font-size:11px;
+                          font-weight:900;
+                          letter-spacing:1px;
+                        "
+                      >
+                        Code: ${escapeHtml(code)}
+                      </div>
+                    `
+                    : ""
+                }
+
+              </div>
+
+              <span
+                class="status ${status}"
+              >
+                ${statusText}
+              </span>
+
+            </div>
+
+          </div>
+        `;
+      }
+    ).join("");
 }
 
-
 /* =========================================================
-   STEPS
+   STEP UI
 ========================================================= */
 
 function setStep(
-  active
+  number
 ){
 
-  for(
-    let i = 1;
-    i <= 3;
-    i++
-  ){
+  const one =
+    document.getElementById(
+      "step1"
+    );
 
-    const step =
-      $(`step${i}`);
+  const two =
+    document.getElementById(
+      "step2"
+    );
 
-    step.classList.remove(
-      "active",
+  const three =
+    document.getElementById(
+      "step3"
+    );
+
+  [one,two,three]
+    .forEach(
+      item=>{
+        item.classList.remove(
+          "active",
+          "done"
+        );
+      }
+    );
+
+  if(number === 1){
+
+    one.classList.add(
+      "active"
+    );
+
+  }else if(number === 2){
+
+    one.classList.add(
       "done"
     );
 
-    if(i < active){
-      step.classList.add(
-        "done"
-      );
-    }
+    two.classList.add(
+      "active"
+    );
 
-    if(i === active){
-      step.classList.add(
-        "active"
-      );
-    }
+  }else{
 
+    one.classList.add(
+      "done"
+    );
+
+    two.classList.add(
+      "done"
+    );
+
+    three.classList.add(
+      "active"
+    );
   }
 }
 
-
 /* =========================================================
-   REFRESH BUTTONS
+   BACK NAVIGATION
 ========================================================= */
 
-$("headerRefresh")
-  .addEventListener(
-    "click",
-    async () => {
+function goBackToCountry(){
 
-      await refreshDashboard();
-
-    }
+  document.getElementById(
+    "serviceStep"
+  ).classList.add(
+    "hidden"
   );
 
-
-$("countryRefresh")
-  .addEventListener(
-    "click",
-    async () => {
-
-      await loadCountries();
-
-    }
+  document.getElementById(
+    "serverStep"
+  ).classList.add(
+    "hidden"
   );
 
-
-$("serviceRefresh")
-  .addEventListener(
-    "click",
-    async () => {
-
-      if(selectedCountry){
-        await loadServices();
-      }
-
-    }
+  document.getElementById(
+    "countryStep"
+  ).classList.remove(
+    "hidden"
   );
 
-
-$("serverRefresh")
-  .addEventListener(
-    "click",
-    async () => {
-
-      if(
-        selectedCountry &&
-        selectedService
-      ){
-        await loadServers();
-      }
-
-    }
+  document.getElementById(
+    "countryPanel"
+  ).classList.add(
+    "hidden"
   );
 
+  setStep(1);
+}
+
+function goBackToService(){
+
+  document.getElementById(
+    "serverStep"
+  ).classList.add(
+    "hidden"
+  );
+
+  document.getElementById(
+    "countryStep"
+  ).classList.add(
+    "hidden"
+  );
+
+  document.getElementById(
+    "serviceStep"
+  ).classList.remove(
+    "hidden"
+  );
+
+  document.getElementById(
+    "servicePanel"
+  ).classList.add(
+    "hidden"
+  );
+
+  setStep(2);
+}
 
 /* =========================================================
-   FULL REFRESH
+   REFRESH
 ========================================================= */
 
-async function refreshDashboard(){
+async function refreshEverything(){
 
   await loadWallet();
 
@@ -4731,157 +3275,536 @@ async function refreshDashboard(){
   await loadRecentOrders();
 
   /*
-    If the user is currently on the server step,
-    refresh the server list too.
+    Return the selection area to its
+    normal compact country state.
   */
 
-  if(
-    selectedCountry &&
-    selectedService
-  ){
+  selectedCountry =
+    null;
 
-    await loadServers();
+  selectedService =
+    null;
 
-  }else if(
-    selectedCountry
-  ){
+  selectedServer =
+    null;
 
-    await loadServices();
+  document.getElementById(
+    "countryValue"
+  ).textContent =
+    "Choose Country";
 
-  }
+  document.getElementById(
+    "serviceValue"
+  ).textContent =
+    "Choose Service";
 
+  document.getElementById(
+    "countryStep"
+  ).classList.remove(
+    "hidden"
+  );
+
+  document.getElementById(
+    "serviceStep"
+  ).classList.add(
+    "hidden"
+  );
+
+  document.getElementById(
+    "serverStep"
+  ).classList.add(
+    "hidden"
+  );
+
+  document.getElementById(
+    "purchaseResult"
+  ).classList.add(
+    "hidden"
+  );
+
+  setStep(1);
 }
 
-
 /* =========================================================
-   LOGOUT
+   VERIFICATION POPUP
 ========================================================= */
 
-$("logoutBtn")
+function showVerificationNotice(){
+
+  document.getElementById(
+    "noticeOverlay"
+  ).classList.remove(
+    "hidden"
+  );
+}
+
+function closeVerificationNotice(){
+
+  document.getElementById(
+    "noticeOverlay"
+  ).classList.add(
+    "hidden"
+  );
+}
+
+/* =========================================================
+   MENU
+========================================================= */
+
+function openMenu(){
+
+  document.getElementById(
+    "menuOverlay"
+  ).classList.add(
+    "open"
+  );
+}
+
+function closeMenu(){
+
+  document.getElementById(
+    "menuOverlay"
+  ).classList.remove(
+    "open"
+  );
+}
+
+/* =========================================================
+   NAVIGATION
+========================================================= */
+
+function goTo(
+  page
+){
+  window.location.href =
+    page;
+}
+
+/* =========================================================
+   EVENTS
+========================================================= */
+
+document
+  .getElementById("menuBtn")
   .addEventListener(
     "click",
-    async () => {
+    openMenu
+  );
 
-      try{
+document
+  .getElementById("menuClose")
+  .addEventListener(
+    "click",
+    closeMenu
+  );
 
-        stopMainPolling();
-
-        await supabaseClient
-          .auth
-          .signOut();
-
-      }finally{
-
-        window.location.href =
-          "login.html";
-
+document
+  .getElementById("menuOverlay")
+  .addEventListener(
+    "click",
+    event=>{
+      if(
+        event.target.id ===
+        "menuOverlay"
+      ){
+        closeMenu();
       }
-
     }
   );
 
+document
+  .getElementById("refreshBtn")
+  .addEventListener(
+    "click",
+    async ()=>{
+      showToast(
+        "Refreshing",
+        "Updating your dashboard...",
+        "info"
+      );
+
+      await refreshEverything();
+
+      showVerificationNotice();
+    }
+  );
+
+document
+  .getElementById("fundBtn")
+  .addEventListener(
+    "click",
+    ()=>{
+      goTo(
+        "wallet.html"
+      );
+    }
+  );
+
+document
+  .getElementById("walletMenu")
+  .addEventListener(
+    "click",
+    ()=>{
+      goTo(
+        "wallet.html"
+      );
+    }
+  );
+
+document
+  .getElementById("profileMenu")
+  .addEventListener(
+    "click",
+    ()=>{
+      goTo(
+        "profile.html"
+      );
+    }
+  );
+
+document
+  .getElementById("ordersMenu")
+  .addEventListener(
+    "click",
+    ()=>{
+      goTo(
+        "orders.html"
+      );
+    }
+  );
+
+document
+  .getElementById("transactionsMenu")
+  .addEventListener(
+    "click",
+    ()=>{
+      goTo(
+        "transactions.html"
+      );
+    }
+  );
+
+document
+  .getElementById("supportMenu")
+  .addEventListener(
+    "click",
+    ()=>{
+      window.open(
+        SUPPORT_LINK,
+        "_blank"
+      );
+    }
+  );
+
+document
+  .getElementById("supportNav")
+  .addEventListener(
+    "click",
+    ()=>{
+      window.open(
+        SUPPORT_LINK,
+        "_blank"
+      );
+    }
+  );
+
+document
+  .getElementById("ordersNav")
+  .addEventListener(
+    "click",
+    ()=>{
+      goTo(
+        "orders.html"
+      );
+    }
+  );
+
+document
+  .getElementById("transactionsNav")
+  .addEventListener(
+    "click",
+    ()=>{
+      goTo(
+        "transactions.html"
+      );
+    }
+  );
+
+document
+  .getElementById("homeNav")
+  .addEventListener(
+    "click",
+    ()=>{
+      window.scrollTo({
+        top:0,
+        behavior:"smooth"
+      });
+    }
+  );
+
+document
+  .getElementById("seeOrders")
+  .addEventListener(
+    "click",
+    ()=>{
+      goTo(
+        "orders.html"
+      );
+    }
+  );
+
+document
+  .getElementById("whatsappBtn")
+  .href =
+  SUPPORT_LINK;
+
+document
+  .getElementById("noticeClose")
+  .addEventListener(
+    "click",
+    closeVerificationNotice
+  );
+
+document
+  .getElementById("noticeOverlay")
+  .addEventListener(
+    "click",
+    event=>{
+      if(
+        event.target.id ===
+        "noticeOverlay"
+      ){
+        closeVerificationNotice();
+      }
+    }
+  );
+
+document
+  .getElementById("countrySelector")
+  .addEventListener(
+    "click",
+    ()=>{
+      document
+        .getElementById(
+          "countryPanel"
+        )
+        .classList.toggle(
+          "hidden"
+        );
+
+      document
+        .getElementById(
+          "countrySearch"
+        )
+        .focus();
+    }
+  );
+
+document
+  .getElementById("countrySearch")
+  .addEventListener(
+    "input",
+    event=>{
+      renderCountries(
+        event.target.value
+      );
+    }
+  );
+
+document
+  .getElementById("serviceSelector")
+  .addEventListener(
+    "click",
+    ()=>{
+      document
+        .getElementById(
+          "servicePanel"
+        )
+        .classList.toggle(
+          "hidden"
+        );
+
+      document
+        .getElementById(
+          "serviceSearch"
+        )
+        .focus();
+    }
+  );
+
+document
+  .getElementById("serviceSearch")
+  .addEventListener(
+    "input",
+    event=>{
+      renderServices(
+        event.target.value
+      );
+    }
+  );
+
+document
+  .getElementById("backToCountry")
+  .addEventListener(
+    "click",
+    goBackToCountry
+  );
+
+document
+  .getElementById("backToService")
+  .addEventListener(
+    "click",
+    goBackToService
+  );
+
+document
+  .getElementById("confirmCancel")
+  .addEventListener(
+    "click",
+    closePurchaseConfirmation
+  );
+
+document
+  .getElementById("confirmBuy")
+  .addEventListener(
+    "click",
+    purchaseNumber
+  );
+
+document
+  .getElementById("getCodeBtn")
+  .addEventListener(
+    "click",
+    async ()=>{
+      if(
+        !activeActivationId
+      ){
+        showToast(
+          "No active number",
+          "There is no active number to check.",
+          "error"
+        );
+
+        return;
+      }
+
+      showToast(
+        "Checking",
+        "Checking for your verification code...",
+        "info"
+      );
+
+      await checkCurrentStatus();
+    }
+  );
+
+document
+  .getElementById("cancelBtn")
+  .addEventListener(
+    "click",
+    cancelCurrentNumber
+  );
 
 /* =========================================================
-   AUTH STATE CHANGES
+   AUTH STATE
 ========================================================= */
 
-supabaseClient
-  .auth
-  .onAuthStateChange(
-    (
-      event,
-      session
-    ) => {
+supabaseClient.auth.onAuthStateChange(
+  async (
+    event,
+    session
+  )=>{
 
-      if(
-        event ===
-        "SIGNED_OUT"
-      ){
+    if(
+      event ===
+      "SIGNED_OUT"
+    ){
+      window.location.href =
+        "login.html";
 
-        window.location.href =
-          "login.html";
-
-      }
-
+      return;
     }
-  );
 
+    if(
+      session?.user
+    ){
+      currentUser =
+        session.user;
+
+      const metadata =
+        session.user.user_metadata ||
+        {};
+
+      const name =
+        clean(
+          firstValue(
+            metadata.name,
+            metadata.full_name,
+            metadata.first_name,
+            session.user.email
+          )
+        );
+
+      document.getElementById(
+        "welcomeName"
+      ).textContent =
+        `Hello, ${name} 👋`;
+    }
+  }
+);
 
 /* =========================================================
-   INITIALIZE DASHBOARD
+   INIT
 ========================================================= */
 
 async function init(){
 
-  try{
+  const user =
+    await requireUser();
 
-    const valid =
-      await loadSession();
-
-    if(!valid){
-      return;
-    }
-
-    await Promise.all([
-      loadWallet(),
-      loadCountries(),
-      loadRecentOrders()
-    ]);
-
-    /*
-      Important verification popup:
-      deliberately opened after every dashboard
-      document load/refresh.
-    */
-
-    setTimeout(
-      () => {
-        openVerificationPopup();
-      },
-      250
-    );
-
-  }catch(error){
-
-    console.error(
-      "Dashboard initialization:",
-      error
-    );
-
-    showAlert(
-      "Unable to load dashboard",
-      "Please refresh the page and try again.",
-      "error"
-    );
-
-  }finally{
-
-    $("pageLoader")
-      .style.opacity =
-      "0";
-
-    setTimeout(
-      () => {
-
-        $("pageLoader")
-          .style.display =
-          "none";
-
-      },
-      250
-    );
-
+  if(!user){
+    return;
   }
 
+  const metadata =
+    user.user_metadata ||
+    {};
+
+  const name =
+    clean(
+      firstValue(
+        metadata.name,
+        metadata.full_name,
+        metadata.first_name,
+        user.email
+      )
+    );
+
+  document.getElementById(
+    "welcomeName"
+  ).textContent =
+    `Hello, ${name} 👋`;
+
+  document.getElementById(
+    "whatsappBtn"
+  ).href =
+    SUPPORT_LINK;
+
+  await loadWallet();
+
+  await loadCountries();
+
+  await loadRecentOrders();
+
+  /*
+    The notice intentionally appears whenever
+    the dashboard is freshly opened/refreshed.
+  */
+
+  showVerificationNotice();
 }
 
-
-/* =========================================================
-   START
-========================================================= */
-
 init();
-
 </script>
 
 </body>
