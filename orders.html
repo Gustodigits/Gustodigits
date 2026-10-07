@@ -1,0 +1,2756 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+<meta charset="UTF-8">
+
+<meta
+    name="viewport"
+    content="width=device-width,initial-scale=1.0"
+>
+
+<title>Orders - Gustodigits</title>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<style>
+
+*{
+    box-sizing:border-box;
+    margin:0;
+    padding:0;
+}
+
+:root{
+    --blue:#2388e8;
+    --blue-dark:#176fc3;
+    --blue-soft:#eaf5ff;
+
+    --green:#20b26b;
+    --green-soft:#e8f9f1;
+
+    --red:#e94b55;
+    --red-soft:#fff0f1;
+
+    --yellow:#d89518;
+    --yellow-soft:#fff7e5;
+
+    --text:#172334;
+    --muted:#718096;
+
+    --border:#e4edf5;
+    --background:#f4f9fd;
+    --white:#fff;
+
+    --shadow:
+        0 8px 25px rgba(32,111,175,.07);
+}
+
+html,
+body{
+    width:100%;
+    min-height:100%;
+}
+
+body{
+    background:var(--background);
+    color:var(--text);
+    font-family:
+        Arial,
+        Helvetica,
+        sans-serif;
+
+    overflow-x:hidden;
+}
+
+button{
+    font:inherit;
+    border:0;
+    cursor:pointer;
+}
+
+a{
+    color:inherit;
+    text-decoration:none;
+}
+
+
+/* =========================
+   APP
+========================= */
+
+.app{
+    width:100%;
+    max-width:620px;
+    min-height:100vh;
+    margin:auto;
+    padding-bottom:30px;
+}
+
+
+/* =========================
+   HEADER
+========================= */
+
+.header{
+    height:68px;
+
+    display:flex;
+    align-items:center;
+
+    gap:12px;
+
+    padding:
+        0
+        16px;
+
+    background:
+        rgba(244,249,253,.96);
+
+    border-bottom:
+        1px solid var(--border);
+
+    position:sticky;
+    top:0;
+    z-index:20;
+}
+
+.header-button{
+    width:40px;
+    height:40px;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    border-radius:13px;
+
+    background:#fff;
+
+    color:var(--text);
+
+    border:
+        1px solid var(--border);
+
+    font-size:20px;
+}
+
+.refresh-button{
+    margin-left:auto;
+}
+
+.brand-name{
+    font-size:18px;
+    font-weight:850;
+    letter-spacing:-.3px;
+}
+
+.brand-sub{
+    margin-top:2px;
+
+    color:var(--muted);
+
+    font-size:10px;
+    font-weight:750;
+
+    letter-spacing:.7px;
+    text-transform:uppercase;
+}
+
+
+/* =========================
+   MAIN
+========================= */
+
+main{
+    padding:
+        18px
+        16px
+        90px;
+}
+
+.page-heading h1{
+    font-size:24px;
+    font-weight:850;
+    letter-spacing:-.6px;
+}
+
+.page-heading p{
+    margin-top:5px;
+
+    color:var(--muted);
+
+    font-size:11px;
+    line-height:1.5;
+}
+
+
+/* =========================
+   SUMMARY
+========================= */
+
+.summary{
+    display:grid;
+
+    grid-template-columns:
+        1fr
+        1fr;
+
+    gap:10px;
+
+    margin:
+        16px
+        0;
+}
+
+.summary-card{
+    background:#fff;
+
+    border:
+        1px solid var(--border);
+
+    border-radius:18px;
+
+    padding:13px;
+
+    box-shadow:var(--shadow);
+}
+
+.summary-label{
+    color:var(--muted);
+
+    font-size:10px;
+    font-weight:700;
+}
+
+.summary-value{
+    margin-top:5px;
+
+    font-size:21px;
+    font-weight:850;
+}
+
+
+/* =========================
+   ORDERS CONTAINER
+========================= */
+
+.orders-card{
+    background:#fff;
+
+    border:
+        1px solid var(--border);
+
+    border-radius:18px;
+
+    padding:14px;
+
+    box-shadow:var(--shadow);
+}
+
+.orders-header{
+    display:flex;
+
+    align-items:center;
+    justify-content:space-between;
+
+    gap:10px;
+
+    margin-bottom:11px;
+}
+
+.orders-title{
+    font-size:15px;
+    font-weight:850;
+}
+
+.orders-count{
+    color:var(--blue-dark);
+
+    background:var(--blue-soft);
+
+    border:
+        1px solid #d8ecfb;
+
+    padding:
+        5px
+        8px;
+
+    border-radius:9px;
+
+    font-size:9px;
+    font-weight:800;
+}
+
+.order-list{
+    display:flex;
+
+    flex-direction:column;
+
+    gap:10px;
+}
+
+
+/* =========================
+   ORDER CARD
+========================= */
+
+.order{
+    background:#fff;
+
+    border:
+        1px solid #e1eaf1;
+
+    border-radius:16px;
+
+    padding:13px;
+}
+
+.order-top{
+    display:flex;
+
+    align-items:flex-start;
+    justify-content:space-between;
+
+    gap:10px;
+}
+
+.order-service{
+    font-size:14px;
+    font-weight:850;
+
+    word-break:break-word;
+}
+
+.order-country{
+    margin-top:3px;
+
+    color:var(--muted);
+
+    font-size:10px;
+}
+
+
+/* =========================
+   STATUS
+========================= */
+
+.status{
+    display:inline-flex;
+
+    align-items:center;
+
+    padding:
+        5px
+        8px;
+
+    border-radius:9px;
+
+    font-size:9px;
+    font-weight:850;
+
+    white-space:nowrap;
+}
+
+.status-pending{
+    color:#a66a00;
+
+    background:var(--yellow-soft);
+
+    border:
+        1px solid #f2ddb0;
+}
+
+.status-received{
+    color:#148050;
+
+    background:var(--green-soft);
+
+    border:
+        1px solid #cdeedc;
+}
+
+.status-cancelled{
+    color:#c5303a;
+
+    background:var(--red-soft);
+
+    border:
+        1px solid #f5ccd0;
+}
+
+
+/* =========================
+   NUMBER
+========================= */
+
+.number-box{
+    margin-top:10px;
+
+    padding:11px;
+
+    border-radius:12px;
+
+    background:#f7fbfe;
+
+    border:
+        1px solid #e5eef5;
+}
+
+.box-label{
+    color:var(--muted);
+
+    font-size:9px;
+    font-weight:750;
+}
+
+.number{
+    margin-top:4px;
+
+    color:var(--text);
+
+    font-size:18px;
+    font-weight:850;
+
+    word-break:break-all;
+}
+
+
+/* =========================
+   COPY
+========================= */
+
+.copy-button{
+    margin-top:8px;
+
+    min-height:31px;
+
+    padding:
+        0
+        10px;
+
+    border-radius:9px;
+
+    background:var(--blue-soft);
+
+    color:#1774c6;
+
+    border:
+        1px solid #d5eafb;
+
+    font-size:10px;
+    font-weight:850;
+}
+
+
+/* =========================
+   OTP
+========================= */
+
+.code-box{
+    margin-top:9px;
+
+    padding:11px;
+
+    border-radius:12px;
+
+    background:#f7fbfe;
+
+    border:
+        1px solid #e5eef5;
+}
+
+.code{
+    margin-top:4px;
+
+    color:var(--blue-dark);
+
+    font-size:21px;
+    font-weight:900;
+
+    letter-spacing:1px;
+
+    word-break:break-all;
+}
+
+
+/* =========================
+   SMS
+========================= */
+
+.sms-box{
+    margin-top:9px;
+
+    padding:11px;
+
+    border-radius:12px;
+
+    background:#f7fbfe;
+
+    border:
+        1px solid #e5eef5;
+}
+
+.sms{
+    margin-top:5px;
+
+    color:#43515e;
+
+    font-size:11px;
+
+    line-height:1.5;
+
+    white-space:pre-wrap;
+
+    word-break:break-word;
+}
+
+
+/* =========================
+   META
+========================= */
+
+.order-meta{
+    display:flex;
+
+    justify-content:space-between;
+
+    gap:10px;
+
+    margin-top:10px;
+
+    padding-top:10px;
+
+    border-top:
+        1px solid #edf2f6;
+}
+
+.meta-label{
+    color:var(--muted);
+
+    font-size:9px;
+    font-weight:750;
+}
+
+.meta-value{
+    margin-top:3px;
+
+    color:var(--text);
+
+    font-size:10px;
+    font-weight:800;
+
+    word-break:break-word;
+}
+
+
+/* =========================
+   ACTIONS
+========================= */
+
+.actions{
+    display:flex;
+
+    gap:8px;
+
+    margin-top:11px;
+}
+
+.action-button{
+    flex:1;
+
+    min-height:38px;
+
+    border-radius:10px;
+
+    font-size:11px;
+    font-weight:850;
+}
+
+.get-code{
+    background:var(--blue);
+
+    color:#fff;
+
+    box-shadow:
+        0
+        6px
+        15px
+        rgba(35,136,232,.13);
+}
+
+.cancel-order{
+    background:var(--red-soft);
+
+    color:#c5303a;
+
+    border:
+        1px solid #f3ccd0;
+}
+
+.action-button:disabled{
+    opacity:.55;
+
+    cursor:not-allowed;
+}
+
+
+/* =========================
+   STATES
+========================= */
+
+.loading,
+.empty,
+.error{
+    text-align:center;
+
+    padding:
+        35px
+        12px;
+
+    color:var(--muted);
+
+    font-size:11px;
+
+    line-height:1.5;
+}
+
+.error{
+    color:var(--red);
+}
+
+.spinner{
+    width:27px;
+    height:27px;
+
+    margin:
+        0
+        auto
+        9px;
+
+    border:
+        3px
+        solid
+        #dcecf8;
+
+    border-top-color:
+        var(--blue);
+
+    border-radius:50%;
+
+    animation:
+        spin
+        .8s
+        linear
+        infinite;
+}
+
+@keyframes spin{
+
+    to{
+        transform:rotate(360deg);
+    }
+
+}
+
+
+/* =========================
+   BOTTOM BUTTONS
+========================= */
+
+.bottom-links{
+    display:flex;
+
+    gap:9px;
+
+    margin-top:15px;
+}
+
+.bottom-links a{
+    flex:1;
+
+    text-align:center;
+
+    padding:13px;
+
+    border-radius:12px;
+
+    background:#fff;
+
+    border:
+        1px solid var(--border);
+
+    color:#2876aa;
+
+    font-size:11px;
+    font-weight:850;
+}
+
+
+/* =========================
+   CANCEL MODAL
+========================= */
+
+.modal-overlay{
+    position:fixed;
+
+    inset:0;
+
+    display:none;
+
+    align-items:center;
+    justify-content:center;
+
+    padding:18px;
+
+    background:
+        rgba(8,22,35,.55);
+
+    z-index:100;
+}
+
+.modal-overlay.show{
+    display:flex;
+}
+
+.modal{
+    width:min(
+        390px,
+        100%
+    );
+
+    background:#fff;
+
+    border-radius:20px;
+
+    padding:18px;
+}
+
+.modal h2{
+    margin-top:10px;
+
+    font-size:17px;
+    font-weight:850;
+}
+
+.modal p{
+    margin-top:6px;
+
+    color:var(--muted);
+
+    font-size:11px;
+
+    line-height:1.5;
+}
+
+.modal-actions{
+    display:flex;
+
+    gap:8px;
+
+    margin-top:16px;
+}
+
+.modal-actions button{
+    flex:1;
+
+    min-height:42px;
+
+    border-radius:11px;
+
+    font-size:11px;
+    font-weight:850;
+}
+
+.modal-no{
+    background:#f2f6f9;
+
+    color:#50606d;
+}
+
+.modal-yes{
+    background:var(--red);
+
+    color:#fff;
+}
+
+
+/* =========================
+   TOAST
+========================= */
+
+.toast{
+    position:fixed;
+
+    left:50%;
+    bottom:24px;
+
+    width:
+        min(
+            390px,
+            calc(100vw - 28px)
+        );
+
+    transform:
+        translate(
+            -50%,
+            20px
+        );
+
+    opacity:0;
+
+    pointer-events:none;
+
+    background:#172334;
+
+    color:#fff;
+
+    padding:
+        12px
+        14px;
+
+    border-radius:13px;
+
+    font-size:11px;
+    font-weight:750;
+
+    text-align:center;
+
+    z-index:200;
+
+    transition:.2s ease;
+}
+
+.toast.show{
+    transform:
+        translate(
+            -50%,
+            0
+        );
+
+    opacity:1;
+}
+
+</style>
+
+</head>
+
+<body>
+
+
+<div class="app">
+
+
+<header class="header">
+
+    <button
+        class="header-button"
+        type="button"
+        onclick="location.href='dashboard.html'"
+    >
+        ←
+    </button>
+
+
+    <div>
+
+        <div class="brand-name">
+            Gustodigits
+        </div>
+
+        <div class="brand-sub">
+            Virtual Numbers
+        </div>
+
+    </div>
+
+
+    <button
+        class="header-button refresh-button"
+        id="refreshButton"
+        type="button"
+    >
+        ↻
+    </button>
+
+</header>
+
+
+<main>
+
+
+<div class="page-heading">
+
+    <h1>
+        My Orders
+    </h1>
+
+    <p>
+        View your virtual numbers,
+        verification codes and order status.
+    </p>
+
+</div>
+
+
+<div class="summary">
+
+    <div class="summary-card">
+
+        <div class="summary-label">
+            Total Orders
+        </div>
+
+        <div
+            class="summary-value"
+            id="totalOrders"
+        >
+            0
+        </div>
+
+    </div>
+
+
+    <div class="summary-card">
+
+        <div class="summary-label">
+            Received
+        </div>
+
+        <div
+            class="summary-value"
+            id="receivedOrders"
+        >
+            0
+        </div>
+
+    </div>
+
+</div>
+
+
+<section class="orders-card">
+
+
+<div class="orders-header">
+
+    <div class="orders-title">
+        Recent Orders
+    </div>
+
+    <div
+        class="orders-count"
+        id="ordersCount"
+    >
+        0 orders
+    </div>
+
+</div>
+
+
+<div
+    class="order-list"
+    id="orderList"
+>
+
+    <div class="loading">
+
+        <div class="spinner"></div>
+
+        Loading orders...
+
+    </div>
+
+</div>
+
+
+</section>
+
+
+<div class="bottom-links">
+
+    <a href="dashboard.html">
+        ← Dashboard
+    </a>
+
+    <a href="transactions.html">
+        Transactions
+    </a>
+
+</div>
+
+
+</main>
+
+</div>
+
+
+<!-- =========================
+     CANCEL MODAL
+========================= -->
+
+<div
+    class="modal-overlay"
+    id="cancelModal"
+>
+
+    <div class="modal">
+
+        <h2>
+            Cancel this number?
+        </h2>
+
+        <p>
+            The number will be cancelled
+            and the eligible wallet refund
+            will be processed.
+        </p>
+
+
+        <div class="modal-actions">
+
+            <button
+                type="button"
+                class="modal-no"
+                id="cancelNo"
+            >
+                No, Keep It
+            </button>
+
+
+            <button
+                type="button"
+                class="modal-yes"
+                id="cancelYes"
+            >
+                Yes, Cancel
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<div
+    class="toast"
+    id="toast"
+></div>
+
+
+<script>
+
+// =====================================================
+// SUPABASE / GUSTODIGITS
+// =====================================================
+
+const SUPABASE_URL =
+    "https://gvuaxtsdpmrragkkjowv.supabase.co";
+
+
+const SUPABASE_PUBLISHABLE_KEY =
+    "sb_publishable_oDAsADaZzLDiFX0cXogUyw_tTQYCa2k";
+
+
+const GRIZZLY_FUNCTION_URL =
+    `${SUPABASE_URL}/functions/v1/grizzly`;
+
+
+const supabaseClient =
+    supabase.createClient(
+        SUPABASE_URL,
+        SUPABASE_PUBLISHABLE_KEY
+    );
+
+
+// =====================================================
+// STATE
+// =====================================================
+
+let currentSession = null;
+
+let currentOrders = [];
+
+let pendingCancelOrder = null;
+
+
+// =====================================================
+// HELPER
+// =====================================================
+
+function $(id){
+
+    return document.getElementById(id);
+
+}
+
+
+// =====================================================
+// ESCAPE HTML
+// =====================================================
+
+function escapeHtml(value){
+
+    return String(value ?? "")
+
+        .replace(
+            /&/g,
+            "&amp;"
+        )
+
+        .replace(
+            /</g,
+            "&lt;"
+        )
+
+        .replace(
+            />/g,
+            "&gt;"
+        )
+
+        .replace(
+            /"/g,
+            "&quot;"
+        )
+
+        .replace(
+            /'/g,
+            "&#039;"
+        );
+
+}
+
+
+// =====================================================
+// MONEY
+// =====================================================
+
+function formatMoney(value){
+
+    return Number(value || 0)
+        .toLocaleString(
+            "en-NG",
+            {
+                minimumFractionDigits:2,
+                maximumFractionDigits:2
+            }
+        );
+
+}
+
+
+// =====================================================
+// DATE
+// =====================================================
+
+function formatDate(value){
+
+    if(!value){
+        return "—";
+    }
+
+    const date =
+        new Date(value);
+
+    if(
+        Number.isNaN(
+            date.getTime()
+        )
+    ){
+
+        return "—";
+
+    }
+
+    return date.toLocaleString(
+        "en-NG",
+        {
+            dateStyle:"medium",
+            timeStyle:"short"
+        }
+    );
+
+}
+
+
+// =====================================================
+// TOAST
+// =====================================================
+
+function showToast(message){
+
+    const toast =
+        $("toast");
+
+    toast.textContent =
+        message;
+
+    toast.classList.add(
+        "show"
+    );
+
+    clearTimeout(
+        showToast.timer
+    );
+
+    showToast.timer =
+        setTimeout(
+            function(){
+
+                toast.classList.remove(
+                    "show"
+                );
+
+            },
+            2600
+        );
+
+}
+
+
+// =====================================================
+// ERROR MESSAGE
+// =====================================================
+
+function getErrorMessage(error){
+
+    return String(
+
+        error?.message ||
+
+        error?.error ||
+
+        error?.msg ||
+
+        error ||
+
+        "Request failed."
+
+    );
+
+}
+
+
+// =====================================================
+// GRIZZLY FUNCTION
+// =====================================================
+
+async function callGrizzly(
+    action,
+    payload = {}
+){
+
+    if(
+        !currentSession?.access_token
+    ){
+
+        throw new Error(
+            "Your session has expired. Please log in again."
+        );
+
+    }
+
+
+    const response =
+        await fetch(
+            GRIZZLY_FUNCTION_URL,
+            {
+                method:"POST",
+
+                headers:{
+                    "Content-Type":
+                        "application/json",
+
+                    "Authorization":
+                        `Bearer ${currentSession.access_token}`,
+
+                    "apikey":
+                        SUPABASE_PUBLISHABLE_KEY
+                },
+
+                body:
+                    JSON.stringify({
+                        action,
+                        ...payload
+                    })
+            }
+        );
+
+
+    let data = null;
+
+
+    try{
+
+        data =
+            await response.json();
+
+    }catch{
+
+        data = {
+            ok:false,
+            error:
+                "Invalid server response."
+        };
+
+    }
+
+
+    if(
+        !response.ok ||
+        data?.ok === false
+    ){
+
+        const message =
+            data?.message ||
+            data?.error ||
+            data?.msg ||
+            "Request failed.";
+
+
+        throw new Error(
+            String(message)
+        );
+
+    }
+
+
+    return data;
+
+}
+
+
+// =====================================================
+// NORMALIZE ORDER
+// =====================================================
+
+function normalizeOrder(order){
+
+    if(
+        !order ||
+        typeof order !== "object"
+    ){
+
+        return null;
+
+    }
+
+
+    const rawStatus =
+        String(
+
+            order.status ||
+
+            order.order_status ||
+
+            order.orderStatus ||
+
+            "pending"
+
+        )
+        .toLowerCase()
+        .trim();
+
+
+    let status =
+        "pending";
+
+
+    if(
+        rawStatus.includes(
+            "cancel"
+        )
+    ){
+
+        status =
+            "cancelled";
+
+    }else if(
+
+        rawStatus.includes(
+            "receive"
+        )
+
+        ||
+
+        rawStatus.includes(
+            "success"
+        )
+
+        ||
+
+        rawStatus.includes(
+            "complete"
+        )
+
+        ||
+
+        rawStatus === "ok"
+
+    ){
+
+        status =
+            "received";
+
+    }
+
+
+    const activationId =
+
+        order.activation_id ||
+
+        order.activationId ||
+
+        order.provider_activation_id ||
+
+        order.providerActivationId ||
+
+        order.numpool_order_id ||
+
+        order.numpoolOrderId ||
+
+        order.id;
+
+
+    const date =
+
+        order.created_at ||
+
+        order.createdAt ||
+
+        order.purchased_at ||
+
+        order.purchasedAt ||
+
+        order.updated_at ||
+
+        order.updatedAt ||
+
+        "";
+
+
+    return {
+
+        raw:order,
+
+        id:
+            order.id ||
+            order.order_id ||
+            order.orderId ||
+            activationId,
+
+        activationId,
+
+        country:
+            order.country_name ||
+            order.countryName ||
+            order.country ||
+            "Unknown country",
+
+        service:
+            order.service_name ||
+            order.serviceName ||
+            order.service ||
+            "Virtual Number",
+
+        number:
+            order.phone_number ||
+            order.phoneNumber ||
+            order.phone ||
+            order.number ||
+            "—",
+
+        code:
+            order.otp_code ||
+            order.otpCode ||
+            order.sms_code ||
+            order.smsCode ||
+            order.code ||
+            "",
+
+        sms:
+            order.full_sms ||
+            order.fullSms ||
+            order.sms_text ||
+            order.smsText ||
+            order.text ||
+            order.message ||
+            "",
+
+        price:
+            order.customer_price_ngn ??
+            order.customerPriceNgn ??
+            order.price ??
+            order.amount ??
+            0,
+
+        date,
+
+        timestamp:
+            new Date(
+                date || 0
+            ).getTime() || 0,
+
+        status
+
+    };
+
+}
+
+
+// =====================================================
+// LOAD ORDERS
+// =====================================================
+
+async function loadOrders(){
+
+    const container =
+        $("orderList");
+
+
+    container.innerHTML = `
+
+        <div class="loading">
+
+            <div class="spinner"></div>
+
+            Loading orders...
+
+        </div>
+
+    `;
+
+
+    try{
+
+        const result =
+            await callGrizzly(
+                "orders"
+            );
+
+
+        const rawOrders =
+
+            Array.isArray(
+                result?.orders
+            )
+
+                ? result.orders
+
+                :
+
+            Array.isArray(
+                result?.data
+            )
+
+                ? result.data
+
+                :
+
+            Array.isArray(result)
+
+                ? result
+
+                :
+
+            [];
+
+
+        currentOrders =
+
+            rawOrders
+
+                .map(
+                    normalizeOrder
+                )
+
+                .filter(
+                    Boolean
+                )
+
+                .sort(
+                    function(a,b){
+
+                        return (
+                            b.timestamp -
+                            a.timestamp
+                        );
+
+                    }
+                );
+
+
+        renderOrders();
+
+    }catch(error){
+
+        console.error(
+            "Orders loading error:",
+            error
+        );
+
+
+        container.innerHTML = `
+
+            <div class="error">
+
+                ❌ Unable to load orders.
+
+                <br><br>
+
+                ${escapeHtml(
+                    getErrorMessage(error)
+                )}
+
+            </div>
+
+        `;
+
+
+        $("totalOrders")
+            .textContent =
+            "0";
+
+
+        $("receivedOrders")
+            .textContent =
+            "0";
+
+
+        $("ordersCount")
+            .textContent =
+            "0 orders";
+
+    }
+
+}
+
+
+// =====================================================
+// RENDER ORDERS
+// =====================================================
+
+function renderOrders(){
+
+    $("totalOrders")
+        .textContent =
+        String(
+            currentOrders.length
+        );
+
+
+    $("receivedOrders")
+        .textContent =
+        String(
+
+            currentOrders.filter(
+                function(order){
+
+                    return (
+                        order.status ===
+                        "received"
+                    );
+
+                }
+            ).length
+
+        );
+
+
+    $("ordersCount")
+        .textContent =
+
+        `${currentOrders.length} ${
+            currentOrders.length === 1
+                ? "order"
+                : "orders"
+        }`;
+
+
+    if(
+        currentOrders.length === 0
+    ){
+
+        $("orderList").innerHTML = `
+
+            <div class="empty">
+
+                You haven't purchased
+                a virtual number yet.
+
+            </div>
+
+        `;
+
+        return;
+
+    }
+
+
+    $("orderList").innerHTML =
+
+        currentOrders
+            .map(
+                createOrderCard
+            )
+            .join("");
+
+}
+
+
+// =====================================================
+// NUMBER BOX
+// =====================================================
+
+function createNumberBox(order){
+
+    return `
+
+        <div class="number-box">
+
+            <div class="box-label">
+                Phone Number
+            </div>
+
+
+            <div class="number">
+                ${escapeHtml(
+                    order.number
+                )}
+            </div>
+
+
+            <button
+                type="button"
+                class="copy-button"
+                data-copy="${escapeHtml(
+                    order.number
+                )}"
+            >
+                📋 Copy Number
+            </button>
+
+        </div>
+
+    `;
+
+}
+
+
+// =====================================================
+// CREATE ORDER CARD
+// =====================================================
+
+function createOrderCard(order){
+
+    const status =
+        order.status;
+
+
+    let statusBadge;
+
+
+    if(
+        status === "received"
+    ){
+
+        statusBadge = `
+
+            <span
+                class="status status-received"
+            >
+                ✅ Received
+            </span>
+
+        `;
+
+    }else if(
+        status === "cancelled"
+    ){
+
+        statusBadge = `
+
+            <span
+                class="status status-cancelled"
+            >
+                ❌ Cancelled
+            </span>
+
+        `;
+
+    }else{
+
+        statusBadge = `
+
+            <span
+                class="status status-pending"
+            >
+                ⏳ Pending
+            </span>
+
+        `;
+
+    }
+
+
+    /*
+    ================================================
+    CANCELLED ORDER
+    ================================================
+
+    Cancelled orders only show:
+
+    - Service
+    - Country
+    - Red Cancelled status
+    - Phone number
+    - Price
+    - Cancelled date
+
+    No OTP.
+    No SMS.
+    No Get Code.
+    No Cancel button.
+    */
+
+    if(
+        status === "cancelled"
+    ){
+
+        return `
+
+            <article class="order">
+
+                <div class="order-top">
+
+                    <div>
+
+                        <div class="order-service">
+                            ${escapeHtml(
+                                order.service
+                            )}
+                        </div>
+
+                        <div class="order-country">
+                            ${escapeHtml(
+                                order.country
+                            )}
+                        </div>
+
+                    </div>
+
+
+                    ${statusBadge}
+
+                </div>
+
+
+                ${createNumberBox(
+                    order
+                )}
+
+
+                <div class="order-meta">
+
+                    <div>
+
+                        <div class="meta-label">
+                            Price
+                        </div>
+
+                        <div class="meta-value">
+                            ₦${formatMoney(
+                                order.price
+                            )}
+                        </div>
+
+                    </div>
+
+
+                    <div>
+
+                        <div class="meta-label">
+                            Cancelled
+                        </div>
+
+                        <div class="meta-value">
+                            ${escapeHtml(
+                                formatDate(
+                                    order.date
+                                )
+                            )}
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </article>
+
+        `;
+
+    }
+
+
+    /*
+    ================================================
+    OTP
+    ================================================
+    */
+
+    let codeSection = "";
+
+
+    if(
+        order.code
+    ){
+
+        codeSection = `
+
+            <div class="code-box">
+
+                <div class="box-label">
+                    OTP / Verification Code
+                </div>
+
+
+                <div class="code">
+                    ${escapeHtml(
+                        order.code
+                    )}
+                </div>
+
+
+                <button
+                    type="button"
+                    class="copy-button"
+                    data-copy="${escapeHtml(
+                        order.code
+                    )}"
+                >
+                    📋 Copy Code
+                </button>
+
+            </div>
+
+        `;
+
+    }else if(
+        status === "pending"
+    ){
+
+        codeSection = `
+
+            <div class="code-box">
+
+                <div class="box-label">
+                    OTP / Verification Code
+                </div>
+
+
+                <div class="code">
+                    Waiting...
+                </div>
+
+            </div>
+
+        `;
+
+    }
+
+
+    /*
+    ================================================
+    SMS
+    ================================================
+    */
+
+    let smsSection = "";
+
+
+    if(
+        order.sms &&
+        status === "received"
+    ){
+
+        smsSection = `
+
+            <div class="sms-box">
+
+                <div class="box-label">
+                    SMS Message
+                </div>
+
+
+                <div class="sms">
+                    ${escapeHtml(
+                        order.sms
+                    )}
+                </div>
+
+            </div>
+
+        `;
+
+    }
+
+
+    /*
+    ================================================
+    ACTIONS
+    ================================================
+    */
+
+    let actions = "";
+
+
+    if(
+        status === "pending"
+    ){
+
+        actions = `
+
+            <div class="actions">
+
+                <button
+                    type="button"
+                    class="action-button get-code"
+                    data-get-code="${escapeHtml(
+                        String(
+                            order.activationId ||
+                            order.id ||
+                            ""
+                        )
+                    )}"
+                >
+                    Get Code
+                </button>
+
+
+                <button
+                    type="button"
+                    class="action-button cancel-order"
+                    data-cancel="${escapeHtml(
+                        String(
+                            order.activationId ||
+                            order.id ||
+                            ""
+                        )
+                    )}"
+                >
+                    Cancel
+                </button>
+
+            </div>
+
+        `;
+
+    }
+
+
+    return `
+
+        <article class="order">
+
+            <div class="order-top">
+
+                <div>
+
+                    <div class="order-service">
+                        ${escapeHtml(
+                            order.service
+                        )}
+                    </div>
+
+
+                    <div class="order-country">
+                        ${escapeHtml(
+                            order.country
+                        )}
+                    </div>
+
+                </div>
+
+
+                ${statusBadge}
+
+            </div>
+
+
+            ${createNumberBox(
+                order
+            )}
+
+
+            ${codeSection}
+
+
+            ${smsSection}
+
+
+            <div class="order-meta">
+
+                <div>
+
+                    <div class="meta-label">
+                        Price
+                    </div>
+
+
+                    <div class="meta-value">
+                        ₦${formatMoney(
+                            order.price
+                        )}
+                    </div>
+
+                </div>
+
+
+                <div>
+
+                    <div class="meta-label">
+                        Purchased
+                    </div>
+
+
+                    <div class="meta-value">
+                        ${escapeHtml(
+                            formatDate(
+                                order.date
+                            )
+                        )}
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            ${actions}
+
+        </article>
+
+    `;
+
+}
+
+
+// =====================================================
+// COPY BUTTONS
+// =====================================================
+
+$("orderList")
+    .addEventListener(
+        "click",
+        async function(event){
+
+            const button =
+                event.target.closest(
+                    "[data-copy]"
+                );
+
+
+            if(!button){
+                return;
+            }
+
+
+            const value =
+                button.dataset.copy || "";
+
+
+            try{
+
+                await navigator.clipboard.writeText(
+                    value
+                );
+
+
+                const oldText =
+                    button.textContent;
+
+
+                button.textContent =
+                    "✅ Copied";
+
+
+                setTimeout(
+                    function(){
+
+                        button.textContent =
+                            oldText;
+
+                    },
+                    1400
+                );
+
+
+            }catch{
+
+                showToast(
+                    "Could not copy. Please copy it manually."
+                );
+
+            }
+
+        }
+    );
+
+
+// =====================================================
+// FIND ORDER
+// =====================================================
+
+function findOrder(id){
+
+    return currentOrders.find(
+        function(order){
+
+            return String(
+                order.activationId ||
+                order.id ||
+                ""
+            ) === String(id);
+
+        }
+    ) || null;
+
+}
+
+
+// =====================================================
+// GET CODE
+// =====================================================
+
+$("orderList")
+    .addEventListener(
+        "click",
+        async function(event){
+
+            const button =
+                event.target.closest(
+                    "[data-get-code]"
+                );
+
+
+            if(!button){
+                return;
+            }
+
+
+            const order =
+                findOrder(
+                    button.dataset.getCode
+                );
+
+
+            if(!order){
+                return;
+            }
+
+
+            await getCode(
+                order,
+                button
+            );
+
+        }
+    );
+
+
+async function getCode(
+    order,
+    button
+){
+
+    const activationId =
+        order.activationId ||
+        order.id;
+
+
+    if(!activationId){
+
+        showToast(
+            "Activation information was not found."
+        );
+
+        return;
+
+    }
+
+
+    button.disabled =
+        true;
+
+    button.textContent =
+        "Checking...";
+
+
+    try{
+
+        const result =
+            await callGrizzly(
+                "status",
+                {
+                    activation_id:
+                        activationId,
+
+                    activationId:
+                        activationId
+                }
+            );
+
+
+        const updatedOrder = {
+
+            ...order.raw,
+
+            ...result,
+
+            activation_id:
+                result?.activation_id ||
+                result?.activationId ||
+                activationId,
+
+            status:
+                result?.status ||
+                order.status,
+
+            otp_code:
+                result?.otp_code ||
+                result?.otpCode ||
+                result?.code ||
+                order.code,
+
+            full_sms:
+                result?.full_sms ||
+                result?.fullSms ||
+                result?.sms_text ||
+                result?.smsText ||
+                result?.text ||
+                result?.message ||
+                order.sms
+
+        };
+
+
+        const normalized =
+            normalizeOrder(
+                updatedOrder
+            );
+
+
+        const index =
+            currentOrders.findIndex(
+                function(item){
+
+                    return String(
+                        item.activationId ||
+                        item.id ||
+                        ""
+                    ) ===
+                    String(
+                        activationId
+                    );
+
+                }
+            );
+
+
+        if(
+            index >= 0
+        ){
+
+            currentOrders[index] =
+                normalized;
+
+        }
+
+
+        renderOrders();
+
+
+        if(
+            normalized.status ===
+            "received"
+        ){
+
+            showToast(
+                normalized.code
+                    ? "Verification code received."
+                    : "Order completed."
+            );
+
+        }else if(
+            normalized.status ===
+            "cancelled"
+        ){
+
+            showToast(
+                "This number has been cancelled."
+            );
+
+        }else{
+
+            showToast(
+                "Code has not arrived yet. Try again shortly."
+            );
+
+        }
+
+
+    }catch(error){
+
+        console.error(
+            "Get code error:",
+            error
+        );
+
+
+        showToast(
+            getErrorMessage(
+                error
+            )
+        );
+
+
+        button.disabled =
+            false;
+
+        button.textContent =
+            "Get Code";
+
+    }
+
+}
+
+
+// =====================================================
+// CANCEL MODAL
+// =====================================================
+
+function openCancelModal(
+    order
+){
+
+    pendingCancelOrder =
+        order;
+
+
+    $("cancelModal")
+        .classList
+        .add(
+            "show"
+        );
+
+}
+
+
+function closeCancelModal(){
+
+    pendingCancelOrder =
+        null;
+
+
+    $("cancelModal")
+        .classList
+        .remove(
+            "show"
+        );
+
+}
+
+
+$("cancelNo")
+    .addEventListener(
+        "click",
+        closeCancelModal
+    );
+
+
+$("cancelModal")
+    .addEventListener(
+        "click",
+        function(event){
+
+            if(
+                event.target ===
+                $("cancelModal")
+            ){
+
+                closeCancelModal();
+
+            }
+
+        }
+    );
+
+
+$("cancelYes")
+    .addEventListener(
+        "click",
+        async function(){
+
+            if(
+                !pendingCancelOrder
+            ){
+
+                return;
+
+            }
+
+
+            const order =
+                pendingCancelOrder;
+
+
+            closeCancelModal();
+
+
+            await cancelOrder(
+                order
+            );
+
+        }
+    );
+
+
+// =====================================================
+// OPEN CANCEL
+// =====================================================
+
+$("orderList")
+    .addEventListener(
+        "click",
+        function(event){
+
+            const button =
+                event.target.closest(
+                    "[data-cancel]"
+                );
+
+
+            if(!button){
+                return;
+            }
+
+
+            const order =
+                findOrder(
+                    button.dataset.cancel
+                );
+
+
+            if(order){
+
+                openCancelModal(
+                    order
+                );
+
+            }
+
+        }
+    );
+
+
+// =====================================================
+// CANCEL ORDER
+// =====================================================
+
+async function cancelOrder(
+    order
+){
+
+    const activationId =
+        order.activationId ||
+        order.id;
+
+
+    if(!activationId){
+
+        showToast(
+            "Activation information was not found."
+        );
+
+        return;
+
+    }
+
+
+    try{
+
+        await callGrizzly(
+            "cancel",
+            {
+                activation_id:
+                    activationId,
+
+                activationId:
+                    activationId
+            }
+        );
+
+
+        showToast(
+            "Number cancelled and refund processed."
+        );
+
+
+        await loadOrders();
+
+
+    }catch(error){
+
+        console.error(
+            "Cancel order error:",
+            error
+        );
+
+
+        showToast(
+            getErrorMessage(
+                error
+            )
+        );
+
+    }
+
+}
+
+
+// =====================================================
+// REFRESH
+// =====================================================
+
+$("refreshButton")
+    .addEventListener(
+        "click",
+        async function(){
+
+            const button =
+                $("refreshButton");
+
+
+            button.disabled =
+                true;
+
+            button.textContent =
+                "…";
+
+
+            await loadOrders();
+
+
+            button.disabled =
+                false;
+
+            button.textContent =
+                "↻";
+
+        }
+    );
+
+
+// =====================================================
+// INITIALIZE
+// =====================================================
+
+async function initialize(){
+
+    try{
+
+        const {
+            data,
+            error
+        } =
+        await supabaseClient
+            .auth
+            .getSession();
+
+
+        if(
+            error ||
+            !data?.session
+        ){
+
+            location.replace(
+                "login.html"
+            );
+
+            return;
+
+        }
+
+
+        currentSession =
+            data.session;
+
+
+        supabaseClient.auth
+            .onAuthStateChange(
+                function(
+                    event,
+                    session
+                ){
+
+                    currentSession =
+                        session;
+
+
+                    if(
+                        event ===
+                        "SIGNED_OUT"
+                    ){
+
+                        location.replace(
+                            "login.html"
+                        );
+
+                    }
+
+                }
+            );
+
+
+        await loadOrders();
+
+
+    }catch(error){
+
+        console.error(
+            "Orders initialization error:",
+            error
+        );
+
+
+        $("orderList")
+            .innerHTML = `
+
+                <div class="error">
+
+                    ❌ Unable to open orders.
+
+                    <br><br>
+
+                    ${escapeHtml(
+                        getErrorMessage(
+                            error
+                        )
+                    )}
+
+                </div>
+
+            `;
+
+    }
+
+}
+
+
+initialize();
+
+</script>
+
+</body>
+</html>
