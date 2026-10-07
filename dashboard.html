@@ -2916,22 +2916,19 @@ async function loadWalletBalance(){
         return;
     }
 
-
     let balance = 0;
-
 
     try{
 
-        let result =
+        const result =
             await supabaseClient
-                .from("profiles")
+                .from("wallet")
                 .select("balance")
                 .eq(
-                    "id",
+                    "user-id",
                     currentUser.id
                 )
                 .maybeSingle();
-
 
         if(
             !result.error &&
@@ -2943,31 +2940,6 @@ async function loadWalletBalance(){
                     result.data.balance || 0
                 );
 
-        }else{
-
-            result =
-                await supabaseClient
-                    .from("profiles")
-                    .select("balance")
-                    .eq(
-                        "user_id",
-                        currentUser.id
-                    )
-                    .maybeSingle();
-
-
-            if(
-                !result.error &&
-                result.data
-            ){
-
-                balance =
-                    Number(
-                        result.data.balance || 0
-                    );
-
-            }
-
         }
 
     }catch{
@@ -2976,10 +2948,8 @@ async function loadWalletBalance(){
 
     }
 
-
     $("walletBalance").textContent =
         formatNaira(balance);
-
 
     window.currentWalletBalance =
         balance;
@@ -2993,7 +2963,6 @@ function formatNaira(
     const value =
         Number(amount || 0);
 
-
     return "₦" +
         value.toLocaleString(
             "en-NG",
@@ -3003,7 +2972,6 @@ function formatNaira(
             }
         );
 }
-
 
 /* =========================================================
 COUNTRIES
