@@ -723,7 +723,7 @@ body::after{
                         type="button"
                         class="toggle-password"
                         id="togglePassword"
-                        onclick="togglePassword()"
+                        oneclick="togglePasswordVisibility()"
                         aria-label="Show password"
                     >
                         👁
@@ -857,8 +857,7 @@ function showMessage(message, type){
    PASSWORD TOGGLE
 ================================ */
 
-function togglePassword(){
-
+function togglePasswordVisibility(){
     const password =
         document.getElementById("password");
 
