@@ -2642,6 +2642,7 @@ $("alertOk")
         hideAlert
     );
 
+
 /* =========================================================
 ERROR MESSAGE
 ========================================================= */
@@ -2898,19 +2899,22 @@ async function loadWalletBalance(){
         return;
     }
 
+
     let balance = 0;
+
 
     try{
 
-        const result =
+        let result =
             await supabaseClient
-                .from("wallet")
+                .from("profiles")
                 .select("balance")
                 .eq(
-                    "user-id",
+                    "id",
                     currentUser.id
                 )
                 .maybeSingle();
+
 
         if(
             !result.error &&
@@ -2922,6 +2926,31 @@ async function loadWalletBalance(){
                     result.data.balance || 0
                 );
 
+        }else{
+
+            result =
+                await supabaseClient
+                    .from("profiles")
+                    .select("balance")
+                    .eq(
+                        "user_id",
+                        currentUser.id
+                    )
+                    .maybeSingle();
+
+
+            if(
+                !result.error &&
+                result.data
+            ){
+
+                balance =
+                    Number(
+                        result.data.balance || 0
+                    );
+
+            }
+
         }
 
     }catch{
@@ -2930,8 +2959,10 @@ async function loadWalletBalance(){
 
     }
 
+
     $("walletBalance").textContent =
         formatNaira(balance);
+
 
     window.currentWalletBalance =
         balance;
@@ -2945,6 +2976,7 @@ function formatNaira(
     const value =
         Number(amount || 0);
 
+
     return "₦" +
         value.toLocaleString(
             "en-NG",
@@ -2954,6 +2986,7 @@ function formatNaira(
             }
         );
 }
+
 
 /* =========================================================
 COUNTRIES
@@ -5299,7 +5332,7 @@ async function purchaseNumber(){
 
         showAlert(
             "Purchase Unavailable",
-            "Insufficient funds. Please contact support.",
+            cleanErrorMessage(error),
             "⚠️"
         );
 
@@ -5350,43 +5383,22 @@ async function loadRecentPurchases(){
                 )
                 .slice(
                     0,
-                    5
+                    3
                 );
 
 
-recentOrdersCache = orders;
-renderRecentPurchases(orders);
-
-
-
-    }catch(error){
-
-        console.error(
-            "Recent purchases error:",
-            error
+        renderRecentPurchases(
+            orders
         );
 
-        const message =
-    typeof error?.message === "string"
-        ? error.message
-        : typeof error?.error === "string"
-            ? error.error
-            : typeof error?.details === "string"
-                ? error.details
-                : typeof error?.msg === "string"
-                    ? error.msg
-                    : (
-                        typeof error === "string"
-                            ? error
-                            : "Unable to load recent purchases."
-                    );
+
+    }catch{
+
         $("recentPurchases")
             .innerHTML =
             `
             <div class="no-purchases">
-                ${escapeHtml(
-                    String(message)
-                )}
+                Unable to load recent purchases.
             </div>
             `;
 
