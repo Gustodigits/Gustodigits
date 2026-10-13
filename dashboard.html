@@ -2642,7 +2642,6 @@ $("alertOk")
         hideAlert
     );
 
-
 /* =========================================================
 ERROR MESSAGE
 ========================================================= */
@@ -2663,23 +2662,6 @@ function cleanErrorMessage(
     if(!text){
 
         return "Something went wrong. Please try again.";
-
-    }
-
-    const lower =
-        text.toLowerCase();
-
-    if(
-        lower.includes("provider") ||
-        lower.includes("grizzly") ||
-        lower.includes("server not available") ||
-        lower.includes("no stock") ||
-        lower.includes("no number") ||
-        lower.includes("stock unavailable") ||
-        lower.includes("cannot fulfill")
-    ){
-
-        return "Insufficient funds. Please contact support.";
 
     }
 
