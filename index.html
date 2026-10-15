@@ -19,11 +19,10 @@ body::after{content:"";position:fixed;inset:0;pointer-events:none;opacity:.018;b
 /* HEADER */
 header{width:100%;position:relative;z-index:20;background:rgba(255,255,255,.82);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px)}
 .navbar{width:min(1180px,92%);margin:auto;min-height:82px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid rgba(22,119,184,.10)}
-.logo{display:flex;align-items:center;gap:11px;text-decoration:none;color:var(--text)}
-.logo-mark{width:41px;height:41px;display:flex;align-items:center;justify-content:center;border:1px solid rgba(22,119,184,.35);border-radius:12px;color:var(--blue);font-size:20px;font-weight:900;background:linear-gradient(145deg,#effaff,#dff3ff);box-shadow:0 5px 20px rgba(22,119,184,.10),inset 0 0 15px rgba(56,189,248,.08)}
-.logo-text{font-size:19px;font-weight:850;letter-spacing:-.5px;color:#173246}
+.logo{display:flex;align-items:center;gap:11px;text-decoration:none;color:var(--text);min-width:0}
+.logo-text{font-size:19px;font-weight:850;letter-spacing:-.5px;color:#173246;white-space:nowrap}
 .logo-text span{color:var(--blue)}
-.nav-actions{display:flex;align-items:center;gap:10px}
+.nav-actions{display:flex;align-items:center;gap:10px;flex-shrink:0}
 
 /* BUTTONS */
 .btn{display:inline-flex;align-items:center;justify-content:center;min-height:45px;padding:0 19px;border-radius:10px;font-size:14px;font-weight:750;text-decoration:none;transition:.25s ease;cursor:pointer}
@@ -117,8 +116,7 @@ footer{width:min(1180px,92%);margin:auto;padding:30px 0 25px;border-top:1px soli
 /* MOBILE */
 @media(max-width:850px){
 .navbar{min-height:72px}
-.logo-text{font-size:15px}
-.logo-mark{width:37px;height:37px}
+.logo-text{font-size:15px;letter-spacing:-.4px}
 .nav-actions{gap:7px}
 .nav-actions .btn{min-height:40px;padding:0 13px;font-size:12px}
 .hero{min-height:auto;padding:75px 0 65px}
@@ -132,8 +130,11 @@ footer{width:min(1180px,92%);margin:auto;padding:30px 0 25px;border-top:1px soli
 .footer-brand-column{grid-column:1/-1}
 }
 @media(max-width:520px){
-.navbar{width:92%}
-.logo-text{display:none}
+.navbar{width:94%;gap:8px}
+.logo{gap:0;flex-shrink:1;min-width:0}
+.logo-text{display:block;font-size:14px;letter-spacing:-.5px}
+.nav-actions{gap:5px}
+.nav-actions .btn{padding:0 9px;font-size:11px;min-height:38px}
 .hero{padding-top:55px}
 .eyebrow{font-size:9px}
 .hero h1{font-size:46px;letter-spacing:-2.3px}
@@ -150,6 +151,11 @@ footer{width:min(1180px,92%);margin:auto;padding:30px 0 25px;border-top:1px soli
 .footer-brand-column{grid-column:auto}
 .footer-bottom{flex-direction:column;align-items:flex-start}
 }
+@media(max-width:360px){
+.navbar{width:96%}
+.logo-text{font-size:12px;letter-spacing:-.4px}
+.nav-actions .btn{padding:0 7px;font-size:10px}
+}
 a:focus-visible{outline:2px solid var(--blue-light);outline-offset:4px}
 </style>
 </head>
@@ -159,7 +165,6 @@ a:focus-visible{outline:2px solid var(--blue-light);outline-offset:4px}
 <header>
     <nav class="navbar">
         <a href="index.html" class="logo" aria-label="Gustodigits Home">
-            <div class="logo-mark">G</div>
             <div class="logo-text">Gusto<span>digits</span></div>
         </a>
 
@@ -313,7 +318,6 @@ a:focus-visible{outline:2px solid var(--blue-light);outline-offset:4px}
     <div class="footer-top">
         <div class="footer-brand-column">
             <a href="index.html" class="logo" aria-label="Gustodigits Home">
-                <div class="logo-mark">G</div>
                 <div class="logo-text">Gusto<span>digits</span></div>
             </a>
 
