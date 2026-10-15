@@ -1,0 +1,692 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Read the GustoDigits Terms and Conditions governing access to virtual numbers and SMS verification services.">
+  <meta name="theme-color" content="#1769e0">
+  <title>Terms &amp; Conditions | GustoDigits</title>
+
+  <style>
+    :root {
+      --blue: #1769e0;
+      --blue-dark: #1052b5;
+      --blue-light: #eaf3ff;
+      --text: #172033;
+      --muted: #64748b;
+      --white: #ffffff;
+      --border: #e5eaf2;
+      --background: #f7faff;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: Arial, Helvetica, sans-serif;
+      color: var(--text);
+      background: var(--background);
+      line-height: 1.7;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    .container {
+      width: min(1100px, 92%);
+      margin: 0 auto;
+    }
+
+    header {
+      background: var(--white);
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+
+    .navbar {
+      min-height: 76px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+    }
+
+    .logo {
+      font-size: 24px;
+      font-weight: 800;
+      letter-spacing: -1px;
+      color: var(--blue);
+      white-space: nowrap;
+    }
+
+    .logo span {
+      color: var(--text);
+    }
+
+    nav {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      flex-wrap: wrap;
+      gap: 22px;
+    }
+
+    nav a {
+      font-size: 14px;
+      font-weight: 600;
+      color: #475569;
+    }
+
+    nav a:hover,
+    nav a.active {
+      color: var(--blue);
+    }
+
+    .hero {
+      padding: 70px 0 55px;
+      text-align: center;
+      background: linear-gradient(135deg, #eaf3ff, #ffffff);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .eyebrow {
+      display: inline-block;
+      background: #dbeafe;
+      color: var(--blue-dark);
+      padding: 6px 14px;
+      border-radius: 30px;
+      font-size: 12px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 18px;
+    }
+
+    h1 {
+      font-size: clamp(32px, 5vw, 48px);
+      line-height: 1.2;
+      letter-spacing: -1.5px;
+      margin-bottom: 16px;
+    }
+
+    .hero p {
+      max-width: 680px;
+      margin: 0 auto;
+      color: var(--muted);
+      font-size: 16px;
+    }
+
+    main {
+      padding: 45px 0 75px;
+    }
+
+    .content {
+      max-width: 850px;
+      margin: 0 auto;
+    }
+
+    .notice {
+      background: var(--blue-light);
+      border: 1px solid #cfe2ff;
+      border-radius: 12px;
+      padding: 18px 20px;
+      margin-bottom: 24px;
+      color: #344b6b;
+      font-size: 14px;
+    }
+
+    .section {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 27px;
+      margin-bottom: 18px;
+      box-shadow: 0 8px 30px rgba(15, 50, 100, 0.035);
+    }
+
+    .section h2 {
+      font-size: 21px;
+      margin-bottom: 12px;
+      letter-spacing: -0.4px;
+    }
+
+    .section p {
+      color: #526176;
+      margin-bottom: 12px;
+    }
+
+    .section p:last-child {
+      margin-bottom: 0;
+    }
+
+    .section ul {
+      padding-left: 22px;
+      color: #526176;
+    }
+
+    .section li {
+      margin: 8px 0;
+    }
+
+    .section a {
+      color: var(--blue-dark);
+      text-decoration: underline;
+      overflow-wrap: anywhere;
+    }
+
+    .contact-box {
+      background: var(--blue-light);
+      border: 1px solid #cfe2ff;
+      border-radius: 16px;
+      padding: 26px;
+      margin-top: 25px;
+    }
+
+    .contact-box h2 {
+      margin-bottom: 10px;
+    }
+
+    .contact-box p {
+      color: #526176;
+      margin-bottom: 12px;
+    }
+
+    .contact-box a {
+      color: var(--blue-dark);
+      overflow-wrap: anywhere;
+    }
+
+    footer {
+      background: #101a2d;
+      color: #dbe4f2;
+      padding: 42px 0 22px;
+    }
+
+    .footer-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      flex-wrap: wrap;
+      gap: 30px;
+      padding-bottom: 28px;
+    }
+
+    .footer-brand {
+      max-width: 340px;
+    }
+
+    .footer-brand .logo {
+      display: inline-block;
+      color: #75adff;
+      margin-bottom: 12px;
+    }
+
+    .footer-brand .logo span {
+      color: #ffffff;
+    }
+
+    .footer-brand p {
+      color: #aab8cc;
+      font-size: 14px;
+    }
+
+    .footer-links h3 {
+      color: #ffffff;
+      font-size: 15px;
+      margin-bottom: 12px;
+    }
+
+    .footer-links a {
+      display: block;
+      color: #aab8cc;
+      font-size: 14px;
+      margin: 7px 0;
+      overflow-wrap: anywhere;
+    }
+
+    .footer-links a:hover {
+      color: #ffffff;
+    }
+
+    .copyright {
+      border-top: 1px solid #29364a;
+      padding-top: 20px;
+      text-align: center;
+      font-size: 13px;
+      color: #aab8cc;
+    }
+
+    @media (max-width: 650px) {
+      .navbar {
+        padding: 15px 0;
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 12px;
+      }
+
+      nav {
+        justify-content: flex-start;
+        gap: 12px 18px;
+      }
+
+      nav a {
+        font-size: 13px;
+      }
+
+      .hero {
+        padding: 50px 0 40px;
+      }
+
+      .hero p {
+        font-size: 15px;
+      }
+
+      main {
+        padding: 30px 0 50px;
+      }
+
+      .section {
+        padding: 21px;
+        border-radius: 13px;
+      }
+
+      .section h2 {
+        font-size: 19px;
+      }
+
+      .logo {
+        font-size: 22px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <div class="container navbar">
+      <a href="index.html" class="logo" aria-label="GustoDigits Home">
+        Gusto<span>digits</span>
+      </a>
+
+      <nav aria-label="Main navigation">
+        <a href="index.html">Home</a>
+        <a href="about.html">About Us</a>
+        <a href="faq.html">FAQ</a>
+        <a href="terms.html" class="active">Terms</a>
+        <a href="privacy.html">Privacy</a>
+        <a href="refund-policy.html">Refund Policy</a>
+      </nav>
+    </div>
+  </header>
+
+  <section class="hero">
+    <div class="container">
+      <span class="eyebrow">Platform rules</span>
+      <h1>Terms &amp; Conditions</h1>
+      <p>
+        Please read these Terms and Conditions carefully before using
+        GustoDigits and its virtual-number services.
+      </p>
+    </div>
+  </section>
+
+  <main>
+    <div class="container content">
+
+      <div class="notice">
+        <strong>Important:</strong> These terms are a general starting point
+        for GustoDigits. Review them against your actual service, payment
+        arrangements and applicable law before publishing them as a final
+        legal policy.
+      </div>
+
+      <section class="section">
+        <h2>1. Acceptance of These Terms</h2>
+        <p>
+          These Terms and Conditions govern your access to and use of
+          GustoDigits, including its website, account features, virtual-number
+          services and related support.
+        </p>
+        <p>
+          By accessing or using the platform, you agree to comply with these
+          terms and the applicable policies published on the website. If you
+          do not agree, you should discontinue using the service.
+        </p>
+      </section>
+
+      <section class="section">
+        <h2>2. About GustoDigits</h2>
+        <p>
+          GustoDigits provides access to available virtual phone numbers for
+          supported countries and services, including compatible SMS
+          verification use cases.
+        </p>
+        <p>
+          The availability and performance of a number may depend on inventory,
+          the relevant service, network conditions and third-party providers.
+          The features available to you are those displayed on the platform
+          at the time of use.
+        </p>
+      </section>
+
+      <section class="section">
+        <h2>3. Eligibility and Account Information</h2>
+        <ul>
+          <li>You must be legally permitted to use the platform in your jurisdiction.</li>
+          <li>You must provide accurate information when creating or using an account.</li>
+          <li>You are responsible for protecting your login credentials.</li>
+          <li>You should notify support if you suspect unauthorised account access.</li>
+          <li>You must not impersonate another person or create accounts for fraudulent purposes.</li>
+        </ul>
+        <p>
+          You are responsible for activity carried out through your account,
+          subject to applicable law and any responsibility attributable to
+          GustoDigits.
+        </p>
+      </section>
+
+      <section class="section">
+        <h2>4. Virtual Number Availability</h2>
+        <p>
+          Numbers are offered subject to availability. A number, country,
+          network or supported service may become unavailable without notice
+          when circumstances outside our control change.
+        </p>
+        <p>
+          GustoDigits does not guarantee that every number will work with
+          every website, application or verification provider. Third-party
+          platforms may reject virtual numbers, block certain number ranges
+          or change their verification requirements.
+        </p>
+        <p>
+          Unless expressly stated otherwise when a service is purchased,
+          access to a number should not be understood as permanent ownership
+          of a telephone number or an exclusive right to use it indefinitely.
+        </p>
+      </section>
+
+      <section class="section">
+        <h2>5. Orders and Service Delivery</h2>
+        <p>
+          You are responsible for selecting the correct country, service and
+          other order options before confirming a purchase.
+        </p>
+        <p>
+          An order may depend on available inventory, provider responses,
+          network performance and the successful processing of your payment.
+          Estimated delivery times are not guarantees unless explicitly
+          identified as such.
+        </p>
+        <p>
+          If an order encounters a problem, contact support with the relevant
+          order details. Refunds and cancellations are handled under the
+          published <a href="refund-policy.html">Refund Policy</a>.
+        </p>
+      </section>
+
+      <section class="section">
+        <h2>6. Payments and Account Balance</h2>
+        <p>
+          Prices, charges and any applicable fees should be displayed or
+          communicated before you confirm a transaction. You are responsible
+          for reviewing the amount and order details before proceeding.
+        </p>
+        <p>
+          If GustoDigits provides a wallet or account balance feature, that
+          balance may be used only in accordance with the functionality and
+          conditions presented on the platform.
+        </p>
+        <p>
+          Do not assume that a wallet balance is a bank deposit, earns
+          interest or can be withdrawn as cash unless GustoDigits expressly
+          provides that facility. Any permitted withdrawals, wallet
+          restrictions and refund arrangements are subject to the applicable
+          policy and law.
+        </p>
+        <p>
+          Suspected payment errors or unauthorised transactions should be
+          reported to support as soon as possible.
+        </p>
+      </section>
+
+      <section class="section">
+        <h2>7. Refunds and Cancellations</h2>
+        <p>
+          Refund eligibility depends on the type of service purchased, the
+          status of the order, the reason for the request and applicable law.
+          A completed service may be treated differently from a failed,
+          cancelled or undelivered order.
+        </p>
+        <p>
+          Please read the separate
+          <a href="refund-policy.html">GustoDigits Refund Policy</a>
+          for the applicable conditions and instructions on requesting
+          assistance.
+        </p>
+        <p>
+          Nothing in these terms is intended to remove any consumer right
+          that cannot lawfully be excluded or limited.
+        </p>
+      </section>
+
+      <section class="section">
+        <h2>8. Acceptable Use</h2>
+        <p>
+          You agree to use GustoDigits only for lawful and authorised purposes.
+          You must not use the platform to:
+        </p>
+        <ul>
+          <li>Commit fraud, scams, identity theft or financial crime.</li>
+          <li>Harass, threaten, impersonate or harm another person.</li>
+          <li>Access accounts, systems or information without permission.</li>
+          <li>Bypass security measures or violate another service's rules.</li>
+          <li>Distribute unlawful content or facilitate illegal activity.</li>
+          <li>Interfere with the website, its systems or other users.</li>
+          <li>Misuse the service in a way that violates applicable law.</li>
+        </ul>
+        <p>
+          You must also comply with the terms and verification requirements
+          of any third-party website or application with which you use a
+          virtual number.
+        </p>
+      </section>
+
+      <section class="section">
+        <h2>9. Suspension and Restrictions</h2>
+        <p>
+          Where reasonably necessary and permitted by law, GustoDigits may
+          restrict or suspend access to an account or service if there is
+          suspected fraud, unlawful activity, abuse, a security risk, a
+          violation of these terms or a requirement from a service provider
+          or competent authority.
+        </p>
+        <p>
+          We will handle such actions in accordance with applicable law and
+          any relevant notice or review obligations. Any remaining balance
+          or refund request will be considered under the applicable policy
+          and legal requirements.
+        </p>
+      </section>
+
+      <section class="section">
+        <h2>10. Third-Party Services</h2>
+        <p>
+          GustoDigits may rely on external number suppliers, telecommunications
+          networks, payment processors and third-party websites or
+          applications.
+        </p>
+        <p>
+          These third parties may have their own terms, privacy practices,
+          restrictions and service availability. GustoDigits does not control
+          every third-party decision or system. Where appropriate, users
+          should review the terms and privacy information of the relevant
+          third-party service.
+        </p>
+      </section>
+
+      <section class="section">
+        <h2>11. Privacy and Personal Information</h2>
+        <p>
+          Personal information is handled in accordance with the
+          <a href="privacy.html">GustoDigits Privacy Policy</a>, subject to
+          applicable data-protection law.
+        </p>
+        <p>
+          You should avoid sharing passwords, verification codes or other
+          sensitive account information with people who are not authorised
+          to receive it.
+        </p>
+      </section>
+
+      <section class="section">
+        <h2>12. Service Availability and Limitations</h2>
+        <p>
+          We aim to keep GustoDigits accessible, but uninterrupted availability
+          cannot be guaranteed. Maintenance, technical faults, provider
+          outages, network issues or other circumstances may temporarily
+          affect the platform.
+        </p>
+        <p>
+          To the extent permitted by law, GustoDigits is not responsible for
+          failures caused solely by third-party systems or circumstances
+          outside its reasonable control. This does not exclude responsibility
+          that applicable law does not permit us to exclude.
+        </p>
+      </section>
+
+      <section class="section">
+        <h2>13. Intellectual Property</h2>
+        <p>
+          Unless otherwise stated, the GustoDigits name, branding, website
+          design, original content and platform materials are owned by or
+          used with permission by the relevant rights holder.
+        </p>
+        <p>
+          You may not copy, reproduce, distribute or commercially exploit
+          protected materials without appropriate permission, except where
+          permitted by law.
+        </p>
+      </section>
+
+      <section class="section">
+        <h2>14. Changes to These Terms</h2>
+        <p>
+          GustoDigits may update these terms when necessary to reflect changes
+          to the platform, services, security requirements or applicable law.
+          The updated version will be published on this page with any
+          legally required notice.
+        </p>
+        <p>
+          The revised terms apply from their stated effective date or as
+          otherwise required by law.
+        </p>
+      </section>
+
+      <section class="section">
+        <h2>15. Applicable Law and Disputes</h2>
+        <p>
+          These terms are subject to the applicable laws and consumer
+          protections governing the relevant relationship. Any dispute should
+          first be raised through support where appropriate, without
+          restricting any legal rights or remedies available to either party.
+        </p>
+        <p>
+          Before publication, GustoDigits should specify the governing
+          jurisdiction and dispute process appropriate to its actual
+          business and legal obligations.
+        </p>
+      </section>
+
+      <section class="section">
+        <h2>16. Contact Information</h2>
+        <p>
+          For questions about these Terms and Conditions, contact
+          GustoDigits through the following channels:
+        </p>
+        <p>
+          <strong>Email:</strong>
+          <a href="mailto:Nwsgstn@gmail.com">Nwsgstn@gmail.com</a>
+        </p>
+        <p>
+          <strong>WhatsApp:</strong>
+          <a href="https://wa.me/2347038064570?text=Hello%20Gustodigits%20Support"
+             target="_blank" rel="noopener noreferrer">
+            GustoDigits Support
+          </a>
+        </p>
+        <p>
+          <strong>Telegram:</strong>
+          <a href="https://t.me/GustodigitsSupportbot"
+             target="_blank" rel="noopener noreferrer">
+            @GustodigitsSupportbot
+          </a>
+        </p>
+      </section>
+
+      <section class="section">
+        <h2>17. Related Policies</h2>
+        <ul>
+          <li><a href="about.html">About GustoDigits</a></li>
+          <li><a href="privacy.html">Privacy Policy</a></li>
+          <li><a href="refund-policy.html">Refund Policy</a></li>
+          <li><a href="faq.html">Frequently Asked Questions</a></li>
+        </ul>
+      </section>
+
+    </div>
+  </main>
+
+  <footer>
+    <div class="container">
+      <div class="footer-top">
+        <div class="footer-brand">
+          <a href="index.html" class="logo">Gusto<span>digits</span></a>
+          <p>
+            Your virtual-number platform for supported countries and SMS
+            verification services.
+          </p>
+        </div>
+
+        <div class="footer-links">
+          <h3>Quick Links</h3>
+          <a href="index.html">Home</a>
+          <a href="about.html">About Us</a>
+          <a href="faq.html">Frequently Asked Questions</a>
+        </div>
+
+        <div class="footer-links">
+          <h3>Policies</h3>
+          <a href="terms.html">Terms &amp; Conditions</a>
+          <a href="privacy.html">Privacy Policy</a>
+          <a href="refund-policy.html">Refund Policy</a>
+        </div>
+
+        <div class="footer-links">
+          <h3>Contact Us</h3>
+          <a href="mailto:Nwsgstn@gmail.com">Email Support</a>
+          <a href="https://wa.me/2347038064570?text=Hello%20Gustodigits%20Support"
+             target="_blank" rel="noopener noreferrer">WhatsApp</a>
+          <a href="https://t.me/GustodigitsSupportbot"
+             target="_blank" rel="noopener noreferrer">Telegram</a>
+        </div>
+      </div>
+
+      <div class="copyright">
+        &copy; <span id="year"></span> GustoDigits. All rights reserved.
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    document.getElementById("year").textContent =
+      new Date().getFullYear();
+  </script>
+</body>
+</html>
