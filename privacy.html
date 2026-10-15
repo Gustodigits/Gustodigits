@@ -1,0 +1,671 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Read the GustoDigits Privacy Policy to learn how personal information may be collected, used, protected and managed.">
+  <meta name="theme-color" content="#1769e0">
+  <title>Privacy Policy | GustoDigits</title>
+
+  <style>
+    :root {
+      --blue: #1769e0;
+      --blue-dark: #1052b5;
+      --blue-light: #eaf3ff;
+      --text: #172033;
+      --muted: #64748b;
+      --white: #ffffff;
+      --border: #e5eaf2;
+      --background: #f7faff;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: Arial, Helvetica, sans-serif;
+      color: var(--text);
+      background: var(--background);
+      line-height: 1.7;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    .container {
+      width: min(1100px, 92%);
+      margin: 0 auto;
+    }
+
+    header {
+      background: var(--white);
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+
+    .navbar {
+      min-height: 76px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+    }
+
+    .logo {
+      font-size: 24px;
+      font-weight: 800;
+      letter-spacing: -1px;
+      color: var(--blue);
+      white-space: nowrap;
+    }
+
+    .logo span {
+      color: var(--text);
+    }
+
+    nav {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      flex-wrap: wrap;
+      gap: 22px;
+    }
+
+    nav a {
+      font-size: 14px;
+      font-weight: 600;
+      color: #475569;
+    }
+
+    nav a:hover,
+    nav a.active {
+      color: var(--blue);
+    }
+
+    .hero {
+      padding: 70px 0 55px;
+      text-align: center;
+      background: linear-gradient(135deg, #eaf3ff, #ffffff);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .eyebrow {
+      display: inline-block;
+      background: #dbeafe;
+      color: var(--blue-dark);
+      padding: 6px 14px;
+      border-radius: 30px;
+      font-size: 12px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 18px;
+    }
+
+    h1 {
+      font-size: clamp(32px, 5vw, 48px);
+      line-height: 1.2;
+      letter-spacing: -1.5px;
+      margin-bottom: 16px;
+    }
+
+    .hero p {
+      max-width: 700px;
+      margin: 0 auto;
+      color: var(--muted);
+      font-size: 16px;
+    }
+
+    main {
+      padding: 45px 0 75px;
+    }
+
+    .content {
+      max-width: 850px;
+      margin: 0 auto;
+    }
+
+    .notice {
+      background: var(--blue-light);
+      border: 1px solid #cfe2ff;
+      border-radius: 12px;
+      padding: 18px 20px;
+      margin-bottom: 24px;
+      color: #344b6b;
+      font-size: 14px;
+    }
+
+    .section {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 27px;
+      margin-bottom: 18px;
+      box-shadow: 0 8px 30px rgba(15, 50, 100, 0.035);
+    }
+
+    .section h2 {
+      font-size: 21px;
+      margin-bottom: 12px;
+      letter-spacing: -0.4px;
+    }
+
+    .section p {
+      color: #526176;
+      margin-bottom: 12px;
+    }
+
+    .section p:last-child {
+      margin-bottom: 0;
+    }
+
+    .section ul {
+      padding-left: 22px;
+      color: #526176;
+    }
+
+    .section li {
+      margin: 8px 0;
+    }
+
+    .section a {
+      color: var(--blue-dark);
+      text-decoration: underline;
+      overflow-wrap: anywhere;
+    }
+
+    .contact-box {
+      background: var(--blue-light);
+      border: 1px solid #cfe2ff;
+      border-radius: 16px;
+      padding: 26px;
+      margin-top: 25px;
+    }
+
+    .contact-box h2 {
+      margin-bottom: 10px;
+    }
+
+    .contact-box p {
+      color: #526176;
+      margin-bottom: 12px;
+    }
+
+    .contact-box a {
+      color: var(--blue-dark);
+      overflow-wrap: anywhere;
+    }
+
+    footer {
+      background: #101a2d;
+      color: #dbe4f2;
+      padding: 42px 0 22px;
+    }
+
+    .footer-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      flex-wrap: wrap;
+      gap: 30px;
+      padding-bottom: 28px;
+    }
+
+    .footer-brand {
+      max-width: 340px;
+    }
+
+    .footer-brand .logo {
+      display: inline-block;
+      color: #75adff;
+      margin-bottom: 12px;
+    }
+
+    .footer-brand .logo span {
+      color: #ffffff;
+    }
+
+    .footer-brand p {
+      color: #aab8cc;
+      font-size: 14px;
+    }
+
+    .footer-links h3 {
+      color: #ffffff;
+      font-size: 15px;
+      margin-bottom: 12px;
+    }
+
+    .footer-links a {
+      display: block;
+      color: #aab8cc;
+      font-size: 14px;
+      margin: 7px 0;
+      overflow-wrap: anywhere;
+    }
+
+    .footer-links a:hover {
+      color: #ffffff;
+    }
+
+    .copyright {
+      border-top: 1px solid #29364a;
+      padding-top: 20px;
+      text-align: center;
+      font-size: 13px;
+      color: #aab8cc;
+    }
+
+    @media (max-width: 650px) {
+      .navbar {
+        padding: 15px 0;
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 12px;
+      }
+
+      nav {
+        justify-content: flex-start;
+        gap: 12px 18px;
+      }
+
+      nav a {
+        font-size: 13px;
+      }
+
+      .hero {
+        padding: 50px 0 40px;
+      }
+
+      .hero p {
+        font-size: 15px;
+      }
+
+      main {
+        padding: 30px 0 50px;
+      }
+
+      .section {
+        padding: 21px;
+        border-radius: 13px;
+      }
+
+      .section h2 {
+        font-size: 19px;
+      }
+
+      .logo {
+        font-size: 22px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <div class="container navbar">
+      <a href="index.html" class="logo" aria-label="GustoDigits Home">
+        Gusto<span>digits</span>
+      </a>
+
+      <nav aria-label="Main navigation">
+        <a href="index.html">Home</a>
+        <a href="about.html">About Us</a>
+        <a href="faq.html">FAQ</a>
+        <a href="terms.html">Terms</a>
+        <a href="privacy.html" class="active">Privacy</a>
+        <a href="refund-policy.html">Refund Policy</a>
+      </nav>
+    </div>
+  </header>
+
+  <section class="hero">
+    <div class="container">
+      <span class="eyebrow">Your information matters</span>
+      <h1>Privacy Policy</h1>
+      <p>
+        This Privacy Policy explains how GustoDigits may collect, use,
+        disclose and protect information when you access our website
+        and virtual-number services.
+      </p>
+    </div>
+  </section>
+
+  <main>
+    <div class="container content">
+
+      <div class="notice">
+        <strong>Please note:</strong> This is a general policy template.
+        Before publishing, confirm that it accurately describes your
+        website, database, payment providers, analytics, cookies and
+        virtual-number suppliers. Remove any section that does not apply.
+      </div>
+
+      <section class="section">
+        <h2>1. Introduction</h2>
+        <p>
+          GustoDigits respects privacy and aims to handle personal information
+          responsibly. This policy describes the types of information that
+          may be processed when you visit the website, create an account,
+          request a virtual number or contact support.
+        </p>
+        <p>
+          Your information will be handled in accordance with applicable
+          data-protection and privacy laws. This policy should be read
+          alongside our <a href="terms.html">Terms &amp; Conditions</a>.
+        </p>
+      </section>
+
+      <section class="section">
+        <h2>2. Information We May Collect</h2>
+        <p>Depending on the features you use, information may include:</p>
+        <ul>
+          <li>
+            <strong>Account information:</strong> such as your username,
+            email address and account identifier.
+          </li>
+          <li>
+            <strong>Order information:</strong> such as selected country,
+            service, order status, virtual-number order details and
+            transaction references.
+          </li>
+          <li>
+            <strong>Payment information:</strong> such as payment status,
+            amount, transaction reference and wallet activity. Payment
+            card or banking details may be handled by a payment provider
+            rather than stored directly by GustoDigits.
+          </li>
+          <li>
+            <strong>Support communications:</strong> information you choose
+            to include when contacting us by email, WhatsApp or Telegram.
+          </li>
+          <li>
+            <strong>Technical information:</strong> where available, this
+            may include IP address, browser type, device information,
+            diagnostic logs and website activity.
+          </li>
+        </ul>
+        <p>
+          The information actually collected depends on the website's
+          configuration and the services you use. We should not collect
+          information that is unnecessary for legitimate service purposes.
+        </p>
+      </section>
+
+      <section class="section">
+        <h2>3. How We May Use Information</h2>
+        <p>Information may be used, where appropriate, to:</p>
+        <ul>
+          <li>Create and manage user accounts.</li>
+          <li>Process orders and provide requested virtual-number services.</li>
+          <li>Maintain wallet records and verify transaction status.</li>
+          <li>Respond to support requests and investigate reported issues.</li>
+          <li>Protect accounts, detect fraud and maintain platform security.</li>
+          <li>Diagnose technical problems and improve website functionality.</li>
+          <li>Meet applicable legal, regulatory and record-keeping obligations.</li>
+          <li>Communicate important service or policy changes.</li>
+        </ul>
+        <p>
+          We should use personal information only for appropriate purposes
+          and where there is a valid legal basis to do so.
+        </p>
+      </section>
+
+      <section class="section">
+        <h2>4. Cookies and Similar Technologies</h2>
+        <p>
+          The website may use cookies or similar technologies if they are
+          configured. These technologies can help remember preferences,
+          support account sessions, improve security or understand website
+          performance.
+        </p>
+        <p>
+          You can manage cookies through your browser settings. Disabling
+          certain cookies may affect features that depend on them.
+        </p>
+        <p>
+          This section should be updated to identify any analytics,
+          advertising or tracking technologies actually used by GustoDigits.
+          Do not assume that a particular cookie or tracking tool is active
+          unless it has been implemented.
+        </p>
+      </section>
+
+      <section class="section">
+        <h2>5. When Information May Be Shared</h2>
+        <p>
+          GustoDigits may share limited information when reasonably necessary
+          for the purposes described in this policy, including with:
+        </p>
+        <ul>
+          <li>
+            <strong>Service providers:</strong> providers that help operate
+            the website, database, hosting, security or customer support.
+          </li>
+          <li>
+            <strong>Number suppliers:</strong> providers involved in
+            fulfilling a virtual-number order, where relevant.
+          </li>
+          <li>
+            <strong>Payment providers:</strong> services used to process or
+            verify transactions.
+          </li>
+          <li>
+            <strong>Professional advisers:</strong> where necessary for
+            legitimate business, legal or compliance purposes.
+          </li>
+          <li>
+            <strong>Authorities:</strong> where disclosure is required by
+            applicable law or a valid legal process.
+          </li>
+        </ul>
+        <p>
+          We should not sell personal information to third parties. Information
+          should be shared only when appropriate, with suitable safeguards
+          and in accordance with applicable law.
+        </p>
+      </section>
+
+      <section class="section">
+        <h2>6. Third-Party Services</h2>
+        <p>
+          GustoDigits may rely on third-party services to provide hosting,
+          databases, payments, virtual numbers, messaging or customer support.
+          Those providers may process information according to their own
+          privacy terms and practices.
+        </p>
+        <p>
+          When you follow a link to an external website or contact us through
+          WhatsApp or Telegram, your use of that service is also governed
+          by the relevant provider's terms and privacy information.
+        </p>
+        <p>
+          Review the privacy policies of relevant third-party providers
+          where appropriate. GustoDigits cannot control every practice
+          carried out independently by an external provider.
+        </p>
+      </section>
+
+      <section class="section">
+        <h2>7. Data Security</h2>
+        <p>
+          We aim to use appropriate technical and organisational measures
+          to protect personal information against unauthorised access,
+          disclosure, alteration or loss.
+        </p>
+        <p>
+          No website, database, transmission method or storage system can
+          be guaranteed completely secure. Users should protect their
+          passwords, use secure devices and contact support if they suspect
+          unauthorised access to their accounts.
+        </p>
+      </section>
+
+      <section class="section">
+        <h2>8. Data Retention</h2>
+        <p>
+          Personal information should be retained only for as long as
+          reasonably necessary for the purposes for which it was collected,
+          including providing services, resolving disputes, maintaining
+          appropriate transaction records and meeting legal obligations.
+        </p>
+        <p>
+          Retention periods may vary depending on the type of information,
+          its purpose and applicable law. When information is no longer
+          required, it should be deleted or anonymised where appropriate
+          and technically feasible.
+        </p>
+      </section>
+
+      <section class="section">
+        <h2>9. Your Privacy Rights</h2>
+        <p>
+          Depending on the laws that apply to you, you may have rights
+          concerning your personal information, including the right to:
+        </p>
+        <ul>
+          <li>Request access to personal information held about you.</li>
+          <li>Ask for inaccurate information to be corrected.</li>
+          <li>Request deletion of information where legally applicable.</li>
+          <li>Object to or request limits on certain processing activities.</li>
+          <li>Withdraw consent where processing relies on consent.</li>
+          <li>Raise a complaint with the appropriate data-protection authority.</li>
+        </ul>
+        <p>
+          These rights may be subject to legal exceptions. To make a privacy
+          request, contact us using the details at the end of this page.
+          We may need to verify your identity before responding.
+        </p>
+      </section>
+
+      <section class="section">
+        <h2>10. Children's Privacy</h2>
+        <p>
+          GustoDigits is not intended for people who are not legally permitted
+          to use the service. We do not knowingly seek to collect children's
+          personal information unlawfully.
+        </p>
+        <p>
+          If you believe a child has provided personal information in
+          circumstances where collection is not permitted, please contact
+          us so the matter can be reviewed.
+        </p>
+      </section>
+
+      <section class="section">
+        <h2>11. International Data Transfers</h2>
+        <p>
+          Some service providers may process or store information in countries
+          other than the country where you live. Where this occurs, GustoDigits
+          should use any safeguards required by applicable data-protection
+          law.
+        </p>
+      </section>
+
+      <section class="section">
+        <h2>12. Changes to This Privacy Policy</h2>
+        <p>
+          This policy may be updated to reflect changes to the platform,
+          service providers, information-handling practices or applicable
+          law.
+        </p>
+        <p>
+          Updated wording will be published on this page. Where required,
+          we will provide additional notice or obtain consent before
+          implementing a change.
+        </p>
+      </section>
+
+      <section class="section">
+        <h2>13. Contact GustoDigits</h2>
+        <p>
+          For privacy questions, requests to access or correct information,
+          or concerns about how your information is handled, contact us:
+        </p>
+        <p>
+          <strong>Email:</strong>
+          <a href="mailto:Nwsgstn@gmail.com">Nwsgstn@gmail.com</a>
+        </p>
+        <p>
+          <strong>WhatsApp:</strong>
+          <a href="https://wa.me/2347038064570?text=Hello%20Gustodigits%20Support"
+             target="_blank" rel="noopener noreferrer">
+            GustoDigits Support
+          </a>
+        </p>
+        <p>
+          <strong>Telegram:</strong>
+          <a href="https://t.me/GustodigitsSupportbot"
+             target="_blank" rel="noopener noreferrer">
+            @GustodigitsSupportbot
+          </a>
+        </p>
+      </section>
+
+      <section class="section">
+        <h2>14. Related Policies</h2>
+        <ul>
+          <li><a href="about.html">About GustoDigits</a></li>
+          <li><a href="terms.html">Terms &amp; Conditions</a></li>
+          <li><a href="refund-policy.html">Refund Policy</a></li>
+          <li><a href="faq.html">Frequently Asked Questions</a></li>
+        </ul>
+      </section>
+
+    </div>
+  </main>
+
+  <footer>
+    <div class="container">
+      <div class="footer-top">
+        <div class="footer-brand">
+          <a href="index.html" class="logo">Gusto<span>digits</span></a>
+          <p>
+            Your virtual-number platform for supported countries and SMS
+            verification services.
+          </p>
+        </div>
+
+        <div class="footer-links">
+          <h3>Quick Links</h3>
+          <a href="index.html">Home</a>
+          <a href="about.html">About Us</a>
+          <a href="faq.html">Frequently Asked Questions</a>
+        </div>
+
+        <div class="footer-links">
+          <h3>Policies</h3>
+          <a href="terms.html">Terms &amp; Conditions</a>
+          <a href="privacy.html">Privacy Policy</a>
+          <a href="refund-policy.html">Refund Policy</a>
+        </div>
+
+        <div class="footer-links">
+          <h3>Contact Us</h3>
+          <a href="mailto:Nwsgstn@gmail.com">Email Support</a>
+          <a href="https://wa.me/2347038064570?text=Hello%20Gustodigits%20Support"
+             target="_blank" rel="noopener noreferrer">WhatsApp</a>
+          <a href="https://t.me/GustodigitsSupportbot"
+             target="_blank" rel="noopener noreferrer">Telegram</a>
+        </div>
+      </div>
+
+      <div class="copyright">
+        &copy; <span id="year"></span> GustoDigits. All rights reserved.
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    document.getElementById("year").textContent =
+      new Date().getFullYear();
+  </script>
+</body>
+</html>
