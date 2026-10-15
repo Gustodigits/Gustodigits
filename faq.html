@@ -1,0 +1,781 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#1769e0">
+  <meta name="description" content="Find answers to frequently asked questions about GustoDigits virtual numbers, SMS verification, orders, refunds, and support.">
+  <title>Frequently Asked Questions | Gustodigits</title>
+
+  <style>
+    :root {
+      --blue: #1769e0;
+      --blue-dark: #1052b5;
+      --blue-light: #eaf3ff;
+      --text: #172033;
+      --muted: #64748b;
+      --background: #f7faff;
+      --white: #ffffff;
+      --border: #e2e8f0;
+      --footer: #101a2d;
+      --shadow: 0 10px 30px rgba(23, 105, 224, 0.07);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: Arial, Helvetica, sans-serif;
+      background: var(--background);
+      color: var(--text);
+      line-height: 1.7;
+    }
+
+    a {
+      color: var(--blue);
+      text-decoration: none;
+    }
+
+    a:hover {
+      color: var(--blue-dark);
+    }
+
+    .container {
+      width: min(1100px, 92%);
+      margin: 0 auto;
+    }
+
+    header {
+      background: var(--white);
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .navbar {
+      min-height: 76px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 22px;
+      padding: 15px 0;
+    }
+
+    .logo {
+      color: var(--text);
+      font-size: 25px;
+      font-weight: 800;
+      letter-spacing: -1px;
+      white-space: nowrap;
+    }
+
+    .logo span {
+      color: var(--blue);
+    }
+
+    nav {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      flex-wrap: wrap;
+      gap: 17px;
+    }
+
+    nav a {
+      color: var(--text);
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    nav a:hover,
+    nav a.active {
+      color: var(--blue);
+    }
+
+    .hero {
+      padding: 76px 0 62px;
+      text-align: center;
+      background: linear-gradient(180deg, #eaf3ff 0%, #f7faff 100%);
+    }
+
+    .eyebrow {
+      display: inline-block;
+      background: #dceaff;
+      color: var(--blue-dark);
+      border-radius: 30px;
+      padding: 6px 15px;
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      margin-bottom: 17px;
+    }
+
+    .hero h1 {
+      font-size: clamp(32px, 5vw, 48px);
+      line-height: 1.2;
+      letter-spacing: -1.4px;
+      margin-bottom: 18px;
+    }
+
+    .hero p {
+      max-width: 680px;
+      margin: 0 auto;
+      color: var(--muted);
+      font-size: 16px;
+    }
+
+    main {
+      padding: 48px 0 75px;
+    }
+
+    .intro {
+      text-align: center;
+      max-width: 760px;
+      margin: 0 auto 35px;
+    }
+
+    .intro h2 {
+      font-size: 27px;
+      margin-bottom: 10px;
+    }
+
+    .intro p {
+      color: var(--muted);
+    }
+
+    .faq-list {
+      max-width: 850px;
+      margin: 0 auto;
+      display: grid;
+      gap: 13px;
+    }
+
+    details {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    details[open] {
+      border-color: #b8d3ff;
+    }
+
+    summary {
+      list-style: none;
+      cursor: pointer;
+      position: relative;
+      padding: 20px 55px 20px 22px;
+      font-size: 15px;
+      font-weight: 700;
+      line-height: 1.5;
+    }
+
+    summary::-webkit-details-marker {
+      display: none;
+    }
+
+    summary::after {
+      content: "+";
+      position: absolute;
+      right: 21px;
+      top: 50%;
+      transform: translateY(-50%);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: var(--blue-light);
+      color: var(--blue);
+      font-size: 21px;
+      font-weight: 500;
+    }
+
+    details[open] summary::after {
+      content: "−";
+      background: var(--blue);
+      color: var(--white);
+    }
+
+    .answer {
+      padding: 0 22px 22px;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .answer p + p {
+      margin-top: 10px;
+    }
+
+    .answer ul,
+    .answer ol {
+      padding-left: 22px;
+      margin: 10px 0;
+    }
+
+    .answer li {
+      margin-bottom: 6px;
+    }
+
+    .notice {
+      max-width: 850px;
+      margin: 28px auto 0;
+      padding: 18px 20px;
+      border-radius: 12px;
+      background: var(--blue-light);
+      color: #24456f;
+      font-size: 13px;
+    }
+
+    .support-box {
+      margin-top: 55px;
+      padding: 38px 25px;
+      text-align: center;
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      box-shadow: var(--shadow);
+    }
+
+    .support-box h2 {
+      font-size: 26px;
+      margin-bottom: 10px;
+    }
+
+    .support-box p {
+      max-width: 600px;
+      margin: 0 auto 22px;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .support-links {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .btn {
+      display: inline-block;
+      padding: 12px 20px;
+      border-radius: 9px;
+      font-size: 13px;
+      font-weight: 700;
+      transition: transform 0.2s, background 0.2s;
+    }
+
+    .btn:hover {
+      transform: translateY(-2px);
+    }
+
+    .btn-primary {
+      background: var(--blue);
+      color: var(--white);
+    }
+
+    .btn-primary:hover {
+      background: var(--blue-dark);
+      color: var(--white);
+    }
+
+    .btn-secondary {
+      background: var(--blue-light);
+      color: var(--blue-dark);
+    }
+
+    .btn-secondary:hover {
+      background: #d7e7ff;
+      color: var(--blue-dark);
+    }
+
+    footer {
+      background: var(--footer);
+      color: #cbd5e1;
+      padding: 48px 0 20px;
+    }
+
+    .footer-grid {
+      display: grid;
+      grid-template-columns: 1.4fr 1fr 1fr;
+      gap: 35px;
+      padding-bottom: 35px;
+    }
+
+    .footer-brand {
+      display: inline-block;
+      color: var(--white);
+      font-size: 24px;
+      font-weight: 800;
+      letter-spacing: -0.8px;
+      margin-bottom: 13px;
+    }
+
+    .footer-brand span {
+      color: #66a3ff;
+    }
+
+    .footer-about {
+      max-width: 340px;
+      color: #aebbd0;
+      font-size: 13px;
+    }
+
+    .footer-column h3 {
+      color: var(--white);
+      font-size: 14px;
+      margin-bottom: 15px;
+    }
+
+    .footer-column a {
+      display: block;
+      width: fit-content;
+      color: #aebbd0;
+      font-size: 13px;
+      margin-bottom: 9px;
+      overflow-wrap: anywhere;
+    }
+
+    .footer-column a:hover {
+      color: var(--white);
+    }
+
+    .footer-bottom {
+      border-top: 1px solid #283449;
+      padding-top: 19px;
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+      color: #94a3b8;
+      font-size: 12px;
+    }
+
+    @media (max-width: 800px) {
+      .navbar {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 13px;
+      }
+
+      nav {
+        justify-content: flex-start;
+        gap: 10px 15px;
+      }
+
+      .footer-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .footer-brand-column {
+        grid-column: 1 / -1;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .logo {
+        font-size: 23px;
+      }
+
+      nav a {
+        font-size: 12px;
+      }
+
+      .hero {
+        padding: 55px 0 45px;
+      }
+
+      main {
+        padding: 35px 0 55px;
+      }
+
+      summary {
+        padding: 17px 48px 17px 16px;
+        font-size: 14px;
+      }
+
+      summary::after {
+        right: 13px;
+      }
+
+      .answer {
+        padding: 0 16px 18px;
+      }
+
+      .support-box {
+        padding: 30px 18px;
+      }
+
+      .footer-grid {
+        grid-template-columns: 1fr;
+        gap: 26px;
+      }
+
+      .footer-brand-column {
+        grid-column: auto;
+      }
+
+      .footer-bottom {
+        flex-direction: column;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <div class="container navbar">
+      <a href="index.html" class="logo">Gusto<span>digits</span></a>
+
+      <nav aria-label="Main navigation">
+        <a href="index.html">Home</a>
+        <a href="about.html">About Us</a>
+        <a href="faq.html" class="active">FAQ</a>
+        <a href="terms.html">Terms</a>
+        <a href="privacy.html">Privacy</a>
+        <a href="refund-policy.html">Refund Policy</a>
+        <a href="contact.html">Contact</a>
+      </nav>
+    </div>
+  </header>
+
+  <section class="hero">
+    <div class="container">
+      <span class="eyebrow">Help Centre</span>
+      <h1>Frequently Asked Questions</h1>
+      <p>
+        Have questions about GustoDigits, virtual numbers, SMS verification,
+        or orders? Find helpful answers below.
+      </p>
+    </div>
+  </section>
+
+  <main class="container">
+    <div class="intro">
+      <h2>How can we help you?</h2>
+      <p>
+        Browse the questions below for general guidance. If you need help
+        with a specific order, contact our support team with the relevant
+        order details.
+      </p>
+    </div>
+
+    <section class="faq-list" aria-label="Frequently asked questions">
+
+      <details>
+        <summary>1. What is GustoDigits?</summary>
+        <div class="answer">
+          <p>
+            GustoDigits is an online platform that provides access to virtual
+            phone numbers for supported countries and services. Depending on
+            availability, these numbers may be used to receive SMS verification
+            codes for permitted purposes.
+          </p>
+          <p>
+            Learn more on our <a href="about.html">About Us</a> page.
+          </p>
+        </div>
+      </details>
+
+      <details>
+        <summary>2. What is a virtual number?</summary>
+        <div class="answer">
+          <p>
+            A virtual number is a phone number provided through an online
+            service rather than a traditional SIM card that you personally
+            insert into a phone. The available features and duration of access
+            depend on the specific number and service selected.
+          </p>
+        </div>
+      </details>
+
+      <details>
+        <summary>3. How do I get a number on GustoDigits?</summary>
+        <div class="answer">
+          <p>
+            If the service is available on the platform, the general process is:
+          </p>
+          <ol>
+            <li>Open the GustoDigits website and sign in or create an account if required.</li>
+            <li>Choose the country and service you need from the available options.</li>
+            <li>Review the displayed price and order details before confirming.</li>
+            <li>Follow the instructions on the platform to view your order and check for an SMS code.</li>
+          </ol>
+          <p>
+            The exact steps may vary depending on the features currently available
+            on the website.
+          </p>
+        </div>
+      </details>
+
+      <details>
+        <summary>4. Which countries and services are supported?</summary>
+        <div class="answer">
+          <p>
+            Supported countries and services can change depending on provider
+            inventory and availability. Please check the options displayed on
+            GustoDigits before placing an order. A country or service may not
+            always have numbers available.
+          </p>
+        </div>
+      </details>
+
+      <details>
+        <summary>5. Will every website or app accept my virtual number?</summary>
+        <div class="answer">
+          <p>
+            No. Third-party websites and apps decide which phone numbers they
+            accept. Some platforms may reject virtual, VoIP, recycled, or
+            previously used numbers, even when a number is available through
+            GustoDigits.
+          </p>
+          <p>
+            We cannot guarantee that every third-party platform will accept
+            every number.
+          </p>
+        </div>
+      </details>
+
+      <details>
+        <summary>6. Why haven't I received my SMS verification code?</summary>
+        <div class="answer">
+          <p>There can be several reasons, including:</p>
+          <ul>
+            <li>The third-party service has delayed or failed to send the SMS.</li>
+            <li>The selected number or service is experiencing a temporary issue.</li>
+            <li>The third-party platform does not accept the number.</li>
+            <li>The number's activation or availability has changed.</li>
+          </ul>
+          <p>
+            Check the order status and follow any instructions shown on the
+            website. If the issue continues, contact support with your order
+            reference. Do not share your account password or other sensitive
+            login details.
+          </p>
+        </div>
+      </details>
+
+      <details>
+        <summary>7. What should I do if my order fails?</summary>
+        <div class="answer">
+          <p>
+            First, check the order status and any message displayed by the
+            website. If the order appears unsuccessful or the service was not
+            delivered, contact support with your order reference, the selected
+            country and service, and a brief description of the problem.
+          </p>
+          <p>
+            Any applicable refund or wallet adjustment will be handled according
+            to the circumstances of the order and our
+            <a href="refund-policy.html">Refund Policy</a>.
+          </p>
+        </div>
+      </details>
+
+      <details>
+        <summary>8. How does the GustoDigits refund policy work?</summary>
+        <div class="answer">
+          <p>
+            Refund eligibility depends on the order status, whether the service
+            was delivered, and the reason for the request. Completed or used
+            services may not qualify for a refund. Please review the full
+            <a href="refund-policy.html">Refund Policy</a> before placing an order.
+          </p>
+          <p>
+            If you believe an order qualifies for review, contact support with
+            the order reference and relevant details. Do not assume a refund
+            has been approved until it is confirmed.
+          </p>
+        </div>
+      </details>
+
+      <details>
+        <summary>9. How can I contact customer support?</summary>
+        <div class="answer">
+          <p>You can reach GustoDigits support through the following channels:</p>
+          <ul>
+            <li>Email: <a href="mailto:Nwsgstn@gmail.com">Nwsgstn@gmail.com</a></li>
+            <li>WhatsApp: <a href="https://wa.me/2347038064570?text=Hello%20Gustodigits%20Support" target="_blank" rel="noopener noreferrer">Message GustoDigits on WhatsApp</a></li>
+            <li>Telegram: <a href="https://t.me/GustodigitsSupportbot" target="_blank" rel="noopener noreferrer">@GustodigitsSupportbot</a></li>
+          </ul>
+          <p>
+            For order-related issues, include your order reference and a clear
+            explanation of the problem. Never send your password or secret
+            authentication details.
+          </p>
+        </div>
+      </details>
+
+      <details>
+        <summary>10. Are virtual numbers permanent?</summary>
+        <div class="answer">
+          <p>
+            Not necessarily. The duration of access depends on the type of
+            number and service purchased. Some numbers are provided for a
+            limited activation period and may not remain accessible afterward.
+            Check the order details before purchasing.
+          </p>
+          <p>
+            Do not rely on a temporary number as the only recovery method for
+            an important personal account.
+          </p>
+        </div>
+      </details>
+
+      <details>
+        <summary>11. Does GustoDigits guarantee every OTP or verification code?</summary>
+        <div class="answer">
+          <p>
+            No. SMS delivery can depend on the number provider, network
+            conditions, and the third-party service sending the message.
+            GustoDigits cannot guarantee that every requested verification
+            code will arrive or that every platform will accept a number.
+          </p>
+          <p>
+            If a code does not arrive, check the order status and contact support
+            if you need assistance.
+          </p>
+        </div>
+      </details>
+
+      <details>
+        <summary>12. Can I use GustoDigits for any purpose?</summary>
+        <div class="answer">
+          <p>
+            You must use the platform lawfully and in accordance with our
+            <a href="terms.html">Terms and Conditions</a> and the rules of the
+            relevant third-party service.
+          </p>
+          <p>
+            Fraud, impersonation, harassment, unauthorized access, and attempts
+            to bypass security or verification controls are not permitted.
+          </p>
+        </div>
+      </details>
+
+      <details>
+        <summary>13. How does GustoDigits handle my personal information?</summary>
+        <div class="answer">
+          <p>
+            Information handling depends on how you use the platform and the
+            information required to provide its services. Please read our
+            <a href="privacy.html">Privacy Policy</a> for details about
+            information that may be collected, how it may be used, and your
+            available privacy choices.
+          </p>
+        </div>
+      </details>
+
+      <details>
+        <summary>14. What should I include when reporting a problem?</summary>
+        <div class="answer">
+          <p>To help support understand the issue, provide:</p>
+          <ul>
+            <li>Your order reference, if applicable.</li>
+            <li>The country and service selected.</li>
+            <li>The approximate time the issue occurred.</li>
+            <li>A screenshot of the error, if safe and relevant.</li>
+            <li>A short explanation of what happened.</li>
+          </ul>
+          <p>
+            Do not send passwords, payment card details, secret keys, or
+            verification codes that could give someone access to your accounts.
+          </p>
+        </div>
+      </details>
+
+    </section>
+
+    <div class="notice">
+      <strong>Please note:</strong> Country availability, provider inventory,
+      prices, supported services, and SMS delivery can change. Always review
+      the current information shown on the platform before placing an order.
+      The <a href="terms.html">Terms and Conditions</a> and
+      <a href="refund-policy.html">Refund Policy</a> apply where relevant.
+    </div>
+
+    <section class="support-box">
+      <h2>Still need help?</h2>
+      <p>
+        If you couldn't find your answer here, contact GustoDigits support.
+        Include the relevant order reference when asking about a purchase.
+      </p>
+
+      <div class="support-links">
+        <a class="btn btn-primary" href="mailto:Nwsgstn@gmail.com">
+          Email Support
+        </a>
+
+        <a class="btn btn-secondary"
+           href="https://wa.me/2347038064570?text=Hello%20Gustodigits%20Support"
+           target="_blank" rel="noopener noreferrer">
+          WhatsApp Support
+        </a>
+
+        <a class="btn btn-secondary"
+           href="https://t.me/GustodigitsSupportbot"
+           target="_blank" rel="noopener noreferrer">
+          Telegram Support
+        </a>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="container">
+      <div class="footer-grid">
+
+        <div class="footer-brand-column">
+          <a href="index.html" class="footer-brand">Gusto<span>digits</span></a>
+          <p class="footer-about">
+            GustoDigits provides access to virtual numbers for supported
+            countries and services. Availability and SMS delivery may vary.
+            Please use the platform responsibly and review our policies.
+          </p>
+        </div>
+
+        <div class="footer-column">
+          <h3>Quick Links</h3>
+          <a href="index.html">Home</a>
+          <a href="about.html">About Us</a>
+          <a href="faq.html">Frequently Asked Questions</a>
+          <a href="contact.html">Contact Us</a>
+        </div>
+
+        <div class="footer-column">
+          <h3>Policies & Support</h3>
+          <a href="terms.html">Terms and Conditions</a>
+          <a href="privacy.html">Privacy Policy</a>
+          <a href="refund-policy.html">Refund Policy</a>
+          <a href="mailto:Nwsgstn@gmail.com">Nwsgstn@gmail.com</a>
+          <a href="https://wa.me/2347038064570?text=Hello%20Gustodigits%20Support" target="_blank" rel="noopener noreferrer">WhatsApp Support</a>
+          <a href="https://t.me/GustodigitsSupportbot" target="_blank" rel="noopener noreferrer">Telegram Support</a>
+        </div>
+
+      </div>
+
+      <div class="footer-bottom">
+        <p>© <span id="year"></span> Gustodigits. All rights reserved.</p>
+        <p>Use our services responsibly and in accordance with applicable rules.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    document.getElementById("year").textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>
