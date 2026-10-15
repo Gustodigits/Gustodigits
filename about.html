@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Learn about GustoDigits, your platform for virtual numbers and SMS verification services.">
+  <meta name="theme-color" content="#1769e0">
+  <title>About Us | GustoDigits</title>
+
+  <style>
+    :root {
+      --blue: #1769e0;
+      --blue-dark: #1052b5;
+      --blue-light: #eaf3ff;
+      --text: #172033;
+      --muted: #64748b;
+      --white: #ffffff;
+      --border: #e5eaf2;
+      --background: #f7faff;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: Arial, Helvetica, sans-serif;
+      color: var(--text);
+      background: var(--background);
+      line-height: 1.7;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    .container {
+      width: min(1100px, 92%);
+      margin: 0 auto;
+    }
+
+    header {
+      background: var(--white);
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+
+    .navbar {
+      min-height: 76px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+    }
+
+    .logo {
+      font-size: 24px;
+      font-weight: 800;
+      letter-spacing: -1px;
+      color: var(--blue);
+      white-space: nowrap;
+    }
+
+    .logo span {
+      color: var(--text);
+    }
+
+    nav {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      flex-wrap: wrap;
+      gap: 22px;
+    }
+
+    nav a {
+      font-size: 14px;
+      font-weight: 600;
+      color: #475569;
+    }
+
+    nav a:hover,
+    nav a.active {
+      color: var(--blue);
+    }
+
+    .hero {
+      padding: 75px 0 65px;
+      text-align: center;
+      background: linear-gradient(135deg, #eaf3ff, #ffffff);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .eyebrow {
+      display: inline-block;
+      background: #dbeafe;
+      color: var(--blue-dark);
+      padding: 6px 14px;
+      border-radius: 30px;
+      font-size: 12px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 18px;
+    }
+
+    h1 {
+      font-size: clamp(34px, 5vw, 52px);
+      line-height: 1.2;
+      letter-spacing: -1.5px;
+      margin-bottom: 18px;
+    }
+
+    .hero p {
+      max-width: 680px;
+      margin: 0 auto;
+      color: var(--muted);
+      font-size: 17px;
+    }
+
+    main {
+      padding: 55px 0 75px;
+    }
+
+    .content {
+      max-width: 850px;
+      margin: 0 auto;
+    }
+
+    .section {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 30px;
+      margin-bottom: 22px;
+      box-shadow: 0 8px 30px rgba(15, 50, 100, 0.035);
+    }
+
+    .section h2 {
+      font-size: 23px;
+      margin-bottom: 13px;
+      letter-spacing: -0.5px;
+    }
+
+    .section p {
+      color: #526176;
+      margin-bottom: 13px;
+    }
+
+    .section p:last-child {
+      margin-bottom: 0;
+    }
+
+    .section ul {
+      padding-left: 22px;
+      color: #526176;
+    }
+
+    .section li {
+      margin: 8px 0;
+    }
+
+    .highlight {
+      background: var(--blue-light);
+      border: 1px solid #cfe2ff;
+      border-radius: 18px;
+      padding: 30px;
+      margin-top: 28px;
+    }
+
+    .highlight h2 {
+      margin-bottom: 10px;
+      font-size: 23px;
+    }
+
+    .highlight p {
+      color: #526176;
+      margin-bottom: 20px;
+    }
+
+    .button {
+      display: inline-block;
+      background: var(--blue);
+      color: var(--white);
+      padding: 12px 22px;
+      border-radius: 9px;
+      font-weight: 700;
+      font-size: 14px;
+      transition: background 0.2s ease;
+    }
+
+    .button:hover {
+      background: var(--blue-dark);
+    }
+
+    footer {
+      background: #101a2d;
+      color: #dbe4f2;
+      padding: 42px 0 22px;
+    }
+
+    .footer-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      flex-wrap: wrap;
+      gap: 30px;
+      padding-bottom: 28px;
+    }
+
+    .footer-brand {
+      max-width: 340px;
+    }
+
+    .footer-brand .logo {
+      display: inline-block;
+      color: #75adff;
+      margin-bottom: 12px;
+    }
+
+    .footer-brand .logo span {
+      color: #ffffff;
+    }
+
+    .footer-brand p {
+      color: #aab8cc;
+      font-size: 14px;
+    }
+
+    .footer-links h3 {
+      color: #ffffff;
+      font-size: 15px;
+      margin-bottom: 12px;
+    }
+
+    .footer-links a {
+      display: block;
+      color: #aab8cc;
+      font-size: 14px;
+      margin: 7px 0;
+    }
+
+    .footer-links a:hover {
+      color: #ffffff;
+    }
+
+    .copyright {
+      border-top: 1px solid #29364a;
+      padding-top: 20px;
+      text-align: center;
+      font-size: 13px;
+      color: #aab8cc;
+    }
+
+    @media (max-width: 650px) {
+      .navbar {
+        padding: 15px 0;
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 12px;
+      }
+
+      nav {
+        justify-content: flex-start;
+        gap: 12px 18px;
+      }
+
+      nav a {
+        font-size: 13px;
+      }
+
+      .hero {
+        padding: 55px 0 45px;
+      }
+
+      .hero p {
+        font-size: 15px;
+      }
+
+      main {
+        padding: 35px 0 50px;
+      }
+
+      .section,
+      .highlight {
+        padding: 22px;
+        border-radius: 14px;
+      }
+
+      .section h2,
+      .highlight h2 {
+        font-size: 21px;
+      }
+
+      .logo {
+        font-size: 22px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <div class="container navbar">
+      <a href="index.html" class="logo" aria-label="GustoDigits Home">
+        Gusto<span>digits</span>
+      </a>
+
+      <nav aria-label="Main navigation">
+        <a href="index.html">Home</a>
+        <a href="about.html" class="active">About Us</a>
+        <a href="faq.html">FAQ</a>
+        <a href="terms.html">Terms</a>
+        <a href="privacy.html">Privacy</a>
+        <a href="refund-policy.html">Refund Policy</a>
+      </nav>
+    </div>
+  </header>
+
+  <section class="hero">
+    <div class="container">
+      <span class="eyebrow">Get to know us</span>
+      <h1>About GustoDigits</h1>
+      <p>
+        A convenient platform for accessing virtual numbers and SMS
+        verification services, designed to make the process simple,
+        accessible and straightforward.
+      </p>
+    </div>
+  </section>
+
+  <main>
+    <div class="container content">
+
+      <section class="section">
+        <h2>Who We Are</h2>
+        <p>
+          GustoDigits is an online platform focused on providing access to
+          virtual phone numbers for supported SMS verification and other
+          permitted uses. Our goal is to make finding and using a suitable
+          number easier through a straightforward online experience.
+        </p>
+        <p>
+          We aim to provide a clear and convenient service while encouraging
+          responsible use, respect for privacy and compliance with applicable
+          laws and the rules of the services our customers use.
+        </p>
+      </section>
+
+      <section class="section">
+        <h2>What We Do</h2>
+        <p>
+          GustoDigits helps users access available virtual numbers for
+          supported countries and services. Availability depends on the
+          inventory, destination, service requested and the providers
+          supporting each request.
+        </p>
+        <ul>
+          <li>Access to available virtual numbers for supported destinations.</li>
+          <li>SMS verification support for compatible services.</li>
+          <li>A convenient online process for requesting and managing numbers.</li>
+          <li>Support channels for questions and service-related issues.</li>
+        </ul>
+      </section>
+
+      <section class="section">
+        <h2>Our Mission</h2>
+        <p>
+          Our mission is to make virtual-number services easier to access
+          through a user-friendly platform, clear service information and
+          responsive customer support.
+        </p>
+        <p>
+          We continuously aim to improve the customer experience while
+          recognising that number availability, message delivery and
+          third-party platform policies can affect the outcome of a request.
+        </p>
+      </section>
+
+      <section class="section">
+        <h2>Our Commitment to Users</h2>
+        <p>We aim to:</p>
+        <ul>
+          <li>Present service information as clearly as possible.</li>
+          <li>Handle customer enquiries through our published support channels.</li>
+          <li>Respect user information in accordance with our Privacy Policy.</li>
+          <li>Explain applicable service conditions and refund eligibility.</li>
+          <li>Encourage lawful, responsible and authorised use of virtual numbers.</li>
+        </ul>
+      </section>
+
+      <section class="section">
+        <h2>Responsible Use</h2>
+        <p>
+          GustoDigits must not be used for fraud, impersonation, harassment,
+          unauthorised access, bypassing security controls or any other
+          unlawful activity. Users are responsible for ensuring that their
+          use of a number complies with applicable laws and the terms of the
+          relevant third-party service.
+        </p>
+        <p>
+          Not every website or application accepts virtual numbers. We cannot
+          guarantee that a particular third-party platform will accept a
+          number or deliver a verification message.
+        </p>
+      </section>
+
+      <section class="section">
+        <h2>Contact and Support</h2>
+        <p>
+          Have a question about GustoDigits or need assistance with a service?
+          Contact us through one of the channels below.
+        </p>
+        <p>
+          <strong>Email:</strong>
+          <a href="mailto:Nwsgstn@gmail.com">Nwsgstn@gmail.com</a>
+        </p>
+        <p>
+          <strong>WhatsApp:</strong>
+          <a href="https://wa.me/2347038064570?text=Hello%20Gustodigits%20Support"
+             target="_blank" rel="noopener noreferrer">
+            Chat with GustoDigits Support
+          </a>
+        </p>
+        <p>
+          <strong>Telegram:</strong>
+          <a href="https://t.me/GustodigitsSupportbot"
+             target="_blank" rel="noopener noreferrer">
+            @GustodigitsSupportbot
+          </a>
+        </p>
+      </section>
+
+      <div class="highlight">
+        <h2>Ready to get started?</h2>
+        <p>
+          Explore GustoDigits and learn more about how our virtual-number
+          services work. Please review our terms and policies before using
+          the platform.
+        </p>
+        <a href="index.html" class="button">Explore GustoDigits</a>
+      </div>
+
+    </div>
+  </main>
+
+  <footer>
+    <div class="container">
+      <div class="footer-top">
+        <div class="footer-brand">
+          <a href="index.html" class="logo">Gusto<span>digits</span></a>
+          <p>
+            Your virtual-number platform for supported countries and SMS
+            verification services.
+          </p>
+        </div>
+
+        <div class="footer-links">
+          <h3>Quick Links</h3>
+          <a href="index.html">Home</a>
+          <a href="about.html">About Us</a>
+          <a href="faq.html">Frequently Asked Questions</a>
+        </div>
+
+        <div class="footer-links">
+          <h3>Policies</h3>
+          <a href="terms.html">Terms &amp; Conditions</a>
+          <a href="privacy.html">Privacy Policy</a>
+          <a href="refund-policy.html">Refund Policy</a>
+        </div>
+
+        <div class="footer-links">
+          <h3>Contact Us</h3>
+          <a href="mailto:Nwsgstn@gmail.com">Email Support</a>
+          <a href="https://wa.me/2347038064570?text=Hello%20Gustodigits%20Support"
+             target="_blank" rel="noopener noreferrer">WhatsApp</a>
+          <a href="https://t.me/GustodigitsSupportbot"
+             target="_blank" rel="noopener noreferrer">Telegram</a>
+        </div>
+      </div>
+
+      <div class="copyright">
+        &copy; <span id="year"></span> GustoDigits. All rights reserved.
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    document.getElementById("year").textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>
