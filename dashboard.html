@@ -1631,7 +1631,7 @@ a{
             </div>
 
             <div class="flow-subtitle">
-                Choose USA for TextVerified or All Country for VirtualSMS, then select a service and price.
+                Choose USA or All Country, then select a service and price.
             </div>
 
         </div>
@@ -2400,7 +2400,7 @@ a{
                     <div class="verification-item-text">
 
                         <div class="verification-item-title">
-                            Provider Tip
+                            Number Tip
                         </div>
 
                         <div class="verification-item-description">
@@ -2604,6 +2604,9 @@ let pendingCancelOrder = null;
 let countryRequestId = 0;
 let serviceRequestId = 0;
 let serverRequestId = 0;
+let countryLoading = false;
+let servicesLoading = false;
+let servicesLoaded = false;
 
 
 /* =========================================================
@@ -2812,8 +2815,8 @@ async function callProvider(
             servers:[{
                 id,
                 server_id:id,
-                name:provider === "text-verified-api" ? "TextVerified" : "VirtualSMS",
-                server_name:provider === "text-verified-api" ? "TextVerified" : "VirtualSMS",
+                name:"Available Option",
+                server_name:"Available Option",
                 customer_price_ngn:Number(price),
                 price:Number(price),
                 raw:source
@@ -3024,10 +3027,12 @@ COUNTRIES
 async function loadCountries(){
     ++countryRequestId;
     countries = [];
+    countryLoading = false;
     $("countryCount").textContent = "2 options";
     $("providerChoiceOptions").classList.remove("hidden");
     $("allCountrySelector").classList.add("hidden");
     $("countryHeading").textContent = "Choose destination";
+    showStepPanel(1);
 }
 
 async function chooseAllCountryProvider(){
@@ -3036,18 +3041,29 @@ async function chooseAllCountryProvider(){
     selectedServer = null;
     services = [];
     servers = [];
+    servicesLoaded = false;
+    servicesLoading = false;
     $("providerChoiceOptions").classList.add("hidden");
     $("allCountrySelector").classList.remove("hidden");
     $("countryHeading").textContent = "Select Country";
     $("countrySearch").value = "";
-    $("countryOptions").classList.add("collapsed");
-    $("countryOptions").innerHTML = '<div class="loading-state">Tap / Select Country to load available countries.</div>';
-    $("allCountryCount").textContent = "Search and select";
+    $("countryOptions").classList.remove("collapsed");
+    $("countryOptions").innerHTML = '<div class="loading-state">Loading available countries...</div>';
+    $("allCountryCount").textContent = "Loading...";
     showStepPanel(1);
+    await loadProviderCountries();
 }
 
 async function loadProviderCountries(){
+    if(countryLoading) return;
+    if(countries.length){
+        renderCountries();
+        $("countryOptions").classList.remove("collapsed");
+        return;
+    }
+    countryLoading = true;
     const request = ++countryRequestId;
+    $("countryOptions").classList.remove("collapsed");
     $("countryOptions").innerHTML = '<div class="loading-state">Loading available countries...</div>';
     try{
         const data = await callProvider("countries", { provider:"virtual-sms-api" });
@@ -3069,11 +3085,15 @@ async function loadProviderCountries(){
         if(request !== countryRequestId) return;
         countries = [];
         $("allCountryCount").textContent = "Unavailable";
-        $("countryOptions").innerHTML = `<div class="empty-state">${escapeHtml(error.message || "Could not load countries. Please try again.")}</div>`;
+        const message = /504|timeout|timed out/i.test(String(error?.message || error))
+            ? "Countries are taking too long to load. Please try again."
+            : "Could not load countries. Please try again.";
+        $("countryOptions").innerHTML = `<div class="empty-state">${escapeHtml(message)}</div>`;
         $("countryOptions").classList.remove("collapsed");
+    }finally{
+        countryLoading = false;
     }
 }
-
 
 /* =========================================================
 COUNTRY NORMALIZER
@@ -3260,7 +3280,7 @@ function renderCountries(){
                             <span class="option-left">
 
                                 <span class="option-icon">
-                                    ${country.provider === "text-verified-api" ? "🇺🇸" : "🌍"}
+                                    🌍
                                 </span>
 
                                 <span>
@@ -3275,9 +3295,7 @@ function renderCountries(){
                                         }
                                     </span>
 
-                                    <span class="option-meta">
-                                        ${country.provider === "text-verified-api" ? "TextVerified API" : "VirtualSMS API"}
-                                    </span>
+                
 
                                 </span>
 
@@ -3342,11 +3360,11 @@ function renderCountries(){
 
 $("countrySearch").addEventListener("focus", () => {
     $("countryOptions").classList.remove("collapsed");
-    if(!countries.length) loadProviderCountries();
+    if(!countries.length && !countryLoading) loadProviderCountries();
 });
 $("countrySearch").addEventListener("click", () => {
     $("countryOptions").classList.remove("collapsed");
-    if(!countries.length) loadProviderCountries();
+    if(!countries.length && !countryLoading) loadProviderCountries();
 });
 $("countrySearch").addEventListener("input", () => {
     $("countryOptions").classList.remove("collapsed");
@@ -3443,8 +3461,12 @@ async function selectCountry(
     servers = [];
 
 
-    $("serviceSearch").value =
-        "";
+    $("serviceSearch").value = "";
+    $("serviceOptions").classList.add("collapsed");
+    $("serviceOptions").innerHTML = '<div class="empty-state">Tap / Select Service to view available services.</div>';
+    $("serviceCount").textContent = "Select service";
+    servicesLoaded = false;
+    servicesLoading = false;
 
 
     markCountryComplete();
@@ -3460,9 +3482,6 @@ async function selectCountry(
     showStepPanel(
         2
     );
-
-
-    await loadServices();
 }
 
 
@@ -3471,20 +3490,17 @@ SERVICES
 ========================================================= */
 
 async function loadServices(){
-
-    const request =
-        ++serviceRequestId;
-
-
-    $("serviceOptions").classList.add("collapsed");
-    $("serviceOptions").innerHTML =
-        `
-        <div class="empty-state">Tap / Select Service to view available services.</div>
-        `;
-
-
-    $("serviceCount").textContent =
-        "Loading...";
+    if(!selectedCountry || servicesLoading) return;
+    if(servicesLoaded){
+        $("serviceOptions").classList.remove("collapsed");
+        renderServices();
+        return;
+    }
+    servicesLoading = true;
+    const request = ++serviceRequestId;
+    $("serviceOptions").classList.remove("collapsed");
+    $("serviceOptions").innerHTML = '<div class="loading-state">Loading available services...</div>';
+    $("serviceCount").textContent = "Loading...";
 
 
     try{
@@ -3550,6 +3566,7 @@ async function loadServices(){
             Array.isArray(data?.result) ? data.result :
             Array.isArray(data?.result?.services) ? data.result.services : [];
         services = serviceRows.map(normalizeService).filter(Boolean);
+        servicesLoaded = true;
 
 
         $("serviceCount").textContent =
@@ -3560,20 +3577,14 @@ async function loadServices(){
 
 
     }catch(error){
-
-        $("serviceOptions").innerHTML =
-            `
-            <div class="error-state">
-                ${escapeHtml(
-                    cleanErrorMessage(error)
-                )}
-            </div>
-            `;
-
-
-        $("serviceCount").textContent =
-            "Unavailable";
-
+        const message = /504|timeout|timed out/i.test(String(error?.message || error))
+            ? "Services are taking too long to load. Please tap / Select Service to try again."
+            : "Services are temporarily unavailable. Please try again.";
+        $("serviceOptions").innerHTML = `<div class="error-state">${escapeHtml(message)}</div>`;
+        $("serviceCount").textContent = "Unavailable";
+        servicesLoaded = false;
+    }finally{
+        servicesLoading = false;
     }
 }
 
@@ -3852,7 +3863,7 @@ function renderServices(){
         $("serviceOptions").innerHTML =
             `
             <div class="empty-state">
-                No live service available for this country.
+                No services available for this selection.
             </div>
             `;
 
@@ -3873,25 +3884,6 @@ function renderServices(){
                         serviceCode(
                             service
                         );
-
-
-                    const stock =
-                        Number(
-                            service?.stock ??
-                            service?.count ??
-                            service?.available ??
-                            service?.quantity ??
-                            0
-                        );
-
-
-                    const stockText =
-                        Number.isFinite(stock) &&
-                        stock > 0
-
-                            ? `${stock.toLocaleString()} available`
-
-                            : "Live availability";
 
 
                     return `
@@ -3930,13 +3922,7 @@ function renderServices(){
                                         }
                                     </span>
 
-                                    <span class="option-meta">
-                                        ${
-                                            escapeHtml(
-                                                stockText
-                                            )
-                                        }
-                                    </span>
+
 
                                 </span>
 
@@ -4001,15 +3987,18 @@ function renderServices(){
 
 $("serviceSearch").addEventListener("focus", () => {
     $("serviceOptions").classList.remove("collapsed");
-    renderServices();
+    if(!servicesLoaded) loadServices();
+    else renderServices();
 });
 $("serviceSearch").addEventListener("click", () => {
     $("serviceOptions").classList.remove("collapsed");
-    renderServices();
+    if(!servicesLoaded) loadServices();
+    else renderServices();
 });
 $("serviceSearch").addEventListener("input", () => {
     $("serviceOptions").classList.remove("collapsed");
-    renderServices();
+    if(!servicesLoaded) loadServices();
+    else renderServices();
 });
 
 
@@ -4470,14 +4459,8 @@ function normalizeServer(
     }
 
 
-    const name =
-        item.server_name ||
-        item.serverName ||
-        item.operator_name ||
-        item.operatorName ||
-        item.name ||
-        item.title ||
-        `Server ${id}`;
+    // Never expose provider/operator branding in the customer dashboard.
+    const name = "Available Option";
 
 
     const price =
@@ -4571,9 +4554,7 @@ function renderServers(){
 
                                         <div class="server-name">
                                             ${
-                                                escapeHtml(
-                                                    server.name
-                                                )
+                                                "Available Option"
                                             }
                                         </div>
 
