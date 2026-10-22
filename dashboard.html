@@ -1631,7 +1631,7 @@ a{
             </div>
 
             <div class="flow-subtitle">
-                Choose USA or All Country, then select a service and price.
+                Choose USA or All Countries, then select a service and price.
             </div>
 
         </div>
@@ -1747,7 +1747,7 @@ a{
                 </button>
                 <button type="button" class="provider-choice-card" id="allCountryProviderCard">
                     <span class="provider-choice-flag">🌍</span>
-                    <span class="provider-choice-title">All Country</span>
+                    <span class="provider-choice-title">All Countries</span>
                     <span class="provider-choice-meta">Choose any available country</span>
                 </button>
             </div>
@@ -1762,7 +1762,7 @@ a{
                 </div>
                 <div class="search-box">
                     <span class="search-icon">/</span>
-                    <input type="search" id="countrySearch" placeholder="/ Select Country" autocomplete="off">
+                    <input type="search" id="countrySearch" placeholder="Search country (e.g. USA, US, United States)" autocomplete="off">
                 </div>
                 <div class="options-box selector-list collapsed" id="countryOptions">
                     <div class="empty-state">Tap / Select Country to load countries.</div>
@@ -3207,6 +3207,27 @@ function normalizeCountry(
 COUNTRY RENDER
 ========================================================= */
 
+function countrySearchTerms(country){
+    const name = String(country?.name || countryName(country) || "").trim().toLowerCase();
+    const code = String(country?.code || countryKey(country) || "").trim().toLowerCase();
+    const terms = new Set([name, code, String(country?.id || "").toLowerCase()]);
+    const compact = name.replace(/[^a-z]/g, "");
+    const codeCompact = code.replace(/[^a-z]/g, "");
+
+    // Search aliases only; the selected value remains the actual country record returned by the API.
+    if (["united states", "united states of america", "usa", "us", "america"].includes(name) ||
+        ["us", "usa", "us", "unitedstates", "unitedstatesofamerica"].includes(codeCompact)) {
+        ["usa", "us", "u.s.", "united states", "united states of america", "america"].forEach(v => terms.add(v));
+    }
+    if (["united kingdom", "uk", "great britain", "britain", "england"].includes(name) ||
+        ["uk", "gb", "gbr", "unitedkingdom", "greatbritain"].includes(codeCompact)) {
+        ["uk", "u.k.", "united kingdom", "great britain", "greatbritain", "britain", "england", "scotland", "wales", "northern ireland"].forEach(v => terms.add(v));
+    }
+    terms.add(compact);
+    terms.add(codeCompact);
+    return [...terms].filter(Boolean);
+}
+
 function renderCountries(){
 
     const search =
@@ -3217,16 +3238,12 @@ function renderCountries(){
 
 
     const matches =
-        countries.filter(
-            country =>
-                country.name
-                    .toLowerCase()
-                    .includes(search)
-                ||
-                country.code
-                    .toLowerCase()
-                    .includes(search)
-        );
+        countries.filter(country => {
+            if (!search) return true;
+            const terms = countrySearchTerms(country);
+            const normalizedSearch = search.replace(/[^a-z0-9]/g, "");
+            return terms.some(term => term.includes(search) || term.replace(/[^a-z0-9]/g, "").includes(normalizedSearch));
+        });
     const filtered = search ? matches : matches.slice(0, 5);
 
 
@@ -5191,7 +5208,7 @@ async function purchaseNumber(){
             data?.data?.phone_number ??
             data?.data?.phone ??
             data?.data?.number ??
-            "Number purchased";
+            "";
 
 
         if(
@@ -5219,9 +5236,11 @@ async function purchaseNumber(){
 
 
         showAlert(
-            "Number Successfully Purchased",
-            `Your number ${number} has been successfully purchased.${activationId ? " You can now get the verification code." : ""}`,
-            "✅"
+            number ? "Number Successfully Purchased" : "Purchase Processing",
+            number
+                ? `Your number ${number} has been successfully purchased. You can now get the verification code.`
+                : "Your purchase is being confirmed. Please check Recent Purchases shortly. No number will be shown until the real number is confirmed.",
+            number ? "✅" : "⏳"
         );
 
 
@@ -5327,14 +5346,17 @@ async function purchaseNumber(){
             return;
         }
 
-        if(errorCode === "PROVIDER_BALANCE"){
-
+        if(
+            errorCode === "PROVIDER_BALANCE" ||
+            errorCode === "PROVIDER_INSUFFICIENT_FUNDS" ||
+            errorCode === "INSUFFICIENT_PROVIDER_FUNDS" ||
+            /provider.*(insufficient funds|insufficient balance|low balance|out of funds|not enough credits)/i.test(errorMessage)
+        ){
             showAlert(
-                "Provider Balance",
-                errorMessage || "Insufficient fund, please contact support.",
+                "Purchase Unavailable",
+                "Insufficient funds. Please contact support.",
                 "⚠️"
             );
-
             return;
         }
 
@@ -5416,21 +5438,17 @@ async function loadRecentPurchases(){
 
         const orders =
             raw
-                .map(
-                    normalizeOrder
-                )
+                .map(normalizeOrder)
+                .filter(Boolean)
+                // A processing reservation without a confirmed phone number is not a customer-visible purchase card.
+                .filter(order => {
+                    const number = String(order.number || "").trim();
+                    return number && number !== "—" && number.toLowerCase() !== "number purchased";
+                })
                 .sort(
-                    (
-                        a,
-                        b
-                    ) =>
-                        b.timestamp -
-                        a.timestamp
+                    (a, b) => b.timestamp - a.timestamp
                 )
-                .slice(
-                    0,
-                    5
-                );
+                .slice(0, 5);
 
 
 recentOrdersCache = orders;
@@ -5934,10 +5952,20 @@ async function getOrderStatus(
             "";
 
 
+        if(["completed", "complete", "success", "successful", "verified"].includes(status)){
+            showAlert(
+                "Verification Successful",
+                "This verification has been completed successfully.",
+                "✅"
+            );
+            await loadRecentPurchases();
+            return;
+        }
+
         if(
             code ||
-            status ===
-            "received"
+            status === "received" ||
+            status === "sms_received"
         ){
 
             showAlert(
@@ -6002,17 +6030,30 @@ async function getOrderStatus(
 CANCEL
 ========================================================= */
 
+function orderCancelWaitRemaining(order){
+    const raw = order?.raw || order || {};
+    const created = raw.purchased_at || raw.purchasedAt || raw.created_at || raw.createdAt || order?.timestamp;
+    if (!created) return 0;
+    const startedAt = typeof created === "number" ? (created < 1e12 ? created * 1000 : created) : Date.parse(created);
+    if (!Number.isFinite(startedAt)) return 0;
+    return Math.max(0, 120000 - (Date.now() - startedAt));
+}
+
 function askCancelOrder(
     order
 ){
-
-    pendingCancelOrder =
-        order;
-
-
-    $("cancelConfirmOverlay")
-        .classList
-        .add("show");
+    const remaining = orderCancelWaitRemaining(order);
+    if (remaining > 0) {
+        const seconds = Math.ceil(remaining / 1000);
+        showAlert(
+            "Cancellation Not Available Yet",
+            `For SMS delivery protection, you can cancel this number after the first 2 minutes. Please wait about ${seconds} more second${seconds === 1 ? "" : "s"}.`,
+            "⏳"
+        );
+        return;
+    }
+    pendingCancelOrder = order;
+    $("cancelConfirmOverlay").classList.add("show");
 }
 
 
@@ -6071,6 +6112,16 @@ $("cancelYes")
 async function cancelOrder(
     order
 ){
+    const remaining = orderCancelWaitRemaining(order);
+    if (remaining > 0) {
+        const seconds = Math.ceil(remaining / 1000);
+        showAlert(
+            "Cancellation Not Available Yet",
+            `You can cancel this number after the first 2 minutes. Please wait about ${seconds} more second${seconds === 1 ? "" : "s"}.`,
+            "⏳"
+        );
+        return;
+    }
 
     const activationId =
         order.activation_id ||
