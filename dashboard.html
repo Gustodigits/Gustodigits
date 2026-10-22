@@ -691,6 +691,36 @@ a{
     overflow-y:auto;
 }
 
+/* Provider entry cards: two choices shown immediately, side by side. */
+.provider-choice-grid{
+    display:grid;
+    grid-template-columns:repeat(2,minmax(0,1fr));
+    gap:10px;
+}
+.provider-choice-card{
+    min-width:0;
+    min-height:112px;
+    padding:14px 10px;
+    border:1px solid #dfe9f1;
+    border-radius:15px;
+    background:#fbfdff;
+    color:var(--text);
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    gap:7px;
+    text-align:center;
+}
+.provider-choice-card:hover{
+    border-color:#8dc6ef;
+    background:#f2f8fd;
+}
+.provider-choice-flag{font-size:27px;line-height:1.1}
+.provider-choice-title{font-size:13px;font-weight:850}
+.provider-choice-meta{font-size:10px;color:var(--muted);line-height:1.35}
+.selector-list.collapsed{display:none}
+
 .option{
     width:100%;
     min-height:45px;
@@ -1698,51 +1728,46 @@ a{
         </div>
 
 
-        <!-- COUNTRY -->
+        <!-- PROVIDER / COUNTRY -->
 
         <div
             class="step-panel"
             id="countryPanel"
         >
-
             <div class="selection-label">
-
-                <strong>
-                    Country
-                </strong>
-
-                <span id="countryCount">
-                    Loading...
-                </span>
-
+                <strong id="countryHeading">Choose destination</strong>
+                <span id="countryCount">2 options</span>
             </div>
 
-            <div class="search-box">
-
-                <span class="search-icon">
-                    ⌕
-                </span>
-
-                <input
-                    type="search"
-                    id="countrySearch"
-                    placeholder="Search country"
-                    autocomplete="off"
-                >
-
+            <div class="provider-choice-grid" id="providerChoiceOptions">
+                <button type="button" class="provider-choice-card" id="usaProviderCard">
+                    <span class="provider-choice-flag">🇺🇸</span>
+                    <span class="provider-choice-title">USA</span>
+                    <span class="provider-choice-meta">United States numbers</span>
+                </button>
+                <button type="button" class="provider-choice-card" id="allCountryProviderCard">
+                    <span class="provider-choice-flag">🌍</span>
+                    <span class="provider-choice-title">All Country</span>
+                    <span class="provider-choice-meta">Choose any available country</span>
+                </button>
             </div>
 
-            <div
-                class="options-box"
-                id="countryOptions"
-            >
-
-                <div class="loading-state">
-                    Loading countries...
+            <div id="allCountrySelector" class="hidden" style="margin-top:14px">
+                <div class="back-row">
+                    <button class="back-btn" type="button" id="backToProviderCards">← Back</button>
                 </div>
-
+                <div class="selection-label">
+                    <strong>Select Country</strong>
+                    <span id="allCountryCount">Search and select</span>
+                </div>
+                <div class="search-box">
+                    <span class="search-icon">/</span>
+                    <input type="search" id="countrySearch" placeholder="/ Select Country" autocomplete="off">
+                </div>
+                <div class="options-box selector-list collapsed" id="countryOptions">
+                    <div class="empty-state">Tap / Select Country to load countries.</div>
+                </div>
             </div>
-
         </div>
 
 
@@ -1779,21 +1804,19 @@ a{
 
             <div class="search-box">
 
-                <span class="search-icon">
-                    ⌕
-                </span>
+                <span class="search-icon">/</span>
 
                 <input
                     type="search"
                     id="serviceSearch"
-                    placeholder="Search service"
+                    placeholder="/ Select Service"
                     autocomplete="off"
                 >
 
             </div>
 
             <div
-                class="options-box"
+                class="options-box selector-list collapsed"
                 id="serviceOptions"
             >
 
@@ -3000,28 +3023,55 @@ COUNTRIES
 
 async function loadCountries(){
     ++countryRequestId;
-    countries = [
-        {
-            name:"USA",
-            code:"USA",
-            id:"USA",
-            country_id:"USA",
-            country_key:"USA",
-            country_name:"USA",
-            provider:"text-verified-api"
-        },
-        {
-            name:"All Country",
-            code:"ALL",
-            id:"all",
-            country_id:"all",
-            country_key:"all",
-            country_name:"All Country",
-            provider:"virtual-sms-api"
-        }
-    ];
+    countries = [];
     $("countryCount").textContent = "2 options";
-    renderCountries();
+    $("providerChoiceOptions").classList.remove("hidden");
+    $("allCountrySelector").classList.add("hidden");
+    $("countryHeading").textContent = "Choose destination";
+}
+
+async function chooseAllCountryProvider(){
+    selectedCountry = null;
+    selectedService = null;
+    selectedServer = null;
+    services = [];
+    servers = [];
+    $("providerChoiceOptions").classList.add("hidden");
+    $("allCountrySelector").classList.remove("hidden");
+    $("countryHeading").textContent = "Select Country";
+    $("countrySearch").value = "";
+    $("countryOptions").classList.add("collapsed");
+    $("countryOptions").innerHTML = '<div class="loading-state">Tap / Select Country to load available countries.</div>';
+    $("allCountryCount").textContent = "Search and select";
+    showStepPanel(1);
+}
+
+async function loadProviderCountries(){
+    const request = ++countryRequestId;
+    $("countryOptions").innerHTML = '<div class="loading-state">Loading available countries...</div>';
+    try{
+        const data = await callProvider("countries", { provider:"virtual-sms-api" });
+        if(request !== countryRequestId) return;
+        const raw = Array.isArray(data?.data) ? data.data :
+            Array.isArray(data?.countries) ? data.countries :
+            Array.isArray(data?.data?.countries) ? data.data.countries :
+            Array.isArray(data?.result) ? data.result :
+            Array.isArray(data?.result?.countries) ? data.result.countries :
+            Array.isArray(data?.data?.data) ? data.data.data : [];
+        countries = raw.map(item => {
+            const normalized = normalizeCountry(item);
+            return normalized ? { ...normalized, provider:"virtual-sms-api" } : null;
+        }).filter(Boolean);
+        $("allCountryCount").textContent = `${countries.length} available`;
+        renderCountries();
+        $("countryOptions").classList.remove("collapsed");
+    }catch(error){
+        if(request !== countryRequestId) return;
+        countries = [];
+        $("allCountryCount").textContent = "Unavailable";
+        $("countryOptions").innerHTML = `<div class="empty-state">${escapeHtml(error.message || "Could not load countries. Please try again.")}</div>`;
+        $("countryOptions").classList.remove("collapsed");
+    }
 }
 
 
@@ -3146,7 +3196,7 @@ function renderCountries(){
             .toLowerCase();
 
 
-    const filtered =
+    const matches =
         countries.filter(
             country =>
                 country.name
@@ -3157,6 +3207,7 @@ function renderCountries(){
                     .toLowerCase()
                     .includes(search)
         );
+    const filtered = search ? matches : matches.slice(0, 5);
 
 
     if(
@@ -3289,11 +3340,31 @@ function renderCountries(){
 }
 
 
-$("countrySearch")
-    .addEventListener(
-        "input",
-        renderCountries
-    );
+$("countrySearch").addEventListener("focus", () => {
+    $("countryOptions").classList.remove("collapsed");
+    if(!countries.length) loadProviderCountries();
+});
+$("countrySearch").addEventListener("click", () => {
+    $("countryOptions").classList.remove("collapsed");
+    if(!countries.length) loadProviderCountries();
+});
+$("countrySearch").addEventListener("input", () => {
+    $("countryOptions").classList.remove("collapsed");
+    renderCountries();
+});
+$("usaProviderCard").addEventListener("click", () => {
+    const usa = {
+        name:"USA", code:"USA", id:"USA", country_id:"USA",
+        country_key:"USA", country_name:"USA", provider:"text-verified-api"
+    };
+    selectCountry(usa);
+});
+$("allCountryProviderCard").addEventListener("click", chooseAllCountryProvider);
+$("backToProviderCards").addEventListener("click", () => {
+    countries = [];
+    loadCountries();
+    showStepPanel(1);
+});
 
 
 /* =========================================================
@@ -3356,6 +3427,7 @@ async function selectCountry(
 
     selectedCountry =
         country;
+    $("countryOptions").classList.add("collapsed");
 
 
     selectedService =
@@ -3404,11 +3476,10 @@ async function loadServices(){
         ++serviceRequestId;
 
 
+    $("serviceOptions").classList.add("collapsed");
     $("serviceOptions").innerHTML =
         `
-        <div class="loading-state">
-            Loading live services...
-        </div>
+        <div class="empty-state">Tap / Select Service to view available services.</div>
         `;
 
 
@@ -3472,16 +3543,13 @@ async function loadServices(){
         }
 
 
-        services =
-            Array.isArray(
-                data?.services
-            )
-                ? data.services
-                    .map(
-                        normalizeService
-                    )
-                    .filter(Boolean)
-                : [];
+        const serviceRows =
+            Array.isArray(data?.services) ? data.services :
+            Array.isArray(data?.data) ? data.data :
+            Array.isArray(data?.data?.services) ? data.data.services :
+            Array.isArray(data?.result) ? data.result :
+            Array.isArray(data?.result?.services) ? data.result.services : [];
+        services = serviceRows.map(normalizeService).filter(Boolean);
 
 
         $("serviceCount").textContent =
@@ -3741,7 +3809,7 @@ function renderServices(){
             .toLowerCase();
 
 
-    const filtered =
+    const matches =
         services.filter(
             service => {
 
@@ -3774,6 +3842,7 @@ function renderServices(){
 
             }
         );
+    const filtered = search ? matches : matches.slice(0, 5);
 
 
     if(
@@ -3930,11 +3999,18 @@ function renderServices(){
 }
 
 
-$("serviceSearch")
-    .addEventListener(
-        "input",
-        renderServices
-    );
+$("serviceSearch").addEventListener("focus", () => {
+    $("serviceOptions").classList.remove("collapsed");
+    renderServices();
+});
+$("serviceSearch").addEventListener("click", () => {
+    $("serviceOptions").classList.remove("collapsed");
+    renderServices();
+});
+$("serviceSearch").addEventListener("input", () => {
+    $("serviceOptions").classList.remove("collapsed");
+    renderServices();
+});
 
 
 /* =========================================================
@@ -3947,6 +4023,7 @@ async function selectService(
 
     selectedService =
         service;
+    $("serviceOptions").classList.add("collapsed");
 
 
     selectedServer =
