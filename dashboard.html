@@ -38,6 +38,11 @@ body{
     min-height:100%;
 }
 
+/* Utility visibility class used by the provider cards and selectors. */
+.hidden{
+    display:none !important;
+}
+
 body{
     font-family:
         Inter,
@@ -2729,10 +2734,34 @@ async function callProvider(
             .select("*")
             .eq("user_id", currentUser.id)
             .order("created_at", { ascending:false })
-            .limit(30);
+            .limit(100);
 
         if(result.error) throw result.error;
-        return { ok:true, orders:result.data || [] };
+
+        // Do not turn wallet reservations, failed attempts, or refunds into
+        // customer-facing purchased-number cards. Only real phone numbers pass.
+        const orders = (result.data || []).filter(order => {
+            const status = String(order.status || order.order_status || "")
+                .trim().toLowerCase().replace(/[ -]+/g, "_");
+            const failedStatuses = [
+                "failed", "failure", "rejected", "refunded", "refund_pending",
+                "purchase_failed", "cancelled_before_purchase", "reservation_failed"
+            ];
+            if (failedStatuses.includes(status)) return false;
+            const number = String(
+                order.phone_number || order.phoneNumber || order.phone || order.number || ""
+            ).trim();
+            if (!number || number === "—" || /^(number purchased|pending|unknown)$/i.test(number)) return false;
+            const activation = String(order.provider_activation_id || order.activation_id || order.activationId || "").trim();
+            if (!activation || activation.startsWith("pending:")) return false;
+            return true;
+        }).sort((a,b) => {
+            const ta = new Date(a.purchased_at || a.created_at || a.updated_at || 0).getTime() || 0;
+            const tb = new Date(b.purchased_at || b.created_at || b.updated_at || 0).getTime() || 0;
+            return tb - ta;
+        });
+
+        return { ok:true, orders };
     }
 
     const provider = payload.provider || selectedProvider();
@@ -2833,6 +2862,16 @@ INITIALIZE
 ========================================================= */
 
 async function initialize(){
+
+    // Always start on the two provider cards. Country selection is opened
+    // only after the customer taps “All Countries”.
+    countries = [];
+    selectedCountry = null;
+    selectedService = null;
+    selectedServer = null;
+    services = [];
+    servers = [];
+    currentStep = 1;
 
     const {
         data,
@@ -5239,7 +5278,7 @@ async function purchaseNumber(){
             number ? "Number Successfully Purchased" : "Purchase Processing",
             number
                 ? `Your number ${number} has been successfully purchased. You can now get the verification code.`
-                : "Your purchase is being confirmed. Please check Recent Purchases shortly. No number will be shown until the real number is confirmed.",
+                : "The provider has not confirmed a phone number yet, so no number card has been created. Check the order status shortly; do not purchase again until the result is confirmed.",
             number ? "✅" : "⏳"
         );
 
@@ -5332,14 +5371,20 @@ async function purchaseNumber(){
         const neededValue =
             Number(
                 data.needed ??
-                Math.max(0, priceValue - balanceValue)
+                data.shortfall ??
+                Math.max(0, Number(data.requiredAmount ?? priceValue) - balanceValue)
             );
 
-        if(errorCode === "INSUFFICIENT_WALLET"){
+        if(
+            errorCode === "INSUFFICIENT_FUNDS" ||
+            errorCode === "INSUFFICIENT_WALLET" ||
+            errorCode === "WALLET_INSUFFICIENT" ||
+            errorCode === "INSUFFICIENT_BALANCE"
+        ){
 
             showAlert(
                 "Insufficient Wallet Balance",
-                errorMessage || `Insufficient wallet balance. Please add ${formatNaira(neededValue || priceValue)} to continue.`,
+                (data.message || errorMessage) || `Insufficient wallet balance. Please add ${formatNaira(neededValue || priceValue)} to continue.`,
                 "💳"
             );
 
@@ -5443,7 +5488,9 @@ async function loadRecentPurchases(){
                 // A processing reservation without a confirmed phone number is not a customer-visible purchase card.
                 .filter(order => {
                     const number = String(order.number || "").trim();
-                    return number && number !== "—" && number.toLowerCase() !== "number purchased";
+                    const activation = String(order.activationId || order.raw?.provider_activation_id || order.raw?.activation_id || "").trim();
+                    return number && number !== "—" && number.toLowerCase() !== "number purchased" &&
+                        activation && !activation.startsWith("pending:");
                 })
                 .sort(
                     (a, b) => b.timestamp - a.timestamp
@@ -5502,12 +5549,12 @@ function normalizeOrder(
     const timestamp =
         new Date(
 
+            order.purchased_at ||
+            order.purchasedAt ||
             order.created_at ||
             order.createdAt ||
             order.updated_at ||
             order.updatedAt ||
-            order.purchased_at ||
-            order.purchasedAt ||
             0
 
         ).getTime() || 0;
@@ -5528,43 +5575,24 @@ function normalizeOrder(
         statusRaw;
 
 
-    if(
+    if (["failed", "failure", "rejected", "refunded", "refund_pending", "purchase_failed"].includes(statusRaw.replace(/[ -]+/g, "_"))) {
+        // Failed reservations must never be rendered as purchased numbers.
+        return null;
+    }
 
-        statusRaw.includes(
-            "receive"
-        ) ||
-
-        statusRaw.includes(
-            "success"
-        ) ||
-
-        statusRaw.includes(
-            "complete"
-        ) ||
-
+    if (
+        statusRaw.includes("receive") ||
+        statusRaw.includes("success") ||
+        statusRaw.includes("complete") ||
         statusRaw === "ok"
-
-    ){
-
-        status =
-            "received";
-
-    }else if(
-
-        statusRaw.includes(
-            "cancel"
-        )
-
-    ){
-
-        status =
-            "cancelled";
-
-    }else{
-
-        status =
-            "pending";
-
+    ) {
+        status = "received";
+    } else if (statusRaw.includes("cancel")) {
+        status = "cancelled";
+    } else {
+        // Receiving an OTP is displayed separately; only provider status
+        // determines whether the verification itself is complete.
+        status = "pending";
     }
 
 
@@ -5583,6 +5611,7 @@ function normalizeOrder(
             order.activationId,
 
         activationId:
+            order.provider_activation_id ||
             order.activation_id ||
             order.activationId,
 
@@ -5626,6 +5655,14 @@ RENDER RECENT
 function renderRecentPurchases(
     orders
 ){
+
+    orders = (orders || []).filter(order => {
+        if (!order) return false;
+        const number = String(order.number || "").trim();
+        const status = String(order.status || "").toLowerCase().replace(/[ -]+/g, "_");
+        return Boolean(number && number !== "—" && !/^(number purchased|pending|unknown)$/i.test(number)) &&
+            !["failed", "failure", "rejected", "refunded", "refund_pending", "purchase_failed"].includes(status);
+    }).sort((a,b) => (Number(b.timestamp) || 0) - (Number(a.timestamp) || 0));
 
     if(
         !orders.length
