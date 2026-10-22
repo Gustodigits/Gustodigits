@@ -1601,7 +1601,7 @@ a{
             </div>
 
             <div class="flow-subtitle">
-                Select a country, service and server to continue.
+                Choose USA for TextVerified or All Country for VirtualSMS, then select a service and price.
             </div>
 
         </div>
@@ -2542,8 +2542,21 @@ const supabaseClient =
 EDGE FUNCTION
 ========================================================= */
 
-const GRIZZLY_FUNCTION_URL =
-    `${SUPABASE_URL}/functions/v1/grizzly`;
+const TEXT_VERIFIED_FUNCTION_URL =
+    `${SUPABASE_URL}/functions/v1/text-verified-api`;
+
+const VIRTUAL_SMS_FUNCTION_URL =
+    `${SUPABASE_URL}/functions/v1/virtual-sms-api`;
+
+function selectedProvider(){
+    return selectedCountry?.provider || "virtual-sms-api";
+}
+
+function providerFunctionUrl(provider = selectedProvider()){
+    return provider === "text-verified-api"
+        ? TEXT_VERIFIED_FUNCTION_URL
+        : VIRTUAL_SMS_FUNCTION_URL;
+}
 
 
 /* =========================================================
@@ -2673,91 +2686,117 @@ function cleanErrorMessage(
 EDGE FUNCTION REQUEST
 ========================================================= */
 
-async function callGrizzly(
+async function callProvider(
     action,
     payload = {}
 ){
-
-    if(
-        !currentSession?.access_token
-    ){
-
+    if(!currentSession?.access_token){
         throw new Error(
             "Your session has expired. Please log in again."
         );
-
     }
 
+    // Purchase history stays connected to the existing Supabase table.
+    if(action === "orders"){
+        const result = await supabaseClient
+            .from("virtual_number_orders")
+            .select("*")
+            .eq("user_id", currentUser.id)
+            .order("created_at", { ascending:false })
+            .limit(30);
 
-    const response =
-        await fetch(
-            GRIZZLY_FUNCTION_URL,
-            {
-                method:"POST",
+        if(result.error) throw result.error;
+        return { ok:true, orders:result.data || [] };
+    }
 
-                headers:{
-                    "Content-Type":
-                        "application/json",
+    const provider = payload.provider || selectedProvider();
+    const functionUrl = providerFunctionUrl(provider);
+    const requestAction = action === "servers" ? "price" : action;
+    const requestPayload = { ...payload };
+    delete requestPayload.provider;
 
-                    "Authorization":
-                        `Bearer ${currentSession.access_token}`,
+    // The TextVerified flow expects its service name/code and SMS capability.
+    if(provider === "text-verified-api"){
+        if(action === "services"){
+            requestPayload.country = "USA";
+            requestPayload.country_name = "USA";
+        }
+        if(action === "price" || action === "servers"){
+            requestPayload.country = "USA";
+            requestPayload.country_name = "USA";
+            requestPayload.serviceName = requestPayload.serviceName || requestPayload.service_name || requestPayload.service;
+            requestPayload.serviceCode = requestPayload.serviceCode || requestPayload.service_code || requestPayload.service;
+            requestPayload.capability = "sms";
+        }
+        if(action === "buy"){
+            requestPayload.requestId = requestPayload.requestId || crypto.randomUUID();
+            requestPayload.country = "USA";
+            requestPayload.serviceName = requestPayload.serviceName || requestPayload.service_name || requestPayload.service;
+            requestPayload.serviceCode = requestPayload.serviceCode || requestPayload.service_code || requestPayload.service;
+            requestPayload.capability = "sms";
+        }
+    }else{
+        if(action === "services" || action === "price" || action === "servers"){
+            requestPayload.country = requestPayload.country || "all";
+        }
+        if(action === "buy"){
+            requestPayload.requestId = requestPayload.requestId || crypto.randomUUID();
+            requestPayload.service = requestPayload.service || requestPayload.service_code || requestPayload.product;
+            requestPayload.country = requestPayload.country || "all";
+        }
+    }
 
-                    "apikey":
-                        SUPABASE_PUBLISHABLE_KEY
-                },
-
-                body:
-                    JSON.stringify({
-                        action,
-                        ...payload
-                    })
-            }
-        );
-
+    const response = await fetch(
+        functionUrl,
+        {
+            method:"POST",
+            headers:{
+                "Content-Type":"application/json",
+                "Authorization":`Bearer ${currentSession.access_token}`,
+                "apikey":SUPABASE_PUBLISHABLE_KEY
+            },
+            body:JSON.stringify({ action:requestAction, ...requestPayload })
+        }
+    );
 
     let data = null;
-
-
     try{
-
-        data =
-            await response.json();
-
+        data = await response.json();
     }catch{
-
-        data = {
-            ok:false,
-            error:"Invalid server response."
-        };
-
+        data = { ok:false, error:"Invalid server response." };
     }
 
-
-    if(
-        !response.ok ||
-        data?.ok === false
-    ){
-
-        const error =
-            data?.message ||
-            data?.error ||
-            data?.msg ||
-            "Request failed.";
-
-        const err =
-            new Error(
-                String(error)
-            );
-
-        Object.assign(
-            err,
-            data || {}
-        );
-
+    if(!response.ok || data?.ok === false){
+        const error = data?.message || data?.error || data?.msg || "Request failed.";
+        const err = new Error(String(error));
+        Object.assign(err, data || {});
         throw err;
-
     }
 
+    // The provider APIs return a single quote/price, not a legacy server list.
+    if(action === "servers"){
+        const source = data?.data && typeof data.data === "object" ? data.data : data;
+        const price = source?.customer_price_ngn ?? source?.customerPriceNgn ??
+            source?.price_ngn ?? source?.priceNgn ?? source?.price ??
+            source?.amount ?? source?.data?.customer_price_ngn ??
+            source?.data?.price_ngn ?? source?.data?.price;
+        const id = provider === "text-verified-api" ? "textverified" : "virtualsms";
+        if(price === undefined || price === null || !Number.isFinite(Number(price))){
+            return { ...data, servers:[] };
+        }
+        return {
+            ...data,
+            servers:[{
+                id,
+                server_id:id,
+                name:provider === "text-verified-api" ? "TextVerified" : "VirtualSMS",
+                server_name:provider === "text-verified-api" ? "TextVerified" : "VirtualSMS",
+                customer_price_ngn:Number(price),
+                price:Number(price),
+                raw:source
+            }]
+        };
+    }
 
     return data;
 }
@@ -2960,84 +2999,29 @@ COUNTRIES
 ========================================================= */
 
 async function loadCountries(){
-
-    const request =
-        ++countryRequestId;
-
-
-    $("countryOptions").innerHTML =
-        `
-        <div class="loading-state">
-            Loading countries...
-        </div>
-        `;
-
-
-    try{
-
-        const data =
-            await callGrizzly(
-                "countries"
-            );
-
-
-        if(
-            request !==
-            countryRequestId
-        ){
-
-            return;
+    ++countryRequestId;
+    countries = [
+        {
+            name:"USA",
+            code:"USA",
+            id:"USA",
+            country_id:"USA",
+            country_key:"USA",
+            country_name:"USA",
+            provider:"text-verified-api"
+        },
+        {
+            name:"All Country",
+            code:"ALL",
+            id:"all",
+            country_id:"all",
+            country_key:"all",
+            country_name:"All Country",
+            provider:"virtual-sms-api"
         }
-
-
-        const raw =
-            Array.isArray(
-                data?.countries
-            )
-                ? data.countries
-                : [];
-
-
-        countries =
-            raw
-                .map(
-                    normalizeCountry
-                )
-                .filter(Boolean)
-                .sort(
-                    (
-                        a,
-                        b
-                    ) =>
-                        a.name.localeCompare(
-                            b.name
-                        )
-                );
-
-
-        $("countryCount").textContent =
-            `${countries.length} available`;
-
-
-        renderCountries();
-
-
-    }catch(error){
-
-        $("countryOptions").innerHTML =
-            `
-            <div class="error-state">
-                ${escapeHtml(
-                    cleanErrorMessage(error)
-                )}
-            </div>
-            `;
-
-
-        $("countryCount").textContent =
-            "Unavailable";
-
-    }
+    ];
+    $("countryCount").textContent = "2 options";
+    renderCountries();
 }
 
 
@@ -3140,6 +3124,9 @@ function normalizeCountry(
         country_name:
             String(name),
 
+        provider:
+            item.provider || item.api_provider || "virtual-sms-api",
+
         raw:item
 
     };
@@ -3222,7 +3209,7 @@ function renderCountries(){
                             <span class="option-left">
 
                                 <span class="option-icon">
-                                    🌐
+                                    ${country.provider === "text-verified-api" ? "🇺🇸" : "🌍"}
                                 </span>
 
                                 <span>
@@ -3238,11 +3225,7 @@ function renderCountries(){
                                     </span>
 
                                     <span class="option-meta">
-                                        ${
-                                            escapeHtml(
-                                                country.code
-                                            )
-                                        }
+                                        ${country.provider === "text-verified-api" ? "TextVerified API" : "VirtualSMS API"}
                                     </span>
 
                                 </span>
@@ -3445,9 +3428,7 @@ async function loadServices(){
         country_id,
         country_key.
 
-        The previous dashboard only sent one
-        country value. This version sends the
-        complete country information.
+        Country details are passed through for the selected provider.
         */
 
         const payload = {
@@ -3476,7 +3457,7 @@ async function loadServices(){
 
 
         const data =
-            await callGrizzly(
+            await callProvider(
                 "services",
                 payload
             );
@@ -4178,7 +4159,7 @@ async function loadServers(){
             try{
 
                 const response =
-                    await callGrizzly(
+                    await callProvider(
                         "servers",
                         payload
                     );
@@ -5080,7 +5061,7 @@ async function purchaseNumber(){
     try{
 
         const data =
-            await callGrizzly(
+            await callProvider(
                 "buy",
                 {
 
@@ -5113,6 +5094,15 @@ async function purchaseNumber(){
                         serviceCode(
                             selectedService
                         ),
+
+                    serviceName:
+                        serviceName(selectedService),
+
+                    service_name:
+                        serviceName(selectedService),
+
+                    provider:
+                        selectedProvider(),
 
                     server_id:
                         selectedServer.id,
@@ -5347,7 +5337,7 @@ async function loadRecentPurchases(){
     try{
 
         const data =
-            await callGrizzly(
+            await callProvider(
                 "orders"
             );
 
@@ -5842,7 +5832,7 @@ async function getOrderStatus(
     try{
 
         const data =
-            await callGrizzly(
+            await callProvider(
                 "status",
                 {
 
@@ -5850,7 +5840,14 @@ async function getOrderStatus(
                         activationId,
 
                     activationId:
-                        activationId
+                        activationId,
+
+                    provider:
+                        order?.raw?.provider === "textverified" || order?.raw?.provider === "text-verified-api"
+                            ? "text-verified-api"
+                            : order?.raw?.provider === "virtualsms" || order?.raw?.provider === "virtual-sms-api"
+                                ? "virtual-sms-api"
+                                : undefined
 
                 }
             );
@@ -6042,7 +6039,7 @@ async function cancelOrder(
 
     try{
 
-        await callGrizzly(
+        await callProvider(
             "cancel",
             {
 
@@ -6050,7 +6047,14 @@ async function cancelOrder(
                     activationId,
 
                 activationId:
-                    activationId
+                    activationId,
+
+                provider:
+                    order?.raw?.provider === "textverified" || order?.raw?.provider === "text-verified-api"
+                        ? "text-verified-api"
+                        : order?.raw?.provider === "virtualsms" || order?.raw?.provider === "virtual-sms-api"
+                            ? "virtual-sms-api"
+                            : undefined
 
             }
         );
