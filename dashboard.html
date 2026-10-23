@@ -6023,11 +6023,12 @@ async function getOrderStatus(
                 "status",
                 {
 
-                    activation_id:
-                        activationId,
-
-                    activationId:
-                        activationId,
+                    // The provider activation ID identifies the real number;
+                    // the database order ID lets the Edge Function find the user's row.
+                    orderId: order.id || order.raw?.id || order.raw?.order_id,
+                    order_id: order.id || order.raw?.id || order.raw?.order_id,
+                    activation_id: activationId,
+                    activationId: activationId,
 
                     provider:
                         order?.raw?.provider === "textverified" || order?.raw?.provider === "text-verified-api"
@@ -6259,15 +6260,16 @@ async function cancelOrder(
 
     try{
 
-        await callProvider(
+        const cancelResult = await callProvider(
             "cancel",
             {
 
-                activation_id:
-                    activationId,
-
-                activationId:
-                    activationId,
+                // Send both identifiers: DB row ID for ownership/lookup,
+                // provider activation ID for the provider API.
+                orderId: order.id || order.raw?.id || order.raw?.order_id,
+                order_id: order.id || order.raw?.id || order.raw?.order_id,
+                activation_id: activationId,
+                activationId: activationId,
 
                 provider:
                     order?.raw?.provider === "textverified" || order?.raw?.provider === "text-verified-api"
@@ -6283,10 +6285,18 @@ async function cancelOrder(
         hideLoading();
 
 
+        const refundConfirmed =
+            cancelResult?.refunded === true ||
+            cancelResult?.refund_success === true ||
+            cancelResult?.data?.refunded === true ||
+            cancelResult?.data?.refund_success === true;
+
         showAlert(
-            "Number Cancelled",
-            "Number cancelled and refund processed.",
-            "✅"
+            "Cancellation Request Completed",
+            refundConfirmed
+                ? "The number was cancelled and the refund is confirmed."
+                : "The cancellation request was accepted. Check your wallet transactions to confirm the refund status.",
+            refundConfirmed ? "✅" : "ℹ️"
         );
 
 
