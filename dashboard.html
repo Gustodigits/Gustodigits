@@ -5236,7 +5236,12 @@ async function purchaseNumber(){
             data?.activationId ??
             data?.id ??
             data?.order_id ??
-            data?.orderId;
+            data?.orderId ??
+            data?.data?.activation_id ??
+            data?.data?.activationId ??
+            data?.data?.id ??
+            data?.data?.order_id ??
+            data?.data?.orderId;
 
 
         const number =
@@ -5245,8 +5250,13 @@ async function purchaseNumber(){
             data?.phone ??
             data?.number ??
             data?.data?.phone_number ??
+            data?.data?.phoneNumber ??
             data?.data?.phone ??
             data?.data?.number ??
+            data?.order?.phone_number ??
+            data?.order?.phoneNumber ??
+            data?.order?.phone ??
+            data?.order?.number ??
             "";
 
 
@@ -5273,6 +5283,35 @@ async function purchaseNumber(){
 
         }
 
+
+        // Cache only a provider-confirmed real number. This makes the new
+        // purchase appear at the top immediately, even if the DB list briefly lags.
+        if (
+            number &&
+            activationId &&
+            !String(activationId).startsWith("pending:")
+        ) {
+            const now = new Date().toISOString();
+            const confirmedRaw = {
+                id: data?.id || data?.order_id || data?.orderId || activationId,
+                activation_id: activationId,
+                provider_activation_id: activationId,
+                phone_number: number,
+                country_name: countryName(selectedCountry),
+                service_name: serviceName(selectedService),
+                provider: selectedProvider(),
+                status: data?.status || data?.data?.status || "waiting",
+                created_at: now,
+                purchased_at: now
+            };
+            const identity = String(activationId);
+            locallyConfirmedOrders = [
+                confirmedRaw,
+                ...locallyConfirmedOrders.filter(item =>
+                    String(item.provider_activation_id || item.activation_id || item.id || "") !== identity
+                )
+            ].slice(0, 10);
+        }
 
         showAlert(
             number ? "Number Successfully Purchased" : "Purchase Processing",
@@ -5461,82 +5500,114 @@ async function loadRecentPurchases(){
 
     try{
 
-        const data =
-            await callProvider(
-                "orders"
-            );
+        const data = await callProvider("orders");
 
+        const raw = Array.isArray(data?.orders)
+            ? data.orders
+            : Array.isArray(data?.data)
+                ? data.data
+                : [];
 
-        const raw =
-            Array.isArray(
-                data?.orders
-            )
-                ? data.orders
+        const normalized = raw
+            .map(normalizeOrder)
+            .filter(Boolean)
+            .filter(isRenderableRealOrder);
 
-                : Array.isArray(
-                    data?.data
-                )
-                    ? data.data
+        // If the provider has confirmed a number but the DB read has not caught
+        // up yet, keep that real purchase visible during this page session.
+        // Temporary reservations and rejected purchases can never enter this cache.
+        const combined = [...normalized];
+        for (const localRaw of locallyConfirmedOrders) {
+            const local = normalizeOrder(localRaw);
+            if (!local || !isRenderableRealOrder(local)) continue;
+            const key = orderIdentity(local);
+            if (!combined.some(item => orderIdentity(item) === key)) {
+                combined.push(local);
+            }
+        }
 
-                    : [];
+        const orders = combined
+            .sort((a, b) => (Number(b.timestamp) || 0) - (Number(a.timestamp) || 0))
+            .slice(0, 5);
 
-
-        const orders =
-            raw
-                .map(normalizeOrder)
-                .filter(Boolean)
-                // A processing reservation without a confirmed phone number is not a customer-visible purchase card.
-                .filter(order => {
-                    const number = String(order.number || "").trim();
-                    const activation = String(order.activationId || order.raw?.provider_activation_id || order.raw?.activation_id || "").trim();
-                    return number && number !== "—" && number.toLowerCase() !== "number purchased" &&
-                        activation && !activation.startsWith("pending:");
-                })
-                .sort(
-                    (a, b) => b.timestamp - a.timestamp
-                )
-                .slice(0, 5);
-
-
-recentOrdersCache = orders;
-renderRecentPurchases(orders);
-
-
+        recentOrdersCache = orders;
+        renderRecentPurchases(orders);
 
     }catch(error){
 
-        console.error(
-            "Recent purchases error:",
-            error
-        );
+        console.error("Recent purchases error:", error);
+
+        // Even if the orders query temporarily fails, don't hide a purchase
+        // that the provider already confirmed in this session.
+        const localOrders = locallyConfirmedOrders
+            .map(normalizeOrder)
+            .filter(Boolean)
+            .filter(isRenderableRealOrder)
+            .sort((a, b) => (Number(b.timestamp) || 0) - (Number(a.timestamp) || 0))
+            .slice(0, 5);
+
+        if (localOrders.length) {
+            recentOrdersCache = localOrders;
+            renderRecentPurchases(localOrders);
+            return;
+        }
 
         const message =
-    typeof error?.message === "string"
-        ? error.message
-        : typeof error?.error === "string"
-            ? error.error
-            : typeof error?.details === "string"
-                ? error.details
-                : typeof error?.msg === "string"
-                    ? error.msg
-                    : (
-                        typeof error === "string"
-                            ? error
-                            : "Unable to load recent purchases."
-                    );
-        $("recentPurchases")
-            .innerHTML =
-            `
-            <div class="no-purchases">
-                ${escapeHtml(
-                    String(message)
-                )}
-            </div>
-            `;
+            typeof error?.message === "string" ? error.message :
+            typeof error?.error === "string" ? error.error :
+            typeof error?.details === "string" ? error.details :
+            typeof error?.msg === "string" ? error.msg :
+            (typeof error === "string" ? error : "Unable to load recent purchases.");
 
+        $("recentPurchases").innerHTML = `
+            <div class="no-purchases">
+                ${escapeHtml(String(message))}
+            </div>
+        `;
     }
 }
 
+function isRenderableRealOrder(order){
+    if (!order) return false;
+
+    const number = String(order.number || "").trim();
+    const status = String(order.status || order.raw?.status || "")
+        .trim().toLowerCase().replace(/[ -]+/g, "_");
+    const activation = String(
+        order.activationId ||
+        order.raw?.provider_activation_id ||
+        order.raw?.activation_id ||
+        order.id ||
+        ""
+    ).trim();
+
+    const rejectedStatuses = [
+        "failed", "failure", "rejected", "refunded", "refund_pending",
+        "purchase_failed", "cancelled_before_purchase", "canceled_before_purchase",
+        "reservation_failed"
+    ];
+
+    return Boolean(
+        number &&
+        number !== "—" &&
+        !/^(number purchased|pending|unknown)$/i.test(number) &&
+        activation &&
+        !activation.startsWith("pending:") &&
+        !rejectedStatuses.includes(status)
+    );
+}
+
+function orderIdentity(order){
+    const raw = order?.raw || order || {};
+    return String(
+        raw.provider_activation_id ||
+        raw.activation_id ||
+        raw.activationId ||
+        order?.activationId ||
+        order?.id ||
+        ""
+    ).trim();
+}
 
 /* =========================================================
 ORDER NORMALIZER
@@ -5549,10 +5620,10 @@ function normalizeOrder(
     const timestamp =
         new Date(
 
-            order.purchased_at ||
-            order.purchasedAt ||
             order.created_at ||
             order.createdAt ||
+            order.purchased_at ||
+            order.purchasedAt ||
             order.updated_at ||
             order.updatedAt ||
             0
@@ -5575,7 +5646,7 @@ function normalizeOrder(
         statusRaw;
 
 
-    if (["failed", "failure", "rejected", "refunded", "refund_pending", "purchase_failed"].includes(statusRaw.replace(/[ -]+/g, "_"))) {
+    if (["failed", "failure", "rejected", "refunded", "refund_pending", "purchase_failed", "cancelled_before_purchase", "canceled_before_purchase", "reservation_failed"].includes(statusRaw.replace(/[ -]+/g, "_"))) {
         // Failed reservations must never be rendered as purchased numbers.
         return null;
     }
@@ -5656,13 +5727,9 @@ function renderRecentPurchases(
     orders
 ){
 
-    orders = (orders || []).filter(order => {
-        if (!order) return false;
-        const number = String(order.number || "").trim();
-        const status = String(order.status || "").toLowerCase().replace(/[ -]+/g, "_");
-        return Boolean(number && number !== "—" && !/^(number purchased|pending|unknown)$/i.test(number)) &&
-            !["failed", "failure", "rejected", "refunded", "refund_pending", "purchase_failed"].includes(status);
-    }).sort((a,b) => (Number(b.timestamp) || 0) - (Number(a.timestamp) || 0));
+    orders = (orders || [])
+        .filter(isRenderableRealOrder)
+        .sort((a,b) => (Number(b.timestamp) || 0) - (Number(a.timestamp) || 0));
 
     if(
         !orders.length
@@ -5739,6 +5806,8 @@ function renderPurchaseCard(
                             escapeHtml(
                                 String(
                                     order.activationId ||
+                                    order.raw?.provider_activation_id ||
+                                    order.raw?.activation_id ||
                                     order.id ||
                                     ""
                                 )
@@ -5755,6 +5824,8 @@ function renderPurchaseCard(
                             escapeHtml(
                                 String(
                                     order.activationId ||
+                                    order.raw?.provider_activation_id ||
+                                    order.raw?.activation_id ||
                                     order.id ||
                                     ""
                                 )
@@ -5893,6 +5964,9 @@ $("recentPurchases")
 
 
 let recentOrdersCache = [];
+// Keep provider-confirmed purchases visible immediately if the database read lags.
+// Only orders with a real phone number and a non-temporary activation ID are added.
+let locallyConfirmedOrders = [];
 
 
 function getCurrentOrder(
