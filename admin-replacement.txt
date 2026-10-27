@@ -1,0 +1,4179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gustodigits — Admin</title>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<style>
+*{
+  box-sizing:border-box;
+  margin:0;
+  padding:0;
+}
+
+html{
+  font-size:16px;
+}
+
+:root{
+  --blue:#1677ff;
+  --blue-dark:#075bd6;
+  --blue-light:#eef6ff;
+  --bg:#f5f8fc;
+  --white:#ffffff;
+  --text:#172033;
+  --muted:#718096;
+  --border:#e5eaf1;
+  --green:#16a34a;
+  --red:#dc2626;
+  --orange:#f59e0b;
+  --shadow:0 6px 24px rgba(22,119,255,.07);
+}
+
+body{
+  font-family:Arial,Helvetica,sans-serif;
+  background:var(--bg);
+  color:var(--text);
+  font-size:14px;
+  line-height:1.45;
+  -webkit-text-size-adjust:100%;
+}
+
+button,
+input,
+select{
+  font:inherit;
+}
+
+button{
+  cursor:pointer;
+}
+
+.hidden{
+  display:none!important;
+}
+
+/* =========================================================
+   LOGIN
+========================================================= */
+
+#loginScreen{
+  min-height:100vh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:20px;
+  background:linear-gradient(135deg,#eef6ff,#f8fbff);
+}
+
+.login-card{
+  width:100%;
+  max-width:400px;
+  background:#fff;
+  border:1px solid var(--border);
+  border-radius:20px;
+  padding:28px;
+  box-shadow:var(--shadow);
+}
+
+.logo{
+  font-size:27px;
+  font-weight:900;
+  margin-bottom:6px;
+}
+
+.logo span{
+  color:var(--blue);
+}
+
+.login-subtitle{
+  color:var(--muted);
+  margin-bottom:23px;
+  font-size:14px;
+}
+
+.field{
+  margin-bottom:15px;
+}
+
+.field label{
+  display:block;
+  font-size:12px;
+  font-weight:700;
+  margin-bottom:6px;
+}
+
+.field input,
+.field select{
+  width:100%;
+  height:44px;
+  border:1px solid var(--border);
+  border-radius:9px;
+  padding:0 12px;
+  outline:none;
+  background:#fff;
+}
+
+.field input:focus,
+.field select:focus{
+  border-color:var(--blue);
+}
+
+.primary-btn{
+  border:0;
+  background:var(--blue);
+  color:#fff;
+  border-radius:9px;
+  min-height:42px;
+  padding:0 16px;
+  font-weight:800;
+  font-size:13px;
+}
+
+.primary-btn:hover{
+  background:var(--blue-dark);
+}
+
+.full-btn{
+  width:100%;
+}
+
+.error{
+  color:var(--red);
+  font-size:12px;
+  margin-top:11px;
+}
+
+/* =========================================================
+   APP
+========================================================= */
+
+#app{
+  min-height:100vh;
+}
+
+.sidebar{
+  position:fixed;
+  left:0;
+  top:0;
+  bottom:0;
+  width:230px;
+  background:#fff;
+  border-right:1px solid var(--border);
+  padding:20px 13px;
+  z-index:50;
+}
+
+.sidebar-logo{
+  padding:3px 11px 23px;
+  font-size:21px;
+  font-weight:900;
+}
+
+.sidebar-logo span{
+  color:var(--blue);
+}
+
+.nav-title{
+  color:#a0a8b7;
+  font-size:10px;
+  font-weight:800;
+  padding:0 11px;
+  margin:9px 0 7px;
+  text-transform:uppercase;
+  letter-spacing:.5px;
+}
+
+.nav-btn{
+  width:100%;
+  border:0;
+  background:transparent;
+  color:#566174;
+  padding:10px 11px;
+  border-radius:9px;
+  text-align:left;
+  font-weight:700;
+  font-size:13px;
+  margin-bottom:3px;
+}
+
+.nav-btn:hover,
+.nav-btn.active{
+  background:var(--blue-light);
+  color:var(--blue);
+}
+
+.logout-btn{
+  color:var(--red);
+}
+
+.main{
+  margin-left:230px;
+  padding:22px;
+  max-width:1600px;
+}
+
+.topbar{
+  display:flex;
+  align-items:center;
+  margin-bottom:20px;
+  gap:12px;
+}
+
+.topbar-content{
+  min-width:0;
+}
+
+.topbar h1{
+  font-size:23px;
+  line-height:1.2;
+  font-weight:900;
+}
+
+.topbar p{
+  color:var(--muted);
+  margin-top:3px;
+  font-size:12px;
+}
+
+.mobile-menu{
+  display:none;
+}
+
+/* =========================================================
+   DASHBOARD WELCOME
+========================================================= */
+
+.welcome-card{
+  position:relative;
+  overflow:hidden;
+  background:linear-gradient(135deg,#1677ff 0%,#075bd6 100%);
+  color:#fff;
+  border-radius:18px;
+  padding:24px 26px;
+  margin-bottom:18px;
+  box-shadow:0 10px 30px rgba(22,119,255,.18);
+}
+
+.welcome-card::after{
+  content:"";
+  position:absolute;
+  width:190px;
+  height:190px;
+  border-radius:50%;
+  right:-65px;
+  top:-85px;
+  background:rgba(255,255,255,.08);
+}
+
+.welcome-card::before{
+  content:"";
+  position:absolute;
+  width:120px;
+  height:120px;
+  border-radius:50%;
+  right:90px;
+  bottom:-90px;
+  background:rgba(255,255,255,.06);
+}
+
+.welcome-content{
+  position:relative;
+  z-index:2;
+  max-width:760px;
+}
+
+.welcome-small{
+  font-size:11px;
+  font-weight:800;
+  opacity:.82;
+  text-transform:uppercase;
+  letter-spacing:.7px;
+  margin-bottom:6px;
+}
+
+.welcome-title{
+  font-size:26px;
+  font-weight:900;
+  line-height:1.2;
+  margin-bottom:8px;
+}
+
+.welcome-text{
+  font-size:13px;
+  line-height:1.65;
+  opacity:.92;
+  max-width:680px;
+}
+
+.welcome-hint{
+  margin-top:14px;
+  display:inline-flex;
+  align-items:center;
+  gap:7px;
+  background:rgba(255,255,255,.13);
+  border:1px solid rgba(255,255,255,.16);
+  border-radius:8px;
+  padding:8px 11px;
+  font-size:11px;
+  font-weight:700;
+}
+
+/* =========================================================
+   QUICK ACTIONS
+========================================================= */
+
+.quick-section{
+  margin-bottom:18px;
+}
+
+.quick-title{
+  font-size:14px;
+  font-weight:900;
+  margin-bottom:10px;
+}
+
+.quick-grid{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:12px;
+}
+
+.quick-card{
+  border:1px solid var(--border);
+  background:#fff;
+  border-radius:13px;
+  padding:15px;
+  display:flex;
+  align-items:center;
+  gap:11px;
+  text-align:left;
+  box-shadow:var(--shadow);
+  transition:.18s ease;
+}
+
+.quick-card:hover{
+  transform:translateY(-2px);
+  border-color:#cfe0f8;
+  box-shadow:0 9px 25px rgba(22,119,255,.10);
+}
+
+.quick-icon{
+  width:38px;
+  height:38px;
+  flex:0 0 38px;
+  border-radius:10px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:18px;
+  background:var(--blue-light);
+}
+
+.quick-info{
+  min-width:0;
+}
+
+.quick-name{
+  font-size:13px;
+  font-weight:900;
+  color:var(--text);
+}
+
+.quick-desc{
+  color:var(--muted);
+  font-size:10px;
+  margin-top:2px;
+}
+
+/* =========================================================
+   STAT CARDS
+========================================================= */
+
+.stats{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:12px;
+  margin-bottom:18px;
+}
+
+.stat-card{
+  background:#fff;
+  border:1px solid var(--border);
+  border-radius:13px;
+  padding:15px 16px;
+  box-shadow:var(--shadow);
+}
+
+.stat-label{
+  color:var(--muted);
+  font-size:11px;
+  font-weight:700;
+}
+
+.stat-value{
+  font-size:21px;
+  font-weight:900;
+  margin-top:5px;
+}
+
+/* =========================================================
+   SECTIONS
+========================================================= */
+
+.page{
+  display:none;
+}
+
+.page.active{
+  display:block;
+}
+
+.panel{
+  background:#fff;
+  border:1px solid var(--border);
+  border-radius:14px;
+  box-shadow:var(--shadow);
+  overflow:hidden;
+}
+
+.panel-header{
+  padding:15px 17px;
+  border-bottom:1px solid var(--border);
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:10px;
+  flex-wrap:wrap;
+}
+
+.panel-title{
+  font-weight:900;
+  font-size:15px;
+}
+
+.panel-body{
+  padding:17px;
+}
+
+.toolbar{
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap;
+  align-items:center;
+}
+
+.search{
+  height:39px;
+  min-width:220px;
+  border:1px solid var(--border);
+  border-radius:8px;
+  padding:0 11px;
+  outline:none;
+  font-size:12px;
+}
+
+.search:focus{
+  border-color:var(--blue);
+}
+
+/* =========================================================
+   TABLE
+========================================================= */
+
+.table-wrap{
+  width:100%;
+  overflow-x:auto;
+}
+
+table{
+  width:100%;
+  border-collapse:collapse;
+  min-width:780px;
+}
+
+th{
+  background:#f8fafc;
+  color:#667085;
+  font-size:10px;
+  text-align:left;
+  padding:11px 13px;
+  white-space:nowrap;
+}
+
+td{
+  border-top:1px solid var(--border);
+  padding:12px 13px;
+  font-size:12px;
+  vertical-align:middle;
+}
+
+.badge{
+  display:inline-flex;
+  align-items:center;
+  border-radius:30px;
+  padding:4px 8px;
+  font-size:10px;
+  font-weight:800;
+}
+
+.badge.green{
+  color:#15803d;
+  background:#dcfce7;
+}
+
+.badge.red{
+  color:#b91c1c;
+  background:#fee2e2;
+}
+
+.badge.blue{
+  color:#1d4ed8;
+  background:#dbeafe;
+}
+
+.badge.orange{
+  color:#b45309;
+  background:#fef3c7;
+}
+
+/* =========================================================
+   BUTTONS
+========================================================= */
+
+.action-row{
+  display:flex;
+  gap:6px;
+  flex-wrap:wrap;
+}
+
+.small-btn{
+  border:0;
+  border-radius:7px;
+  padding:7px 9px;
+  font-size:10px;
+  font-weight:800;
+}
+
+.blue-btn{
+  background:#e8f1ff;
+  color:#145dcc;
+}
+
+.green-btn{
+  background:#dcfce7;
+  color:#15803d;
+}
+
+.red-btn{
+  background:#fee2e2;
+  color:#b91c1c;
+}
+
+.gray-btn{
+  background:#eef2f7;
+  color:#475569;
+}
+
+.orange-btn{
+  background:#fef3c7;
+  color:#b45309;
+}
+
+.small-btn:hover{
+  opacity:.8;
+}
+
+/* =========================================================
+   MODAL
+========================================================= */
+
+.modal-overlay{
+  position:fixed;
+  inset:0;
+  background:rgba(15,23,42,.55);
+  display:none;
+  align-items:center;
+  justify-content:center;
+  padding:16px;
+  z-index:100;
+}
+
+.modal-overlay.show{
+  display:flex;
+}
+
+.modal{
+  width:100%;
+  max-width:850px;
+  max-height:92vh;
+  overflow:auto;
+  background:#fff;
+  border-radius:16px;
+  box-shadow:0 20px 70px rgba(0,0,0,.2);
+}
+
+.modal.small{
+  max-width:480px;
+}
+
+.modal-header{
+  padding:16px 19px;
+  border-bottom:1px solid var(--border);
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:10px;
+}
+
+.modal-header h2{
+  font-size:17px;
+}
+
+.close{
+  border:0;
+  background:#f1f5f9;
+  width:32px;
+  height:32px;
+  border-radius:50%;
+  font-size:18px;
+}
+
+.modal-body{
+  padding:19px;
+}
+
+.form-grid{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:13px;
+}
+
+.form-group{
+  margin-bottom:13px;
+}
+
+.form-group.full{
+  grid-column:1/-1;
+}
+
+.form-group label{
+  display:block;
+  font-size:11px;
+  font-weight:800;
+  margin-bottom:6px;
+}
+
+.form-group input,
+.form-group select{
+  width:100%;
+  height:41px;
+  border:1px solid var(--border);
+  border-radius:8px;
+  padding:0 10px;
+  outline:none;
+  background:#fff;
+  font-size:12px;
+}
+
+.form-group input:focus,
+.form-group select:focus{
+  border-color:var(--blue);
+}
+
+.form-group input:disabled,
+.form-group select:disabled{
+  background:#f1f5f9;
+  color:#64748b;
+}
+
+.modal-footer{
+  padding:16px 19px;
+  border-top:1px solid var(--border);
+  display:flex;
+  justify-content:flex-end;
+  gap:8px;
+  flex-wrap:wrap;
+}
+
+/* =========================================================
+   USER INFO
+========================================================= */
+
+.user-summary{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:10px;
+  margin-bottom:17px;
+}
+
+.info-box{
+  background:#f8fafc;
+  border:1px solid var(--border);
+  border-radius:10px;
+  padding:12px;
+}
+
+.info-box small{
+  display:block;
+  color:var(--muted);
+  font-size:10px;
+  margin-bottom:4px;
+}
+
+.info-box strong{
+  font-size:13px;
+}
+
+/* =========================================================
+   TABS
+========================================================= */
+
+.tabs{
+  display:flex;
+  gap:3px;
+  border-bottom:1px solid var(--border);
+  margin-bottom:16px;
+}
+
+.tab-btn{
+  border:0;
+  background:transparent;
+  padding:9px 12px;
+  color:#64748b;
+  font-size:12px;
+  font-weight:800;
+  border-bottom:2px solid transparent;
+}
+
+.tab-btn.active{
+  color:var(--blue);
+  border-bottom-color:var(--blue);
+}
+
+/* =========================================================
+   MARKUP
+========================================================= */
+
+.markup-form{
+  background:#f8fbff;
+  border:1px solid #dbeafe;
+  border-radius:12px;
+  padding:15px;
+  margin-bottom:17px;
+}
+
+.markup-form-title{
+  font-size:13px;
+  font-weight:900;
+  margin-bottom:13px;
+}
+
+.markup-actions{
+  display:flex;
+  gap:7px;
+  flex-wrap:wrap;
+}
+
+.rule-text{
+  font-weight:700;
+}
+
+.overall{
+  color:var(--blue);
+}
+
+/* =========================================================
+   LOADER
+========================================================= */
+
+.loading{
+  padding:30px;
+  text-align:center;
+  color:var(--muted);
+}
+
+.empty{
+  padding:30px;
+  text-align:center;
+  color:var(--muted);
+}
+
+/* =========================================================
+   TOAST
+========================================================= */
+
+.toast{
+  position:fixed;
+  right:18px;
+  bottom:18px;
+  z-index:300;
+  min-width:270px;
+  max-width:400px;
+  background:#172033;
+  color:#fff;
+  padding:12px 15px;
+  border-radius:10px;
+  box-shadow:0 15px 40px rgba(0,0,0,.2);
+  transform:translateY(20px);
+  opacity:0;
+  pointer-events:none;
+  transition:.25s;
+  font-size:12px;
+}
+
+.toast.show{
+  transform:translateY(0);
+  opacity:1;
+}
+
+.toast.success{
+  background:#15803d;
+}
+
+.toast.error{
+  background:#b91c1c;
+}
+
+/* =========================================================
+   MOBILE
+========================================================= */
+
+@media(max-width:1050px){
+
+  .quick-grid{
+    grid-template-columns:repeat(2,1fr);
+  }
+
+  .stats{
+    grid-template-columns:repeat(2,1fr);
+  }
+}
+
+@media(max-width:760px){
+
+  .sidebar{
+    transform:translateX(-100%);
+    transition:.25s;
+  }
+
+  .sidebar.open{
+    transform:translateX(0);
+    box-shadow:10px 0 35px rgba(0,0,0,.12);
+  }
+
+  .main{
+    margin-left:0;
+    padding:14px;
+  }
+
+  .mobile-menu{
+    display:block;
+    border:0;
+    background:#e8f1ff;
+    color:var(--blue);
+    width:38px;
+    height:38px;
+    border-radius:9px;
+    font-size:19px;
+    flex:0 0 38px;
+  }
+
+  .topbar{
+    margin-bottom:16px;
+  }
+
+  .topbar h1{
+    font-size:20px;
+  }
+
+  .topbar p{
+    font-size:11px;
+  }
+
+  .welcome-card{
+    padding:20px;
+    border-radius:15px;
+  }
+
+  .welcome-title{
+    font-size:22px;
+  }
+
+  .welcome-text{
+    font-size:12px;
+  }
+
+  .quick-grid{
+    grid-template-columns:1fr 1fr;
+  }
+
+  .stats{
+    grid-template-columns:1fr 1fr;
+  }
+
+  .form-grid{
+    grid-template-columns:1fr;
+  }
+
+  .user-summary{
+    grid-template-columns:1fr;
+  }
+
+  .search{
+    width:100%;
+    min-width:0;
+  }
+}
+
+@media(max-width:480px){
+
+  .main{
+    padding:12px;
+  }
+
+  .quick-grid{
+    grid-template-columns:1fr;
+  }
+
+  .stats{
+    grid-template-columns:1fr 1fr;
+    gap:9px;
+  }
+
+  .stat-card{
+    padding:12px;
+  }
+
+  .stat-value{
+    font-size:18px;
+  }
+
+  .welcome-title{
+    font-size:20px;
+  }
+
+  .welcome-card{
+    padding:18px;
+  }
+
+  .quick-card{
+    padding:12px;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<!-- LOGIN -->
+<div id="loginScreen">
+  <div class="login-card">
+
+    <div class="logo">
+      Gusto<span>digits</span>
+    </div>
+
+    <div class="login-subtitle">
+      Administrator Login
+    </div>
+
+    <div class="field">
+      <label>Email</label>
+      <input
+        id="loginEmail"
+        type="email"
+        placeholder="Admin email"
+      >
+    </div>
+
+    <div class="field">
+      <label>Password</label>
+      <input
+        id="loginPassword"
+        type="password"
+        placeholder="Password"
+      >
+    </div>
+
+    <button
+      class="primary-btn full-btn"
+      onclick="login()"
+    >
+      Login
+    </button>
+
+    <div id="loginError" class="error"></div>
+
+  </div>
+</div>
+
+
+<!-- APP -->
+<div id="app" class="hidden">
+
+  <aside class="sidebar" id="sidebar">
+
+    <div class="sidebar-logo">
+      Gusto<span>digits</span>
+    </div>
+
+    <div class="nav-title">
+      Main
+    </div>
+
+    <button
+      class="nav-btn active"
+      data-page="dashboard"
+      onclick="showPage('dashboard',this)"
+    >
+      📊 Dashboard
+    </button>
+
+    <button
+      class="nav-btn"
+      data-page="users"
+      onclick="showPage('users',this)"
+    >
+      👥 Users
+    </button>
+
+    <button
+      class="nav-btn"
+      data-page="orders"
+      onclick="showPage('orders',this)"
+    >
+      📦 Orders
+    </button>
+
+    <button
+      class="nav-btn"
+      data-page="transactions"
+      onclick="showPage('transactions',this)"
+    >
+      💳 Transactions
+    </button>
+
+    <button
+      class="nav-btn"
+      data-page="markup"
+      onclick="showPage('markup',this)"
+    >
+      💰 Pricing & SMSBower
+    </button>
+
+    <div class="nav-title">
+      Account
+    </div>
+
+    <button
+      class="nav-btn logout-btn"
+      onclick="logout()"
+    >
+      🚪 Logout
+    </button>
+
+  </aside>
+
+
+  <main class="main">
+
+    <div class="topbar">
+
+      <button
+        class="mobile-menu"
+        onclick="toggleSidebar()"
+      >
+        ☰
+      </button>
+
+      <div class="topbar-content">
+
+        <h1 id="pageTitle">
+          Dashboard
+        </h1>
+
+        <p>
+          Gustodigits administration panel
+        </p>
+
+      </div>
+
+    </div>
+
+
+    <!-- =====================================================
+         DASHBOARD
+    ====================================================== -->
+
+    <section
+      id="page-dashboard"
+      class="page active"
+    >
+
+      <!-- WELCOME -->
+
+      <div class="welcome-card">
+
+        <div class="welcome-content">
+
+          <div class="welcome-small">
+            Gustodigits
+          </div>
+
+          <div class="welcome-title">
+            Welcome to Gustodigits Admin Dashboard 👋
+          </div>
+
+          <div class="welcome-text">
+            Manage your virtual-number platform from one place.
+            View customers, monitor orders, manage wallet transactions,
+            and manage SMSBower pricing, services and servers.
+          </div>
+
+          <div class="welcome-hint">
+            ☰ Use the menu to select what you want to manage.
+          </div>
+
+        </div>
+
+      </div>
+
+
+      <!-- QUICK ACTIONS -->
+
+      <div class="quick-section">
+
+        <div class="quick-title">
+          Quick Access
+        </div>
+
+        <div class="quick-grid">
+
+          <button
+            class="quick-card"
+            onclick="openDashboardPage('users')"
+          >
+
+            <div class="quick-icon">
+              👥
+            </div>
+
+            <div class="quick-info">
+
+              <div class="quick-name">
+                Users
+              </div>
+
+              <div class="quick-desc">
+                View and manage customers
+              </div>
+
+            </div>
+
+          </button>
+
+
+          <button
+            class="quick-card"
+            onclick="openDashboardPage('orders')"
+          >
+
+            <div class="quick-icon">
+              📦
+            </div>
+
+            <div class="quick-info">
+
+              <div class="quick-name">
+                Orders
+              </div>
+
+              <div class="quick-desc">
+                View virtual-number orders
+              </div>
+
+            </div>
+
+          </button>
+
+
+          <button
+            class="quick-card"
+            onclick="openDashboardPage('transactions')"
+          >
+
+            <div class="quick-icon">
+              💳
+            </div>
+
+            <div class="quick-info">
+
+              <div class="quick-name">
+                Transactions
+              </div>
+
+              <div class="quick-desc">
+                Monitor wallet activity
+              </div>
+
+            </div>
+
+          </button>
+
+
+          <button
+            class="quick-card"
+            onclick="openDashboardPage('markup')"
+          >
+
+            <div class="quick-icon">
+              💰
+            </div>
+
+            <div class="quick-info">
+
+              <div class="quick-name">
+                SMSBower Management
+              </div>
+
+              <div class="quick-desc">
+                Pricing, services and servers
+              </div>
+
+            </div>
+
+          </button>
+
+        </div>
+
+      </div>
+
+
+      <!-- STATS -->
+
+      <div class="stats">
+
+        <div class="stat-card">
+
+          <div class="stat-label">
+            Total Users
+          </div>
+
+          <div
+            class="stat-value"
+            id="statUsers"
+          >
+            0
+          </div>
+
+        </div>
+
+
+        <div class="stat-card">
+
+          <div class="stat-label">
+            Total Wallet Balance
+          </div>
+
+          <div
+            class="stat-value"
+            id="statBalance"
+          >
+            ₦0
+          </div>
+
+        </div>
+
+
+        <div class="stat-card">
+
+          <div class="stat-label">
+            Total Orders
+          </div>
+
+          <div
+            class="stat-value"
+            id="statOrders"
+          >
+            0
+          </div>
+
+        </div>
+
+
+        <div class="stat-card">
+
+          <div class="stat-label">
+            Total Transactions
+          </div>
+
+          <div
+            class="stat-value"
+            id="statTransactions"
+          >
+            0
+          </div>
+
+        </div>
+
+      </div>
+
+
+      <!-- OVERVIEW -->
+
+      <div class="panel">
+
+        <div class="panel-header">
+
+          <div class="panel-title">
+            Admin Overview
+          </div>
+
+        </div>
+
+        <div class="panel-body">
+
+          <p style="color:#64748b;line-height:1.7;font-size:12px">
+
+            Use the menu or Quick Access above to manage
+            Gustodigits users, virtual-number orders,
+            wallet transactions and SMSBower settings.
+
+          </p>
+
+        </div>
+
+      </div>
+
+    </section>
+
+
+    <!-- =====================================================
+         USERS
+    ====================================================== -->
+
+    <section
+      id="page-users"
+      class="page"
+    >
+
+      <div class="panel">
+
+        <div class="panel-header">
+
+          <div class="panel-title">
+            Users
+          </div>
+
+          <div class="toolbar">
+
+            <input
+              id="userSearch"
+              class="search"
+              placeholder="Search email or user ID..."
+              oninput="filterUsers()"
+            >
+
+            <button
+              class="primary-btn"
+              onclick="loadUsers()"
+            >
+              Refresh
+            </button>
+
+          </div>
+
+        </div>
+
+        <div class="table-wrap">
+
+          <table>
+
+            <thead>
+
+              <tr>
+                <th>Email</th>
+                <th>User ID</th>
+                <th>Created</th>
+                <th>Wallet</th>
+                <th>Total Spent</th>
+                <th>Actions</th>
+              </tr>
+
+            </thead>
+
+            <tbody id="usersBody"></tbody>
+
+          </table>
+
+        </div>
+
+      </div>
+
+    </section>
+
+
+    <!-- =====================================================
+         ORDERS
+    ====================================================== -->
+
+    <section
+      id="page-orders"
+      class="page"
+    >
+
+      <div class="panel">
+
+        <div class="panel-header">
+
+          <div class="panel-title">
+            Virtual Number Orders
+          </div>
+
+          <button
+            class="primary-btn"
+            onclick="loadOrders()"
+          >
+            Refresh
+          </button>
+
+        </div>
+
+        <div class="table-wrap">
+
+          <table>
+
+            <thead>
+
+              <tr>
+                <th>Date</th>
+                <th>User</th>
+                <th>Number</th>
+                <th>Country</th>
+                <th>Service</th>
+                <th>Price</th>
+                <th>Status</th>
+                <th>Action</th>
+              </tr>
+
+            </thead>
+
+            <tbody id="ordersBody"></tbody>
+
+          </table>
+
+        </div>
+
+      </div>
+
+    </section>
+
+
+    <!-- =====================================================
+         TRANSACTIONS
+    ====================================================== -->
+
+    <section
+      id="page-transactions"
+      class="page"
+    >
+
+      <div class="panel">
+
+        <div class="panel-header">
+
+          <div class="panel-title">
+            Transactions
+          </div>
+
+          <button
+            class="primary-btn"
+            onclick="loadTransactions()"
+          >
+            Refresh
+          </button>
+
+        </div>
+
+        <div class="table-wrap">
+
+          <table>
+
+            <thead>
+
+              <tr>
+                <th>Date</th>
+                <th>User</th>
+                <th>Type</th>
+                <th>Amount</th>
+                <th>Status</th>
+                <th>Description</th>
+                <th>Reference</th>
+              </tr>
+
+            </thead>
+
+            <tbody id="transactionsBody"></tbody>
+
+          </table>
+
+        </div>
+
+      </div>
+
+    </section>
+
+
+    <!-- SMSBOWER MANAGEMENT -->
+    <section id="page-markup" class="page">
+      <div class="panel">
+        <div class="panel-header"><div class="panel-title">SMSBower Pricing & Controls</div><button class="primary-btn" onclick="loadSmsAdminData()">Refresh all</button></div>
+        <div class="panel-body">
+          <div class="tabs">
+            <button class="tab-btn active" id="smsTabPricingBtn" onclick="showSmsTab('pricing')">Pricing Management</button>
+            <button class="tab-btn" id="smsTabServicesBtn" onclick="showSmsTab('services')">Service Management</button>
+            <button class="tab-btn" id="smsTabServersBtn" onclick="showSmsTab('servers')">Server Management</button>
+          </div>
+          <section id="smsTabPricing">
+            <div class="markup-form"><div class="markup-form-title">Add / Update SMSBower Pricing Rule</div>
+              <div class="form-grid">
+                <div class="form-group"><label>Country (blank = default)</label><select id="smsPriceCountry"><option value="">All countries / default</option></select></div>
+                <div class="form-group"><label>Service (blank = all)</label><select id="smsPriceService"><option value="">All services</option></select></div>
+                <div class="form-group"><label>Server ID (optional)</label><input id="smsPriceServer" placeholder="Exact provider server ID"></div>
+                <div class="form-group"><label>Pricing mode</label><select id="smsPricingMode" onchange="toggleSmsFixedPrice()"><option value="markup">Markup percentage</option><option value="fixed">Fixed NGN price</option></select></div>
+                <div class="form-group" id="smsMarkupField"><label>Markup percentage</label><input id="smsPriceMarkup" type="number" min="0" step="0.01" placeholder="e.g. 100"></div>
+                <div class="form-group hidden" id="smsFixedField"><label>Fixed selling price (NGN)</label><input id="smsFixedPrice" type="number" min="1" step="1"></div>
+              </div>
+              <p style="font-size:11px;color:#64748b;margin-bottom:12px">Defaults: USA (country ID 187) = 100% markup for all services; other countries = 200%. A matching custom rule takes priority.</p>
+              <div class="markup-actions"><button class="primary-btn" onclick="saveSmsPriceRule()">Save pricing rule</button><button class="small-btn gray-btn" onclick="resetSmsPriceForm()">Clear</button></div>
+            </div>
+            <div class="table-wrap"><table><thead><tr><th>Country</th><th>Service</th><th>Server ID</th><th>Mode</th><th>Markup</th><th>Fixed NGN</th><th>Status</th><th>Actions</th></tr></thead><tbody id="smsPriceRulesBody"></tbody></table></div>
+          </section>
+          <section id="smsTabServices" class="hidden">
+            <div class="toolbar" style="margin-bottom:12px"><input id="smsServiceSearch" class="search" placeholder="Search country or service…" oninput="renderSmsServices()"><button class="primary-btn" onclick="loadSmsServices()">Refresh services</button></div>
+            <p style="font-size:11px;color:#64748b;margin-bottom:12px">Saved enable/disable settings must also be enforced by the Edge Function.</p>
+            <div class="table-wrap"><table><thead><tr><th>Country</th><th>Service</th><th>Code</th><th>Status</th><th>Action</th></tr></thead><tbody id="smsServicesBody"></tbody></table></div>
+          </section>
+          <section id="smsTabServers" class="hidden">
+            <div class="form-grid">
+              <div class="form-group"><label>Country</label><select id="smsServerCountry" onchange="loadSmsServers()"><option value="">Choose country</option></select></div>
+              <div class="form-group"><label>Service</label><select id="smsServerService" onchange="loadSmsServers()"><option value="">Choose service</option></select></div>
+              <div class="form-group"><label>Maximum servers shown</label><input id="smsMaxServers" type="number" min="1" max="100" value="10"></div>
+              <div class="form-group"><label>Preferred tier</label><select id="smsPreferredTier"><option value="">No preference</option><option value="cheap">Cheapest</option><option value="balanced">Balanced</option><option value="premium">Premium</option></select></div>
+            </div>
+            <div class="markup-actions" style="margin:0 0 14px"><button class="primary-btn" onclick="saveSmsDisplaySettings()">Save display settings</button><button class="small-btn gray-btn" onclick="loadSmsServers()">Refresh servers</button></div>
+            <div class="table-wrap"><table><thead><tr><th>Server</th><th>Server ID</th><th>Provider cost</th><th>Tier</th><th>Status</th><th>Action</th></tr></thead><tbody id="smsServersBody"></tbody></table></div>
+          </section>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+</div>
+
+
+<!-- =======================================================
+     USER MODAL
+======================================================== -->
+
+<div
+  class="modal-overlay"
+  id="userModal"
+>
+
+  <div class="modal">
+
+    <div class="modal-header">
+
+      <h2 id="userModalTitle">
+        User
+      </h2>
+
+      <button
+        class="close"
+        onclick="closeModal('userModal')"
+      >
+        ×
+      </button>
+
+    </div>
+
+    <div class="modal-body">
+
+      <div class="user-summary">
+
+        <div class="info-box">
+
+          <small>
+            Email
+          </small>
+
+          <strong id="viewEmail">
+            -
+          </strong>
+
+        </div>
+
+
+        <div class="info-box">
+
+          <small>
+            Wallet Balance
+          </small>
+
+          <strong id="viewBalance">
+            ₦0
+          </strong>
+
+        </div>
+
+
+        <div class="info-box">
+
+          <small>
+            Total Spent
+          </small>
+
+          <strong id="viewSpent">
+            ₦0
+          </strong>
+
+        </div>
+
+      </div>
+
+
+      <div
+        class="action-row"
+        style="margin-bottom:18px"
+      >
+
+        <button
+          class="small-btn green-btn"
+          onclick="openWalletAction('add')"
+        >
+          + Add
+        </button>
+
+        <button
+          class="small-btn orange-btn"
+          onclick="openWalletAction('deduct')"
+        >
+          − Deduct
+        </button>
+
+      </div>
+
+
+      <div class="tabs">
+
+        <button
+          class="tab-btn active"
+          id="userOrdersTabBtn"
+          onclick="showUserTab('orders')"
+        >
+          Orders
+        </button>
+
+        <button
+          class="tab-btn"
+          id="userTransactionsTabBtn"
+          onclick="showUserTab('transactions')"
+        >
+          Transactions
+        </button>
+
+      </div>
+
+
+      <div id="userOrdersTab">
+
+        <div class="table-wrap">
+
+          <table>
+
+            <thead>
+
+              <tr>
+                <th>Date</th>
+                <th>Number</th>
+                <th>Country</th>
+                <th>Service</th>
+                <th>Price</th>
+                <th>Status</th>
+                <th>Action</th>
+              </tr>
+
+            </thead>
+
+            <tbody id="userOrdersBody"></tbody>
+
+          </table>
+
+        </div>
+
+      </div>
+
+
+      <div
+        id="userTransactionsTab"
+        class="hidden"
+      >
+
+        <div class="table-wrap">
+
+          <table>
+
+            <thead>
+
+              <tr>
+                <th>Date</th>
+                <th>Type</th>
+                <th>Amount</th>
+                <th>Status</th>
+                <th>Description</th>
+                <th>Reference</th>
+              </tr>
+
+            </thead>
+
+            <tbody id="userTransactionsBody"></tbody>
+
+          </table>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
+
+
+<!-- =======================================================
+     WALLET MODAL
+======================================================== -->
+
+<div
+  class="modal-overlay"
+  id="walletModal"
+>
+
+  <div class="modal small">
+
+    <div class="modal-header">
+
+      <h2 id="walletModalTitle">
+        Add Wallet
+      </h2>
+
+      <button
+        class="close"
+        onclick="closeModal('walletModal')"
+      >
+        ×
+      </button>
+
+    </div>
+
+    <div class="modal-body">
+
+      <div class="form-group">
+
+        <label>
+          Amount (NGN)
+        </label>
+
+        <input
+          id="walletAmount"
+          type="number"
+          min="0.01"
+          step="0.01"
+          placeholder="Enter amount"
+        >
+
+      </div>
+
+    </div>
+
+    <div class="modal-footer">
+
+      <button
+        class="small-btn gray-btn"
+        onclick="closeModal('walletModal')"
+      >
+        Cancel
+      </button>
+
+      <button
+        class="primary-btn"
+        onclick="submitWalletAction()"
+      >
+        Save
+      </button>
+
+    </div>
+
+  </div>
+
+</div>
+
+
+<div
+  class="toast"
+  id="toast"
+></div>
+
+
+<script>
+/* =========================================================
+   SUPABASE
+========================================================= */
+
+const SUPABASE_URL =
+  "https://gvuaxtsdpmrragkkjowv.supabase.co";
+
+const SUPABASE_KEY =
+  "sb_publishable_oDAsADaZzLDiFX0cXogUyw_tTQYCa2k";
+
+const supabaseClient =
+  supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_KEY
+  );
+
+const GRIZZLY_URL =
+  SUPABASE_URL + "/functions/v1/grizzly";
+
+
+/* =========================================================
+   STATE
+========================================================= */
+
+let currentUser = null;
+
+let users = [];
+let allOrders = [];
+let allTransactions = [];
+
+let currentViewedUser = null;
+let walletAction = null;
+
+let markupRules = [];
+let providerCountries = [];
+let providerServices = [];
+
+let editingMarkupRuleId = null;
+let smsCountries=[], smsServices=[], smsServiceSettings=[], smsServerSettings=[], smsDisplaySettings=[], smsServers=[], smsPriceRules=[];
+
+
+/* =========================================================
+   HELPERS
+========================================================= */
+
+function escapeHtml(value){
+
+  return String(value ?? "")
+    .replace(/&/g,"&amp;")
+    .replace(/</g,"&lt;")
+    .replace(/>/g,"&gt;")
+    .replace(/"/g,"&quot;")
+    .replace(/'/g,"&#039;");
+}
+
+
+function formatNumber(value){
+
+  const number =
+    Number(value || 0);
+
+  return number.toLocaleString(
+    "en-NG",
+    {
+      maximumFractionDigits:2
+    }
+  );
+}
+
+
+function formatMoney(value){
+
+  return "₦" + formatNumber(value);
+}
+
+
+function formatDate(value){
+
+  if(!value)
+    return "-";
+
+  const date =
+    new Date(value);
+
+  if(
+    Number.isNaN(
+      date.getTime()
+    )
+  )
+    return "-";
+
+  return date.toLocaleString(
+    "en-NG",
+    {
+      dateStyle:"medium",
+      timeStyle:"short"
+    }
+  );
+}
+
+
+function showToast(
+  message,
+  type="success"
+){
+
+  const toast =
+    document.getElementById(
+      "toast"
+    );
+
+  toast.textContent =
+    message;
+
+  toast.className =
+    "toast show " + type;
+
+  clearTimeout(
+    window.toastTimer
+  );
+
+  window.toastTimer =
+    setTimeout(()=>{
+      toast.className =
+        "toast";
+    },3500);
+}
+
+
+function closeModal(id){
+
+  document
+    .getElementById(id)
+    .classList.remove("show");
+}
+
+
+function openModal(id){
+
+  document
+    .getElementById(id)
+    .classList.add("show");
+}
+
+
+function toggleSidebar(){
+
+  document
+    .getElementById("sidebar")
+    .classList.toggle("open");
+}
+
+
+function statusBadge(status){
+
+  const value =
+    String(
+      status || "unknown"
+    ).toLowerCase();
+
+  let cls =
+    "blue";
+
+  if(
+    [
+      "completed",
+      "success",
+      "successful",
+      "received"
+    ].includes(value)
+  ){
+    cls =
+      "green";
+  }
+
+  if(
+    [
+      "cancelled",
+      "canceled",
+      "refunded",
+      "failed",
+      "error"
+    ].includes(value)
+  ){
+    cls =
+      "red";
+  }
+
+  if(
+    [
+      "pending",
+      "waiting",
+      "processing",
+      "active"
+    ].includes(value)
+  ){
+    cls =
+      "orange";
+  }
+
+  return `
+    <span class="badge ${cls}">
+      ${escapeHtml(
+        status || "Unknown"
+      )}
+    </span>
+  `;
+}
+
+
+/* =========================================================
+   AUTH
+========================================================= */
+
+async function login(){
+
+  const email =
+    document
+      .getElementById(
+        "loginEmail"
+      )
+      .value
+      .trim();
+
+  const password =
+    document
+      .getElementById(
+        "loginPassword"
+      )
+      .value;
+
+  const error =
+    document.getElementById(
+      "loginError"
+    );
+
+  error.textContent =
+    "";
+
+  if(
+    !email ||
+    !password
+  ){
+
+    error.textContent =
+      "Enter your email and password.";
+
+    return;
+  }
+
+  try{
+
+    const {
+      data,
+      error:loginError
+    } =
+      await supabaseClient.auth
+        .signInWithPassword({
+          email,
+          password
+        });
+
+    if(loginError)
+      throw loginError;
+
+    if(!data.session)
+      throw new Error(
+        "Login session was not created."
+      );
+
+    await checkAdminAccess();
+
+  }catch(err){
+
+    error.textContent =
+      err.message ||
+      "Login failed.";
+
+  }
+}
+
+
+async function checkAdminAccess(){
+
+  try{
+
+    const {
+      data:sessionData,
+      error:sessionError
+    } =
+      await supabaseClient.auth
+        .getSession();
+
+    if(sessionError)
+      throw sessionError;
+
+    const session =
+      sessionData.session;
+
+    if(!session){
+
+      showLogin();
+
+      return false;
+    }
+
+    currentUser =
+      session.user;
+
+    const {
+      data,
+      error
+    } =
+      await supabaseClient.rpc(
+        "is_admin"
+      );
+
+    if(error)
+      throw error;
+
+    if(data !== true){
+
+      await supabaseClient.auth
+        .signOut();
+
+      showLogin();
+
+      document
+        .getElementById(
+          "loginError"
+        )
+        .textContent =
+          "Access denied. Administrator account required.";
+
+      return false;
+    }
+
+    showApp();
+
+    await loadEverything();
+
+    return true;
+
+  }catch(err){
+
+    console.error(err);
+
+    await supabaseClient.auth
+      .signOut();
+
+    showLogin();
+
+    document
+      .getElementById(
+        "loginError"
+      )
+      .textContent =
+        err.message ||
+        "Unable to verify administrator.";
+
+    return false;
+  }
+}
+
+
+function showLogin(){
+
+  document
+    .getElementById(
+      "loginScreen"
+    )
+    .classList.remove(
+      "hidden"
+    );
+
+  document
+    .getElementById(
+      "app"
+    )
+    .classList.add(
+      "hidden"
+    );
+}
+
+
+function showApp(){
+
+  document
+    .getElementById(
+      "loginScreen"
+    )
+    .classList.add(
+      "hidden"
+    );
+
+  document
+    .getElementById(
+      "app"
+    )
+    .classList.remove(
+      "hidden"
+    );
+}
+
+
+async function logout(){
+
+  await supabaseClient.auth
+    .signOut();
+
+  currentUser =
+    null;
+
+  showLogin();
+}
+
+
+/* =========================================================
+   PAGE NAVIGATION
+========================================================= */
+
+function openDashboardPage(page){
+
+  const button =
+    document.querySelector(
+      `.nav-btn[data-page="${page}"]`
+    );
+
+  showPage(
+    page,
+    button
+  );
+}
+
+
+function showPage(
+  page,
+  button
+){
+
+  document
+    .querySelectorAll(".page")
+    .forEach(el=>{
+      el.classList.remove(
+        "active"
+      );
+    });
+
+  const target =
+    document.getElementById(
+      "page-" + page
+    );
+
+  if(target)
+    target.classList.add(
+      "active"
+    );
+
+
+  document
+    .querySelectorAll(
+      ".nav-btn"
+    )
+    .forEach(el=>{
+      el.classList.remove(
+        "active"
+      );
+    });
+
+  if(button)
+    button.classList.add(
+      "active"
+    );
+
+
+  const titles = {
+
+    dashboard:
+      "Dashboard",
+
+    users:
+      "Users",
+
+    orders:
+      "Orders",
+
+    transactions:
+      "Transactions",
+
+    markup:
+      "SMSBower Pricing & Controls"
+
+  };
+
+
+  document
+    .getElementById(
+      "pageTitle"
+    )
+    .textContent =
+      titles[page] ||
+      "Dashboard";
+
+
+  document
+    .getElementById(
+      "sidebar"
+    )
+    .classList.remove(
+      "open"
+    );
+
+
+  if(page === "users")
+    loadUsers();
+
+  if(page === "orders")
+    loadOrders();
+
+  if(page === "transactions")
+    loadTransactions();
+
+  if(page === "markup")
+    loadSmsAdminData();
+}
+
+
+/* =========================================================
+   LOAD EVERYTHING
+========================================================= */
+
+async function loadEverything(){
+
+  await Promise.allSettled([
+
+    loadUsers(),
+
+    loadOrders(),
+
+    loadTransactions(),
+
+    loadSmsAdminData()
+
+  ]);
+
+  updateStats();
+}
+
+
+/* =========================================================
+   USERS
+========================================================= */
+
+async function loadUsers(){
+
+  const body =
+    document.getElementById(
+      "usersBody"
+    );
+
+  body.innerHTML =
+    `
+      <tr>
+        <td
+          colspan="6"
+          class="loading"
+        >
+          Loading users...
+        </td>
+      </tr>
+    `;
+
+  try{
+
+    const {
+      data,
+      error
+    } =
+      await supabaseClient.rpc(
+        "admin_get_users"
+      );
+
+    if(error)
+      throw error;
+
+    users =
+      Array.isArray(data)
+        ? data
+        : [];
+
+    renderUsers(
+      users
+    );
+
+    updateStats();
+
+  }catch(err){
+
+    console.error(err);
+
+    body.innerHTML =
+      `
+        <tr>
+          <td
+            colspan="6"
+            class="empty"
+          >
+            Failed to load users.
+          </td>
+        </tr>
+      `;
+
+    showToast(
+      err.message ||
+      "Failed to load users.",
+      "error"
+    );
+  }
+}
+
+
+function renderUsers(list){
+
+  const body =
+    document.getElementById(
+      "usersBody"
+    );
+
+  if(!list.length){
+
+    body.innerHTML =
+      `
+        <tr>
+          <td
+            colspan="6"
+            class="empty"
+          >
+            No users found.
+          </td>
+        </tr>
+      `;
+
+    return;
+  }
+
+  body.innerHTML =
+    list.map(user=>`
+
+      <tr>
+
+        <td>
+          <strong>
+            ${escapeHtml(
+              user.email || "-"
+            )}
+          </strong>
+        </td>
+
+        <td>
+          <small>
+            ${escapeHtml(
+              user.user_id || "-"
+            )}
+          </small>
+        </td>
+
+        <td>
+          ${formatDate(
+            user.created_at
+          )}
+        </td>
+
+        <td>
+          <strong>
+            ${formatMoney(
+              user.wallet_balance
+            )}
+          </strong>
+        </td>
+
+        <td>
+          ${formatMoney(
+            user.total_spent
+          )}
+        </td>
+
+        <td>
+
+          <div class="action-row">
+
+            <button
+              class="small-btn blue-btn"
+              onclick="viewUser('${escapeJs(user.user_id)}')"
+            >
+              View User
+            </button>
+
+            <button
+              class="small-btn green-btn"
+              onclick="quickWallet('${escapeJs(user.user_id)}','${escapeJs(user.email || "")}','add')"
+            >
+              + Add
+            </button>
+
+            <button
+              class="small-btn orange-btn"
+              onclick="quickWallet('${escapeJs(user.user_id)}','${escapeJs(user.email || "")}','deduct')"
+            >
+              − Deduct
+            </button>
+
+          </div>
+
+        </td>
+
+      </tr>
+
+    `).join("");
+}
+
+
+function filterUsers(){
+
+  const query =
+    document
+      .getElementById(
+        "userSearch"
+      )
+      .value
+      .trim()
+      .toLowerCase();
+
+  const filtered =
+    users.filter(user=>
+
+      String(
+        user.email || ""
+      )
+        .toLowerCase()
+        .includes(query)
+
+      ||
+
+      String(
+        user.user_id || ""
+      )
+        .toLowerCase()
+        .includes(query)
+
+    );
+
+  renderUsers(
+    filtered
+  );
+}
+
+
+/* =========================================================
+   ORDERS
+========================================================= */
+
+async function loadOrders(){
+
+  const body =
+    document.getElementById(
+      "ordersBody"
+    );
+
+  body.innerHTML =
+    `
+      <tr>
+        <td
+          colspan="8"
+          class="loading"
+        >
+          Loading orders...
+        </td>
+      </tr>
+    `;
+
+  try{
+
+    const {
+      data,
+      error
+    } =
+      await supabaseClient
+        .from(
+          "virtual_number_orders"
+        )
+        .select("*")
+        .order(
+          "created_at",
+          {
+            ascending:false
+          }
+        );
+
+    if(error)
+      throw error;
+
+    allOrders =
+      Array.isArray(data)
+        ? data
+        : [];
+
+    renderOrders();
+
+    updateStats();
+
+  }catch(err){
+
+    console.error(err);
+
+    body.innerHTML =
+      `
+        <tr>
+          <td
+            colspan="8"
+            class="empty"
+          >
+            Failed to load orders.
+          </td>
+        </tr>
+      `;
+
+    showToast(
+      err.message ||
+      "Failed to load orders.",
+      "error"
+    );
+  }
+}
+
+
+function getUserEmail(
+  userId
+){
+
+  const user =
+    users.find(
+      item =>
+        item.user_id ===
+        userId
+    );
+
+  return user
+    ? user.email
+    : userId || "-";
+}
+
+
+function renderOrders(){
+
+  const body =
+    document.getElementById(
+      "ordersBody"
+    );
+
+  if(!allOrders.length){
+
+    body.innerHTML =
+      `
+        <tr>
+          <td
+            colspan="8"
+            class="empty"
+          >
+            No orders found.
+          </td>
+        </tr>
+      `;
+
+    return;
+  }
+
+  body.innerHTML =
+    allOrders.map(order=>{
+
+      const status =
+        String(
+          order.status || ""
+        ).toLowerCase();
+
+      const canCancel =
+        ![
+          "cancelled",
+          "canceled",
+          "refunded",
+          "completed",
+          "success",
+          "successful"
+        ].includes(status);
+
+      return `
+
+        <tr>
+
+          <td>
+            ${formatDate(
+              order.created_at
+            )}
+          </td>
+
+          <td>
+            ${escapeHtml(
+              getUserEmail(
+                order.user_id
+              )
+            )}
+          </td>
+
+          <td>
+            <strong>
+              ${escapeHtml(
+                order.phone_number ||
+                "-"
+              )}
+            </strong>
+          </td>
+
+          <td>
+            ${escapeHtml(
+              order.country_name ||
+              order.country ||
+              order.country_key ||
+              "-"
+            )}
+          </td>
+
+          <td>
+            ${escapeHtml(
+              order.service_name ||
+              order.service ||
+              order.service_code ||
+              "-"
+            )}
+          </td>
+
+          <td>
+            ${formatMoney(
+              order.customer_price_ngn ||
+              order.price
+            )}
+          </td>
+
+          <td>
+            ${statusBadge(
+              order.status
+            )}
+          </td>
+
+          <td>
+
+            ${
+              canCancel
+
+              ?
+
+              `<button
+                class="small-btn red-btn"
+                onclick="cancelOrder(
+                  '${escapeJs(order.user_id)}',
+                  '${escapeJs(
+                    order.activation_id ||
+                    order.provider_activation_id ||
+                    ""
+                  )}'
+                )"
+              >
+                Cancel
+              </button>`
+
+              :
+
+              `<span
+                style="color:#94a3b8;font-size:11px"
+              >
+                —
+              </span>`
+            }
+
+          </td>
+
+        </tr>
+      `;
+
+    }).join("");
+}
+
+
+/* =========================================================
+   TRANSACTIONS
+========================================================= */
+
+async function loadTransactions(){
+
+  const body =
+    document.getElementById(
+      "transactionsBody"
+    );
+
+  body.innerHTML =
+    `
+      <tr>
+        <td
+          colspan="7"
+          class="loading"
+        >
+          Loading transactions...
+        </td>
+      </tr>
+    `;
+
+  try{
+
+    const {
+      data,
+      error
+    } =
+      await supabaseClient
+        .from(
+          "transactions"
+        )
+        .select("*")
+        .order(
+          "created_at",
+          {
+            ascending:false
+          }
+        );
+
+    if(error)
+      throw error;
+
+    allTransactions =
+      Array.isArray(data)
+        ? data
+        : [];
+
+    renderTransactions();
+
+    updateStats();
+
+  }catch(err){
+
+    console.error(err);
+
+    body.innerHTML =
+      `
+        <tr>
+          <td
+            colspan="7"
+            class="empty"
+          >
+            Failed to load transactions.
+          </td>
+        </tr>
+      `;
+
+    showToast(
+      err.message ||
+      "Failed to load transactions.",
+      "error"
+    );
+  }
+}
+
+
+function renderTransactions(){
+
+  const body =
+    document.getElementById(
+      "transactionsBody"
+    );
+
+  if(!allTransactions.length){
+
+    body.innerHTML =
+      `
+        <tr>
+          <td
+            colspan="7"
+            class="empty"
+          >
+            No transactions found.
+          </td>
+        </tr>
+      `;
+
+    return;
+  }
+
+  body.innerHTML =
+    allTransactions.map(tx=>`
+
+      <tr>
+
+        <td>
+          ${formatDate(
+            tx.created_at
+          )}
+        </td>
+
+        <td>
+          ${escapeHtml(
+            getUserEmail(
+              tx.user_id
+            )
+          )}
+        </td>
+
+        <td>
+          <strong>
+            ${escapeHtml(
+              tx.type || "-"
+            )}
+          </strong>
+        </td>
+
+        <td>
+
+          <strong
+            style="
+              color:${Number(
+                tx.amount || 0
+              ) >= 0
+                ? "#15803d"
+                : "#b91c1c"}
+            "
+          >
+
+            ${
+              Number(
+                tx.amount || 0
+              ) >= 0
+                ? "+"
+                : ""
+            }
+
+            ${formatMoney(
+              tx.amount
+            )}
+
+          </strong>
+
+        </td>
+
+        <td>
+          ${statusBadge(
+            tx.status
+          )}
+        </td>
+
+        <td>
+          ${escapeHtml(
+            tx.description || "-"
+          )}
+        </td>
+
+        <td>
+          <small>
+            ${escapeHtml(
+              tx.reference || "-"
+            )}
+          </small>
+        </td>
+
+      </tr>
+
+    `).join("");
+}
+
+
+/* =========================================================
+   USER VIEW
+========================================================= */
+
+async function viewUser(
+  userId
+){
+
+  const user =
+    users.find(
+      item =>
+        item.user_id ===
+        userId
+    );
+
+  if(!user){
+
+    showToast(
+      "User information could not be found.",
+      "error"
+    );
+
+    return;
+  }
+
+  currentViewedUser =
+    user;
+
+  document.getElementById(
+    "userModalTitle"
+  ).textContent =
+    user.email ||
+    "User";
+
+  document.getElementById(
+    "viewEmail"
+  ).textContent =
+    user.email ||
+    "-";
+
+  document.getElementById(
+    "viewBalance"
+  ).textContent =
+    formatMoney(
+      user.wallet_balance
+    );
+
+  document.getElementById(
+    "viewSpent"
+  ).textContent =
+    formatMoney(
+      user.total_spent
+    );
+
+  showUserTab(
+    "orders"
+  );
+
+  openModal(
+    "userModal"
+  );
+
+  await loadUserOrders();
+
+  await loadUserTransactions();
+}
+
+
+async function loadUserOrders(){
+
+  const body =
+    document.getElementById(
+      "userOrdersBody"
+    );
+
+  if(!currentViewedUser)
+    return;
+
+  body.innerHTML =
+    `
+      <tr>
+        <td
+          colspan="7"
+          class="loading"
+        >
+          Loading orders...
+        </td>
+      </tr>
+    `;
+
+  try{
+
+    const {
+      data,
+      error
+    } =
+      await supabaseClient.rpc(
+        "admin_get_user_orders",
+        {
+          p_user_id:
+            currentViewedUser.user_id
+        }
+      );
+
+    if(error)
+      throw error;
+
+    const orders =
+      Array.isArray(data)
+        ? data
+        : [];
+
+    if(!orders.length){
+
+      body.innerHTML =
+        `
+          <tr>
+            <td
+              colspan="7"
+              class="empty"
+            >
+              No orders found.
+            </td>
+          </tr>
+        `;
+
+      return;
+    }
+
+    body.innerHTML =
+      orders.map(order=>{
+
+        const status =
+          String(
+            order.status || ""
+          ).toLowerCase();
+
+        const canCancel =
+          ![
+            "cancelled",
+            "canceled",
+            "refunded",
+            "completed",
+            "success",
+            "successful"
+          ].includes(status);
+
+        return `
+
+          <tr>
+
+            <td>
+              ${formatDate(
+                order.created_at
+              )}
+            </td>
+
+            <td>
+              ${escapeHtml(
+                order.phone_number ||
+                "-"
+              )}
+            </td>
+
+            <td>
+              ${escapeHtml(
+                order.country_name ||
+                order.country ||
+                order.country_key ||
+                "-"
+              )}
+            </td>
+
+            <td>
+              ${escapeHtml(
+                order.service_name ||
+                order.service ||
+                order.service_code ||
+                "-"
+              )}
+            </td>
+
+            <td>
+              ${formatMoney(
+                order.customer_price_ngn ||
+                order.price
+              )}
+            </td>
+
+            <td>
+              ${statusBadge(
+                order.status
+              )}
+            </td>
+
+            <td>
+
+              ${
+                canCancel
+
+                ?
+
+                `<button
+                  class="small-btn red-btn"
+                  onclick="cancelOrder(
+                    '${escapeJs(currentViewedUser.user_id)}',
+                    '${escapeJs(
+                      order.activation_id ||
+                      order.provider_activation_id ||
+                      ""
+                    )}',
+                    true
+                  )"
+                >
+                  Cancel
+                </button>`
+
+                :
+
+                "—"
+              }
+
+            </td>
+
+          </tr>
+
+        `;
+
+      }).join("");
+
+  }catch(err){
+
+    console.error(err);
+
+    body.innerHTML =
+      `
+        <tr>
+          <td
+            colspan="7"
+            class="empty"
+          >
+            Failed to load orders.
+          </td>
+        </tr>
+      `;
+  }
+}
+
+
+async function loadUserTransactions(){
+
+  const body =
+    document.getElementById(
+      "userTransactionsBody"
+    );
+
+  if(!currentViewedUser)
+    return;
+
+  body.innerHTML =
+    `
+      <tr>
+        <td
+          colspan="6"
+          class="loading"
+        >
+          Loading transactions...
+        </td>
+      </tr>
+    `;
+
+  try{
+
+    const {
+      data,
+      error
+    } =
+      await supabaseClient.rpc(
+        "admin_get_user_transactions",
+        {
+          p_user_id:
+            currentViewedUser.user_id
+        }
+      );
+
+    if(error)
+      throw error;
+
+    const transactions =
+      Array.isArray(data)
+        ? data
+        : [];
+
+    if(!transactions.length){
+
+      body.innerHTML =
+        `
+          <tr>
+            <td
+              colspan="6"
+              class="empty"
+            >
+              No transactions found.
+            </td>
+          </tr>
+        `;
+
+      return;
+    }
+
+    body.innerHTML =
+      transactions.map(tx=>`
+
+        <tr>
+
+          <td>
+            ${formatDate(
+              tx.created_at
+            )}
+          </td>
+
+          <td>
+            ${escapeHtml(
+              tx.type || "-"
+            )}
+          </td>
+
+          <td>
+
+            <strong
+              style="
+                color:${Number(
+                  tx.amount || 0
+                ) >= 0
+                  ? "#15803d"
+                  : "#b91c1c"}
+              "
+            >
+
+              ${
+                Number(
+                  tx.amount || 0
+                ) >= 0
+                  ? "+"
+                  : ""
+              }
+
+              ${formatMoney(
+                tx.amount
+              )}
+
+            </strong>
+
+          </td>
+
+          <td>
+            ${statusBadge(
+              tx.status
+            )}
+          </td>
+
+          <td>
+            ${escapeHtml(
+              tx.description || "-"
+            )}
+          </td>
+
+          <td>
+            ${escapeHtml(
+              tx.reference || "-"
+            )}
+          </td>
+
+        </tr>
+
+      `).join("");
+
+  }catch(err){
+
+    console.error(err);
+
+    body.innerHTML =
+      `
+        <tr>
+          <td
+            colspan="6"
+            class="empty"
+          >
+            Failed to load transactions.
+          </td>
+        </tr>
+      `;
+  }
+}
+
+
+function showUserTab(
+  tab
+){
+
+  const ordersTab =
+    document.getElementById(
+      "userOrdersTab"
+    );
+
+  const transactionsTab =
+    document.getElementById(
+      "userTransactionsTab"
+    );
+
+  const ordersButton =
+    document.getElementById(
+      "userOrdersTabBtn"
+    );
+
+  const transactionsButton =
+    document.getElementById(
+      "userTransactionsTabBtn"
+    );
+
+
+  if(tab === "orders"){
+
+    ordersTab
+      .classList
+      .remove("hidden");
+
+    transactionsTab
+      .classList
+      .add("hidden");
+
+    ordersButton
+      .classList
+      .add("active");
+
+    transactionsButton
+      .classList
+      .remove("active");
+
+  }else{
+
+    ordersTab
+      .classList
+      .add("hidden");
+
+    transactionsTab
+      .classList
+      .remove("hidden");
+
+    ordersButton
+      .classList
+      .remove("active");
+
+    transactionsButton
+      .classList
+      .add("active");
+  }
+}
+
+
+/* =========================================================
+   WALLET
+========================================================= */
+
+function quickWallet(
+  userId,
+  email,
+  action
+){
+
+  const user =
+    users.find(
+      item =>
+        item.user_id ===
+        userId
+    );
+
+  currentViewedUser =
+    user ||
+    {
+      user_id:userId,
+      email:email,
+      wallet_balance:0,
+      total_spent:0
+    };
+
+  openWalletAction(
+    action
+  );
+}
+
+
+function openWalletAction(
+  action
+){
+
+  if(!currentViewedUser){
+
+    showToast(
+      "No user selected.",
+      "error"
+    );
+
+    return;
+  }
+
+  walletAction =
+    action;
+
+  document.getElementById(
+    "walletModalTitle"
+  ).textContent =
+    action === "add"
+      ? "Add Wallet Balance"
+      : "Deduct Wallet Balance";
+
+  document.getElementById(
+    "walletAmount"
+  ).value =
+    "";
+
+  openModal(
+    "walletModal"
+  );
+}
+
+
+async function submitWalletAction(){
+
+  if(!currentViewedUser)
+    return;
+
+  const amount =
+    Number(
+      document
+        .getElementById(
+          "walletAmount"
+        )
+        .value
+    );
+
+  if(
+    !Number.isFinite(amount) ||
+    amount <= 0
+  ){
+
+    showToast(
+      "Enter a valid amount.",
+      "error"
+    );
+
+    return;
+  }
+
+  try{
+
+    const functionName =
+      walletAction === "add"
+        ? "admin_add_wallet"
+        : "admin_deduct_wallet";
+
+    const {
+      data,
+      error
+    } =
+      await supabaseClient.rpc(
+        functionName,
+        {
+          p_user_id:
+            currentViewedUser.user_id,
+
+          p_amount:
+            amount
+        }
+      );
+
+    if(error)
+      throw error;
+
+    closeModal(
+      "walletModal"
+    );
+
+    showToast(
+      walletAction === "add"
+        ? "Wallet credited successfully."
+        : "Wallet debited successfully."
+    );
+
+    await loadUsers();
+
+    if(
+      currentViewedUser &&
+      currentViewedUser.user_id
+    ){
+
+      const updated =
+        users.find(
+          u =>
+            u.user_id ===
+            currentViewedUser.user_id
+        );
+
+      if(updated)
+        currentViewedUser =
+          updated;
+
+      document.getElementById(
+        "viewBalance"
+      ).textContent =
+        formatMoney(
+          currentViewedUser.wallet_balance
+        );
+
+      document.getElementById(
+        "viewSpent"
+      ).textContent =
+        formatMoney(
+          currentViewedUser.total_spent
+        );
+
+      await loadUserTransactions();
+    }
+
+  }catch(err){
+
+    console.error(err);
+
+    showToast(
+      err.message ||
+      "Wallet operation failed.",
+      "error"
+    );
+  }
+}
+
+
+/* =========================================================
+   CANCEL ORDER
+========================================================= */
+
+async function cancelOrder(
+  userId,
+  activationId,
+  fromUserModal=false
+){
+
+  if(
+    !userId ||
+    !activationId
+  ){
+
+    showToast(
+      "Missing user or activation ID.",
+      "error"
+    );
+
+    return;
+  }
+
+  const confirmed =
+    confirm(
+      "Cancel this virtual number and refund the customer?"
+    );
+
+  if(!confirmed)
+    return;
+
+  try{
+
+    const {
+      data,
+      error
+    } =
+      await supabaseClient.rpc(
+        "admin_cancel_virtual_number",
+        {
+          p_user_id:
+            userId,
+
+          p_activation_id:
+            activationId
+        }
+      );
+
+    if(error)
+      throw error;
+
+    if(
+      data &&
+      data.ok === false
+    ){
+
+      throw new Error(
+        data.message ||
+        "Cancellation failed."
+      );
+    }
+
+    showToast(
+      "Number cancelled and refunded successfully."
+    );
+
+    await loadOrders();
+
+    await loadUsers();
+
+    if(fromUserModal){
+
+      await loadUserOrders();
+
+      await loadUserTransactions();
+
+      const updated =
+        users.find(
+          u =>
+            u.user_id ===
+            userId
+        );
+
+      if(updated){
+
+        currentViewedUser =
+          updated;
+
+        document.getElementById(
+          "viewBalance"
+        ).textContent =
+          formatMoney(
+            updated.wallet_balance
+          );
+
+        document.getElementById(
+          "viewSpent"
+        ).textContent =
+          formatMoney(
+            updated.total_spent
+          );
+      }
+    }
+
+  }catch(err){
+
+    console.error(err);
+
+    showToast(
+      err.message ||
+      "Unable to cancel order.",
+      "error"
+    );
+  }
+}
+
+
+/* =========================================================
+   MARKUP PROVIDER DATA
+========================================================= */
+
+async function grizzlyRequest(
+  payload
+){
+
+  const response =
+    await fetch(
+      GRIZZLY_URL,
+      {
+        method:"POST",
+
+        headers:{
+          "Content-Type":
+            "application/json"
+        },
+
+        body:
+          JSON.stringify(
+            payload
+          )
+      }
+    );
+
+  const text =
+    await response.text();
+
+  let data;
+
+  try{
+
+    data =
+      JSON.parse(text);
+
+  }catch{
+
+    data =
+      text;
+  }
+
+  if(!response.ok){
+
+    const message =
+      typeof data === "object"
+        ? (
+            data.message ||
+            data.error ||
+            JSON.stringify(data)
+          )
+        : data;
+
+    throw new Error(
+      message ||
+      "Provider request failed."
+    );
+  }
+
+  return data;
+}
+
+
+function normalizeArrayResponse(
+  data
+){
+
+  if(Array.isArray(data))
+    return data;
+
+  if(
+    !data ||
+    typeof data !== "object"
+  )
+    return [];
+
+  const possibleKeys = [
+    "countries",
+    "services",
+    "data",
+    "results",
+    "items",
+    "list"
+  ];
+
+  for(
+    const key of possibleKeys
+  ){
+
+    if(
+      Array.isArray(
+        data[key]
+      )
+    )
+      return data[key];
+  }
+
+  return [];
+}
+
+
+function normalizeCountry(
+  item
+){
+
+  if(
+    typeof item ===
+    "string"
+  ){
+
+    return {
+      id:item,
+      key:item,
+      name:item
+    };
+  }
+
+  if(
+    !item ||
+    typeof item !== "object"
+  )
+    return null;
+
+  const id =
+    item.id ??
+    item.country_id ??
+    item.countryId ??
+    item.key ??
+    item.country ??
+    item.code;
+
+  const key =
+    item.key ??
+    item.country_key ??
+    item.countryKey ??
+    item.country ??
+    id;
+
+  const name =
+    item.name ??
+    item.country_name ??
+    item.countryName ??
+    item.title ??
+    item.country ??
+    key;
+
+  if(
+    id === undefined &&
+    key === undefined
+  )
+    return null;
+
+  return {
+    id:String(
+      id ?? key
+    ),
+
+    key:String(
+      key ?? id
+    ),
+
+    name:String(
+      name ?? key ?? id
+    )
+  };
+}
+
+
+function normalizeService(
+  item
+){
+
+  if(
+    typeof item ===
+    "string"
+  ){
+
+    return {
+      code:item,
+      key:item,
+      name:item
+    };
+  }
+
+  if(
+    !item ||
+    typeof item !== "object"
+  )
+    return null;
+
+  const code =
+    item.code ??
+    item.service_code ??
+    item.serviceCode ??
+    item.key ??
+    item.service ??
+    item.id;
+
+  const key =
+    item.key ??
+    item.service_code ??
+    item.serviceCode ??
+    item.service ??
+    code;
+
+  const name =
+    item.name ??
+    item.service_name ??
+    item.serviceName ??
+    item.title ??
+    item.service ??
+    key;
+
+  if(
+    code === undefined &&
+    key === undefined
+  )
+    return null;
+
+  return {
+    code:String(
+      code ?? key
+    ),
+
+    key:String(
+      key ?? code
+    ),
+
+    name:String(
+      name ?? key ?? code
+    )
+  };
+}
+
+
+const SMSBOWER_ADMIN_URL = SUPABASE_URL + "/functions/v1/smsbower-api";
+async function smsbowerAdminRequest(payload){
+ const {data:{session}}=await supabaseClient.auth.getSession();
+ if(!session?.access_token)throw new Error("Session expired. Please log in again.");
+ const res=await fetch(SMSBOWER_ADMIN_URL,{method:"POST",headers:{"Content-Type":"application/json","Authorization":"Bearer "+session.access_token,"apikey":SUPABASE_KEY},body:JSON.stringify(payload)});
+ const raw=await res.text();let d;try{d=JSON.parse(raw)}catch{d={error:raw}}
+ const requestError=d?.error||d?.data?.error;
+ if(!res.ok||d?.success===false||d?.ok===false||requestError)throw new Error(requestError||d?.message||("SMSBower request failed (HTTP "+res.status+")."));
+ return d;
+}
+function smsRows(d,...keys){if(Array.isArray(d))return d;for(const k of [...keys,"data","items","results","countries","services","servers","settings","rules"])if(Array.isArray(d?.[k]))return d[k];return []}
+const cid=c=>String(c?.id??c?.country_id??c?.countryId??c?.key??"");
+const cname=c=>String(c?.name??c?.country_name??c?.countryName??c?.country??cid(c));
+const scode=x=>String(x?.code??x?.service_code??x?.serviceCode??x?.key??x?.id??"");
+const sname=x=>String(x?.name??x?.service_name??x?.serviceName??x?.title??scode(x));
+function showSmsTab(t){["pricing","services","servers"].forEach(x=>{document.getElementById("smsTab"+x[0].toUpperCase()+x.slice(1)).classList.toggle("hidden",x!==t);document.getElementById("smsTab"+x[0].toUpperCase()+x.slice(1)+"Btn").classList.toggle("active",x===t)})}
+function fillSmsSelect(id,rows,val,label,first){const e=document.getElementById(id),old=e.value;e.innerHTML=`<option value="">${escapeHtml(first)}</option>`;rows.forEach(r=>{let o=document.createElement("option");o.value=val(r);o.textContent=label(r);e.appendChild(o)});if([...e.options].some(o=>o.value===old))e.value=old}
+function fillSmsSelectors(){fillSmsSelect("smsPriceCountry",smsCountries,cid,c=>`${cname(c)} (${cid(c)})`,"All countries / default");fillSmsSelect("smsServerCountry",smsCountries,cid,c=>`${cname(c)} (${cid(c)})`,"Choose country");fillSmsSelect("smsPriceService",smsServices,scode,x=>`${sname(x)} (${scode(x)})`,"All services");fillSmsSelect("smsServerService",smsServices,scode,x=>`${sname(x)} (${scode(x)})`,"Choose service")}
+function toggleSmsFixedPrice(){let f=document.getElementById("smsPricingMode").value==="fixed";document.getElementById("smsMarkupField").classList.toggle("hidden",f);document.getElementById("smsFixedField").classList.toggle("hidden",!f)}
+async function loadSmsAdminData(){await Promise.allSettled([loadSmsCountries(),loadSmsServices(),loadSmsPriceRules(),loadSmsSettings()]);fillSmsSelectors();renderSmsServices();renderSmsServers();renderSmsPriceRules()}
+async function loadSmsCountries(){const d=await smsbowerAdminRequest({action:"admin_countries"});smsCountries=smsRows(d,"countries").map(c=>typeof c==="string"?{id:c,name:c}:c);fillSmsSelectors()}
+async function loadSmsServices(){try{let d=await smsbowerAdminRequest({action:"admin_services"});smsServices=smsRows(d,"services").map(x=>typeof x==="string"?{code:x,name:x}:x);let z=await smsbowerAdminRequest({action:"list_service_settings"});smsServiceSettings=smsRows(z,"settings");fillSmsSelectors();renderSmsServices()}catch(e){document.getElementById("smsServicesBody").innerHTML=`<tr><td colspan="5" class="empty">${escapeHtml(e.message)}</td></tr>`;showToast(e.message,"error")}}
+async function loadSmsSettings(){try{let [a,b]=await Promise.all([smsbowerAdminRequest({action:"list_server_settings"}),smsbowerAdminRequest({action:"list_display_settings"})]);smsServerSettings=smsRows(a,"settings");smsDisplaySettings=smsRows(b,"settings")}catch(e){console.error(e);showToast("Could not load server display settings: "+e.message,"error")}}
+async function loadSmsPriceRules(){try{let d=await smsbowerAdminRequest({action:"list_price_rules"});smsPriceRules=smsRows(d,"rules");renderSmsPriceRules()}catch(e){document.getElementById("smsPriceRulesBody").innerHTML=`<tr><td colspan="8" class="empty">${escapeHtml(e.message)}</td></tr>`}}
+function renderSmsPriceRules(){let b=document.getElementById("smsPriceRulesBody");if(!b)return;if(!smsPriceRules.length){b.innerHTML='<tr><td colspan="8" class="empty">No custom rules. Defaults: USA 100%, other countries 200%.</td></tr>';return}b.innerHTML=smsPriceRules.map(r=>`<tr><td>${escapeHtml(r.country_key||"All countries")}</td><td>${escapeHtml(r.service_code||"All services")}</td><td>${escapeHtml(r.server_id||"All servers")}</td><td>${escapeHtml(r.pricing_mode||"markup")}</td><td>${r.pricing_mode==="fixed"?"—":escapeHtml(r.markup_percent??0)+"%"}</td><td>${r.fixed_price_ngn==null?"—":formatMoney(r.fixed_price_ngn)}</td><td>${r.is_active===false?'<span class="badge red">Inactive</span>':'<span class="badge green">Active</span>'}</td><td><button class="small-btn blue-btn" onclick="editSmsPriceRule('${escapeJs(r.id)}')">Edit</button> <button class="small-btn red-btn" onclick="deleteSmsPriceRule('${escapeJs(r.id)}')">Delete</button></td></tr>`).join("")}
+function resetSmsPriceForm(){["smsPriceCountry","smsPriceService","smsPriceServer"].forEach(id=>document.getElementById(id).value="");document.getElementById("smsPricingMode").value="markup";document.getElementById("smsPriceMarkup").value="";document.getElementById("smsFixedPrice").value="";toggleSmsFixedPrice()}
+function editSmsPriceRule(id){let r=smsPriceRules.find(x=>String(x.id)===String(id));if(!r)return;document.getElementById("smsPriceCountry").value=r.country_key||"";document.getElementById("smsPriceService").value=r.service_code||"";document.getElementById("smsPriceServer").value=r.server_id||"";document.getElementById("smsPricingMode").value=r.pricing_mode||"markup";document.getElementById("smsPriceMarkup").value=r.markup_percent??"";document.getElementById("smsFixedPrice").value=r.fixed_price_ngn??"";toggleSmsFixedPrice();showSmsTab("pricing")}
+async function saveSmsPriceRule(){let country_key=document.getElementById("smsPriceCountry").value||null,service_code=document.getElementById("smsPriceService").value||null,server_id=document.getElementById("smsPriceServer").value.trim()||null,pricing_mode=document.getElementById("smsPricingMode").value,markupRaw=document.getElementById("smsPriceMarkup").value.trim(),fixedRaw=document.getElementById("smsFixedPrice").value.trim(),markup_percent=markupRaw===""?NaN:Number(markupRaw),fixed_price_ngn=fixedRaw===""?NaN:Number(fixedRaw);if(pricing_mode==="markup"&&(!Number.isFinite(markup_percent)||markup_percent<0))return showToast("Enter a valid markup percentage.","error");if(pricing_mode==="fixed"&&(!Number.isFinite(fixed_price_ngn)||fixed_price_ngn<=0))return showToast("Enter a valid fixed NGN price.","error");if(server_id&&(!country_key||!service_code))return showToast("Server rules require country and service.","error");try{await smsbowerAdminRequest({action:"save_price_rule",country_key,service_code,server_id,pricing_mode,markup_percent:pricing_mode==="markup"?markup_percent:0,fixed_price_ngn:pricing_mode==="fixed"?fixed_price_ngn:null});showToast("Pricing rule saved.");await loadSmsPriceRules();resetSmsPriceForm()}catch(e){showToast(e.message,"error")}}
+async function deleteSmsPriceRule(id){if(!confirm("Delete this SMSBower pricing rule?"))return;try{await smsbowerAdminRequest({action:"delete_price_rule",rule_id:id});showToast("Pricing rule deleted.");await loadSmsPriceRules()}catch(e){showToast(e.message,"error")}}
+function renderSmsServices(){let b=document.getElementById("smsServicesBody");if(!b)return;let q=(document.getElementById("smsServiceSearch")?.value||"").toLowerCase(),rows=[];smsCountries.forEach(c=>smsServices.forEach(x=>{let n=cname(c),sn=sname(x),code=scode(x);if(!`${n} ${sn} ${code}`.toLowerCase().includes(q))return;let r=smsServiceSettings.find(z=>String(z.country_id)===cid(c)&&String(z.service_code)===code);rows.push({c,x,n,sn,code,active:r?r.is_active!==false:true})}));if(!rows.length){b.innerHTML='<tr><td colspan="5" class="empty">No services loaded.</td></tr>';return}b.innerHTML=rows.map(r=>`<tr><td>${escapeHtml(r.n)} (${escapeHtml(cid(r.c))})</td><td>${escapeHtml(r.sn)}</td><td>${escapeHtml(r.code)}</td><td>${r.active?'<span class="badge green">Enabled</span>':'<span class="badge red">Disabled</span>'}</td><td><button class="small-btn ${r.active?"red-btn":"green-btn"}" onclick="saveSmsServiceSetting('${escapeJs(cid(r.c))}','${escapeJs(r.n)}','${escapeJs(r.code)}','${escapeJs(r.sn)}',${!r.active})">${r.active?"Disable":"Enable"}</button></td></tr>`).join("")}
+async function saveSmsServiceSetting(country_id,country_name,service_code,service_name,is_active){try{await smsbowerAdminRequest({action:"save_service_setting",country_id,country_name,service_code,service_name,is_active});let d=await smsbowerAdminRequest({action:"list_service_settings"});smsServiceSettings=smsRows(d,"settings");renderSmsServices();showToast("Service setting saved.")}catch(e){showToast(e.message,"error")}}
+async function loadSmsServers(){let country_id=document.getElementById("smsServerCountry").value,service_code=document.getElementById("smsServerService").value,b=document.getElementById("smsServersBody");if(!country_id||!service_code){b.innerHTML='<tr><td colspan="6" class="empty">Choose country and service.</td></tr>';return}b.innerHTML='<tr><td colspan="6" class="loading">Loading servers…</td></tr>';try{let d=await smsbowerAdminRequest({action:"admin_servers",country_id,service_code});smsServers=smsRows(d,"servers");let x=smsDisplaySettings.find(z=>String(z.country_id)===country_id&&String(z.service_code)===service_code);if(x){document.getElementById("smsMaxServers").value=x.max_servers??10;document.getElementById("smsPreferredTier").value=x.preferred_tier||""}renderSmsServers()}catch(e){b.innerHTML=`<tr><td colspan="6" class="empty">${escapeHtml(e.message)}</td></tr>`;showToast(e.message,"error")}}
+function renderSmsServers(){let b=document.getElementById("smsServersBody");if(!b)return;if(!smsServers.length){b.innerHTML='<tr><td colspan="6" class="empty">Choose country and service to load provider servers.</td></tr>';return}let c=document.getElementById("smsServerCountry").value,svc=document.getElementById("smsServerService").value;b.innerHTML=smsServers.map(x=>{let id=String(x.server_id??x.id??x.server??""),r=smsServerSettings.find(z=>String(z.country_id)===c&&String(z.service_code)===svc&&String(z.server_id)===id),active=r?r.is_active!==false:true,name=x.server_name??x.name??x.server_label??"Server";return `<tr><td>${escapeHtml(name)}</td><td>${escapeHtml(id)}</td><td>${escapeHtml(x.cost??x.price??x.provider_cost??"—")}</td><td><select id="tier_${escapeHtml(id)}"><option value="standard">Standard</option><option value="cheap" ${r?.admin_tier==="cheap"?"selected":""}>Cheap</option><option value="balanced" ${r?.admin_tier==="balanced"?"selected":""}>Balanced</option><option value="premium" ${r?.admin_tier==="premium"?"selected":""}>Premium</option></select></td><td>${active?'<span class="badge green">Enabled</span>':'<span class="badge red">Disabled</span>'}</td><td><button class="small-btn ${active?"red-btn":"green-btn"}" onclick="saveSmsServerSetting('${escapeJs(c)}','${escapeJs(svc)}','${escapeJs(id)}','${escapeJs(name)}',${!active})">${active?"Disable":"Enable"}</button> <button class="small-btn blue-btn" onclick="saveSmsServerSetting('${escapeJs(c)}','${escapeJs(svc)}','${escapeJs(id)}','${escapeJs(name)}',${active},document.getElementById('tier_${escapeJs(id)}').value)">Save tier</button></td></tr>`}).join("")}
+async function saveSmsServerSetting(country_id,service_code,server_id,server_name,is_active,admin_tier){try{await smsbowerAdminRequest({action:"save_server_setting",country_id,service_code,server_id,server_name,is_active,admin_tier:admin_tier||null});let d=await smsbowerAdminRequest({action:"list_server_settings"});smsServerSettings=smsRows(d,"settings");renderSmsServers();showToast("Server setting saved.")}catch(e){showToast(e.message,"error")}}
+async function saveSmsDisplaySettings(){let country_id=document.getElementById("smsServerCountry").value,service_code=document.getElementById("smsServerService").value,max_servers=Number(document.getElementById("smsMaxServers").value),preferred_tier=document.getElementById("smsPreferredTier").value||null;if(!country_id||!service_code)return showToast("Choose country and service first.","error");if(!Number.isInteger(max_servers)||max_servers<1||max_servers>100)return showToast("Maximum servers must be 1–100.","error");try{await smsbowerAdminRequest({action:"save_display_setting",country_id,service_code,max_servers,preferred_tier});await loadSmsSettings();showToast("Display settings saved.")}catch(e){showToast(e.message,"error")}}
+/* =========================================================
+   STATS
+========================================================= */
+
+function updateStats(){
+
+  document.getElementById(
+    "statUsers"
+  ).textContent =
+    users.length;
+
+
+  const totalBalance =
+    users.reduce(
+      (
+        sum,
+        user
+      ) =>
+        sum +
+        Number(
+          user.wallet_balance ||
+          0
+        ),
+      0
+    );
+
+  document.getElementById(
+    "statBalance"
+  ).textContent =
+    formatMoney(
+      totalBalance
+    );
+
+
+  document.getElementById(
+    "statOrders"
+  ).textContent =
+    allOrders.length;
+
+
+  document.getElementById(
+    "statTransactions"
+  ).textContent =
+    allTransactions.length;
+}
+
+
+/* =========================================================
+   JS STRING ESCAPING
+========================================================= */
+
+function escapeJs(
+  value
+){
+
+  return String(
+    value ?? ""
+  )
+    .replace(
+      /\\/g,
+      "\\\\"
+    )
+    .replace(
+      /'/g,
+      "\\'"
+    )
+    .replace(
+      /"/g,
+      '\\"'
+    )
+    .replace(
+      /\n/g,
+      "\\n"
+    )
+    .replace(
+      /\r/g,
+      "\\r"
+    );
+}
+
+
+/* =========================================================
+   INITIALIZATION
+========================================================= */
+
+document.addEventListener(
+  "DOMContentLoaded",
+  async ()=>{
+
+    const {
+      data
+    } =
+      await supabaseClient.auth
+        .getSession();
+
+    if(data.session){
+
+      await checkAdminAccess();
+
+    }else{
+
+      showLogin();
+    }
+
+
+    supabaseClient.auth
+      .onAuthStateChange(
+        async (
+          event,
+          session
+        )=>{
+
+          if(
+            event ===
+            "SIGNED_OUT"
+          ){
+
+            currentUser =
+              null;
+
+            showLogin();
+
+            return;
+          }
+
+          if(
+            event ===
+            "SIGNED_IN" &&
+            session
+          ){
+
+            currentUser =
+              session.user;
+
+            await checkAdminAccess();
+          }
+
+        }
+      );
+
+  }
+);
+</script>
+
+</body>
+</html>
