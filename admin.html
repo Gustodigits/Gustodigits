@@ -4002,7 +4002,9 @@ async function smsbowerAdminRequest(payload){
  if(!session?.access_token)throw new Error("Session expired. Please log in again.");
  const res=await fetch(SMSBOWER_ADMIN_URL,{method:"POST",headers:{"Content-Type":"application/json","Authorization":"Bearer "+session.access_token,"apikey":SUPABASE_KEY},body:JSON.stringify(payload)});
  const raw=await res.text();let d;try{d=JSON.parse(raw)}catch{d={error:raw}}
- if(!res.ok||d?.error)throw new Error(d?.error||d?.message||"SMSBower request failed.");return d;
+ const requestError=d?.error||d?.data?.error;
+ if(!res.ok||d?.success===false||d?.ok===false||requestError)throw new Error(requestError||d?.message||("SMSBower request failed (HTTP "+res.status+")."));
+ return d;
 }
 function smsRows(d,...keys){if(Array.isArray(d))return d;for(const k of [...keys,"data","items","results","countries","services","servers","settings","rules"])if(Array.isArray(d?.[k]))return d[k];return []}
 const cid=c=>String(c?.id??c?.country_id??c?.countryId??c?.key??"");
