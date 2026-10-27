@@ -1547,7 +1547,7 @@ td{
     <!-- SMSBOWER MANAGEMENT -->
     <section id="page-markup" class="page">
       <div class="panel">
-        <div class="panel-header"><div class="panel-title">SMSBower Pricing & Controls</div><button class="primary-btn" onclick="loadSmsAdminData()">Refresh all</button></div>
+        <div class="panel-header"><div class="panel-title">SMSBower Pricing & Controls</div><button class="primary-btn" onclick="loadSmsAdminData(true)">Refresh all</button></div>
         <div class="panel-body">
           <div class="tabs">
             <button class="tab-btn active" id="smsTabPricingBtn" onclick="showSmsTab('pricing')">Pricing Management</button>
@@ -2372,10 +2372,11 @@ function showPage(
     );
 
 
-  // Data is loaded once after admin access is verified.
-  // Do not refetch and rebuild large tables on every menu tap; this can
-  // freeze mobile browsers when the account has many users/orders/services.
-  // Use each section's Refresh button when fresh data is needed.
+  // Load SMSBower data only when its section is opened. Fetching provider
+  // countries/services during login can stall low-memory mobile browsers.
+  if(page === "markup"){
+    void loadSmsAdminData();
+  }
 }
 
 
@@ -2385,16 +2386,12 @@ function showPage(
 
 async function loadEverything(){
 
+  // Keep the initial admin load lightweight. SMSBower data is loaded only
+  // when its menu is opened, and order/transaction queries are capped.
   await Promise.allSettled([
-
     loadUsers(),
-
     loadOrders(),
-
-    loadTransactions(),
-
-    loadSmsAdminData()
-
+    loadTransactions()
   ]);
 
   updateStats();
@@ -2648,7 +2645,8 @@ async function loadOrders(){
           {
             ascending:false
           }
-        );
+        )
+        .limit(100);
 
     if(error)
       throw error;
@@ -2882,7 +2880,8 @@ async function loadTransactions(){
           {
             ascending:false
           }
-        );
+        )
+        .limit(100);
 
     if(error)
       throw error;
@@ -4037,7 +4036,22 @@ function showSmsTab(t){["pricing","services","servers"].forEach(x=>{document.get
 function fillSmsSelect(id,rows,val,label,first){const e=document.getElementById(id),old=e.value;e.innerHTML=`<option value="">${escapeHtml(first)}</option>`;rows.forEach(r=>{let o=document.createElement("option");o.value=val(r);o.textContent=label(r);e.appendChild(o)});if([...e.options].some(o=>o.value===old))e.value=old}
 function fillSmsSelectors(){fillSmsSelect("smsPriceCountry",smsCountries,cid,c=>`${cname(c)} (${cid(c)})`,"All countries / default");fillSmsSelect("smsServerCountry",smsCountries,cid,c=>`${cname(c)} (${cid(c)})`,"Choose country");fillSmsSelect("smsPriceService",smsServices,scode,x=>`${sname(x)} (${scode(x)})`,"All services");fillSmsSelect("smsServerService",smsServices,scode,x=>`${sname(x)} (${scode(x)})`,"Choose service")}
 function toggleSmsFixedPrice(){let f=document.getElementById("smsPricingMode").value==="fixed";document.getElementById("smsMarkupField").classList.toggle("hidden",f);document.getElementById("smsFixedField").classList.toggle("hidden",!f)}
-async function loadSmsAdminData(){await Promise.allSettled([loadSmsCountries(),loadSmsServices(),loadSmsPriceRules(),loadSmsSettings()]);fillSmsSelectors();renderSmsServices();renderSmsServers();renderSmsPriceRules()}
+let smsAdminLoaded = false;
+let smsAdminLoading = false;
+async function loadSmsAdminData(force=false){
+ if(smsAdminLoading || (smsAdminLoaded && !force)) return;
+ smsAdminLoading = true;
+ try{
+  await Promise.allSettled([loadSmsCountries(),loadSmsServices(),loadSmsPriceRules(),loadSmsSettings()]);
+  fillSmsSelectors();
+  renderSmsServices();
+  renderSmsServers();
+  renderSmsPriceRules();
+  smsAdminLoaded = true;
+ }finally{
+  smsAdminLoading = false;
+ }
+}
 async function loadSmsCountries(){const d=await smsbowerAdminRequest({action:"admin_countries"});smsCountries=smsRows(d,"countries").map(c=>typeof c==="string"?{id:c,name:c}:c);fillSmsSelectors()}
 async function loadSmsServices(){try{let d=await smsbowerAdminRequest({action:"admin_services"});smsServices=smsRows(d,"services").map(x=>typeof x==="string"?{code:x,name:x}:x);let z=await smsbowerAdminRequest({action:"list_service_settings"});smsServiceSettings=smsRows(z,"settings");fillSmsSelectors();renderSmsServices()}catch(e){document.getElementById("smsServicesBody").innerHTML=`<tr><td colspan="5" class="empty">${escapeHtml(e.message)}</td></tr>`;showToast(e.message,"error")}}
 async function loadSmsSettings(){try{let [a,b]=await Promise.all([smsbowerAdminRequest({action:"list_server_settings"}),smsbowerAdminRequest({action:"list_display_settings"})]);smsServerSettings=smsRows(a,"settings");smsDisplaySettings=smsRows(b,"settings")}catch(e){console.error(e);showToast("Could not load server display settings: "+e.message,"error")}}
@@ -4047,7 +4061,22 @@ function resetSmsPriceForm(){["smsPriceCountry","smsPriceService","smsPriceServe
 function editSmsPriceRule(id){let r=smsPriceRules.find(x=>String(x.id)===String(id));if(!r)return;document.getElementById("smsPriceCountry").value=r.country_key||"";document.getElementById("smsPriceService").value=r.service_code||"";document.getElementById("smsPriceServer").value=r.server_id||"";document.getElementById("smsPricingMode").value=r.pricing_mode||"markup";document.getElementById("smsPriceMarkup").value=r.markup_percent??"";document.getElementById("smsFixedPrice").value=r.fixed_price_ngn??"";toggleSmsFixedPrice();showSmsTab("pricing")}
 async function saveSmsPriceRule(){let country_key=document.getElementById("smsPriceCountry").value||null,service_code=document.getElementById("smsPriceService").value||null,server_id=document.getElementById("smsPriceServer").value.trim()||null,pricing_mode=document.getElementById("smsPricingMode").value,markupRaw=document.getElementById("smsPriceMarkup").value.trim(),fixedRaw=document.getElementById("smsFixedPrice").value.trim(),markup_percent=markupRaw===""?NaN:Number(markupRaw),fixed_price_ngn=fixedRaw===""?NaN:Number(fixedRaw);if(pricing_mode==="markup"&&(!Number.isFinite(markup_percent)||markup_percent<0))return showToast("Enter a valid markup percentage.","error");if(pricing_mode==="fixed"&&(!Number.isFinite(fixed_price_ngn)||fixed_price_ngn<=0))return showToast("Enter a valid fixed NGN price.","error");if(server_id&&(!country_key||!service_code))return showToast("Server rules require country and service.","error");try{await smsbowerAdminRequest({action:"save_price_rule",country_key,service_code,server_id,pricing_mode,markup_percent:pricing_mode==="markup"?markup_percent:0,fixed_price_ngn:pricing_mode==="fixed"?fixed_price_ngn:null});showToast("Pricing rule saved.");await loadSmsPriceRules();resetSmsPriceForm()}catch(e){showToast(e.message,"error")}}
 async function deleteSmsPriceRule(id){if(!confirm("Delete this SMSBower pricing rule?"))return;try{await smsbowerAdminRequest({action:"delete_price_rule",rule_id:id});showToast("Pricing rule deleted.");await loadSmsPriceRules()}catch(e){showToast(e.message,"error")}}
-function renderSmsServices(){let b=document.getElementById("smsServicesBody");if(!b)return;let q=(document.getElementById("smsServiceSearch")?.value||"").toLowerCase(),rows=[];smsCountries.forEach(c=>smsServices.forEach(x=>{let n=cname(c),sn=sname(x),code=scode(x);if(!`${n} ${sn} ${code}`.toLowerCase().includes(q))return;let r=smsServiceSettings.find(z=>String(z.country_id)===cid(c)&&String(z.service_code)===code);rows.push({c,x,n,sn,code,active:r?r.is_active!==false:true})}));if(!rows.length){b.innerHTML='<tr><td colspan="5" class="empty">No services loaded.</td></tr>';return}b.innerHTML=rows.map(r=>`<tr><td>${escapeHtml(r.n)} (${escapeHtml(cid(r.c))})</td><td>${escapeHtml(r.sn)}</td><td>${escapeHtml(r.code)}</td><td>${r.active?'<span class="badge green">Enabled</span>':'<span class="badge red">Disabled</span>'}</td><td><button class="small-btn ${r.active?"red-btn":"green-btn"}" onclick="saveSmsServiceSetting('${escapeJs(cid(r.c))}','${escapeJs(r.n)}','${escapeJs(r.code)}','${escapeJs(r.sn)}',${!r.active})">${r.active?"Disable":"Enable"}</button></td></tr>`).join("")}
+function renderSmsServices(){
+ let b=document.getElementById("smsServicesBody");if(!b)return;
+ let q=(document.getElementById("smsServiceSearch")?.value||"").toLowerCase(),rows=[],maxRows=200;
+ outer: for(const c of smsCountries){
+  for(const x of smsServices){
+   let n=cname(c),sn=sname(x),code=scode(x);
+   if(!`${n} ${sn} ${code}`.toLowerCase().includes(q))continue;
+   let r=smsServiceSettings.find(z=>String(z.country_id)===cid(c)&&String(z.service_code)===code);
+   rows.push({c,x,n,sn,code,active:r?r.is_active!==false:true});
+   if(rows.length>=maxRows)break outer;
+  }
+ }
+ if(!rows.length){b.innerHTML='<tr><td colspan="5" class="empty">No services loaded.</td></tr>';return}
+ b.innerHTML=rows.map(r=>`<tr><td>${escapeHtml(r.n)} (${escapeHtml(cid(r.c))})</td><td>${escapeHtml(r.sn)}</td><td>${escapeHtml(r.code)}</td><td>${r.active?'<span class="badge green">Enabled</span>':'<span class="badge red">Disabled</span>'}</td><td><button class="small-btn ${r.active?"red-btn":"green-btn"}" onclick="saveSmsServiceSetting('${escapeJs(cid(r.c))}','${escapeJs(r.n)}','${escapeJs(r.code)}','${escapeJs(r.sn)}',${!r.active})">${r.active?"Disable":"Enable"}</button></td></tr>`).join("");
+ if(rows.length===maxRows)b.insertAdjacentHTML("beforeend",'<tr><td colspan="5" class="empty">Showing first 200 matches. Use search to narrow the list.</td></tr>');
+}
 async function saveSmsServiceSetting(country_id,country_name,service_code,service_name,is_active){try{await smsbowerAdminRequest({action:"save_service_setting",country_id,country_name,service_code,service_name,is_active});let d=await smsbowerAdminRequest({action:"list_service_settings"});smsServiceSettings=smsRows(d,"settings");renderSmsServices();showToast("Service setting saved.")}catch(e){showToast(e.message,"error")}}
 async function loadSmsServers(){let country_id=document.getElementById("smsServerCountry").value,service_code=document.getElementById("smsServerService").value,b=document.getElementById("smsServersBody");if(!country_id||!service_code){b.innerHTML='<tr><td colspan="6" class="empty">Choose country and service.</td></tr>';return}b.innerHTML='<tr><td colspan="6" class="loading">Loading servers…</td></tr>';try{let d=await smsbowerAdminRequest({action:"admin_servers",country_id,service_code});smsServers=smsRows(d,"servers");let x=smsDisplaySettings.find(z=>String(z.country_id)===country_id&&String(z.service_code)===service_code);if(x){document.getElementById("smsMaxServers").value=x.max_servers??10;document.getElementById("smsPreferredTier").value=x.preferred_tier||""}renderSmsServers()}catch(e){b.innerHTML=`<tr><td colspan="6" class="empty">${escapeHtml(e.message)}</td></tr>`;showToast(e.message,"error")}}
 function renderSmsServers(){let b=document.getElementById("smsServersBody");if(!b)return;if(!smsServers.length){b.innerHTML='<tr><td colspan="6" class="empty">Choose country and service to load provider servers.</td></tr>';return}let c=document.getElementById("smsServerCountry").value,svc=document.getElementById("smsServerService").value;b.innerHTML=smsServers.map(x=>{let id=String(x.server_id??x.id??x.server??""),r=smsServerSettings.find(z=>String(z.country_id)===c&&String(z.service_code)===svc&&String(z.server_id)===id),active=r?r.is_active!==false:true,name=x.server_name??x.name??x.server_label??"Server";return `<tr><td>${escapeHtml(name)}</td><td>${escapeHtml(id)}</td><td>${escapeHtml(x.cost??x.price??x.provider_cost??"—")}</td><td><select id="tier_${escapeHtml(id)}"><option value="standard">Standard</option><option value="cheap" ${r?.admin_tier==="cheap"?"selected":""}>Cheap</option><option value="balanced" ${r?.admin_tier==="balanced"?"selected":""}>Balanced</option><option value="premium" ${r?.admin_tier==="premium"?"selected":""}>Premium</option></select></td><td>${active?'<span class="badge green">Enabled</span>':'<span class="badge red">Disabled</span>'}</td><td><button class="small-btn ${active?"red-btn":"green-btn"}" onclick="saveSmsServerSetting('${escapeJs(c)}','${escapeJs(svc)}','${escapeJs(id)}','${escapeJs(name)}',${!active})">${active?"Disable":"Enable"}</button> <button class="small-btn blue-btn" onclick="saveSmsServerSetting('${escapeJs(c)}','${escapeJs(svc)}','${escapeJs(id)}','${escapeJs(name)}',${active},document.getElementById('tier_${escapeJs(id)}').value)">Save tier</button></td></tr>`}).join("")}
