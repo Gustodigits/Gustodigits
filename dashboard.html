@@ -5527,16 +5527,24 @@ async function pollPendingOrderStatuses(){
     orderStatusPollBusy = true;
     let changed = false;
     try{
-        const pending = (recentOrdersCache || [])
-            .filter(order => order && order.status === "pending" && (order.raw?.id || order.id))
+        const orderData = await callProvider("orders");
+        const pending = (Array.isArray(orderData?.orders) ? orderData.orders : [])
+            .filter(order => {
+                const status = String(order.status || order.order_status || "pending").toLowerCase();
+                const activation = String(order.provider_activation_id || order.activation_id || order.activationId || order.numpool_order_id || "").trim();
+                return ["pending", "waiting", "received"].includes(status) &&
+                    !!(order.id || order.order_id) &&
+                    !!activation &&
+                    !activation.startsWith("pending:");
+            })
             .slice(0, 5);
         for(const order of pending){
             try{
                 const data = await callProvider("status", {
-                    order_id: order.raw?.id || order.id,
-                    orderId: order.raw?.id || order.id,
-                    activation_id: order.activationId || order.raw?.provider_activation_id || order.raw?.activation_id || order.raw?.numpool_order_id,
-                    activationId: order.activationId || order.raw?.provider_activation_id || order.raw?.activation_id || order.raw?.numpool_order_id
+                    order_id: order.id || order.order_id,
+                    orderId: order.id || order.order_id,
+                    activation_id: String(order.provider_activation_id || order.activation_id || order.activationId || order.numpool_order_id || "").replace(/^smsbower:/i, ""),
+                    activationId: String(order.provider_activation_id || order.activation_id || order.activationId || order.numpool_order_id || "").replace(/^smsbower:/i, "")
                 });
                 const status = String(data?.status || data?.order?.status || "").toLowerCase();
                 const code = data?.otp_code || data?.sms_code || data?.code || data?.order?.otp_code || data?.order?.sms_code || data?.order?.code;
@@ -6054,7 +6062,7 @@ async function getOrderStatus(
             "";
 
 
-        if(["completed", "complete", "success", "successful", "verified"].includes(status)){
+        if(!code && ["completed", "complete", "success", "successful", "verified"].includes(status)){
             showAlert(
                 "Verification Successful",
                 "This verification has been completed successfully.",
