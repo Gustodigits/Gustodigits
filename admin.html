@@ -2372,17 +2372,10 @@ function showPage(
     );
 
 
-  if(page === "users")
-    loadUsers();
-
-  if(page === "orders")
-    loadOrders();
-
-  if(page === "transactions")
-    loadTransactions();
-
-  if(page === "markup")
-    loadSmsAdminData();
+  // Data is loaded once after admin access is verified.
+  // Do not refetch and rebuild large tables on every menu tap; this can
+  // freeze mobile browsers when the account has many users/orders/services.
+  // Use each section's Refresh button when fresh data is needed.
 }
 
 
