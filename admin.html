@@ -1062,7 +1062,7 @@ td{
       data-page="markup"
       onclick="showPage('markup',this)"
     >
-      💰 SMSBower Management
+      💰 Pricing & SMSBower
     </button>
 
     <div class="nav-title">
@@ -1531,7 +1531,7 @@ td{
     <!-- SMSBOWER MANAGEMENT -->
     <section id="page-markup" class="page">
       <div class="panel">
-        <div class="panel-header"><div class="panel-title">SMSBower Management</div><button class="primary-btn" onclick="loadSmsAdminData()">Refresh all</button></div>
+        <div class="panel-header"><div class="panel-title">SMSBower Pricing & Controls</div><button class="primary-btn" onclick="loadSmsAdminData()">Refresh all</button></div>
         <div class="panel-body">
           <div class="tabs">
             <button class="tab-btn active" id="smsTabPricingBtn" onclick="showSmsTab('pricing')">Pricing Management</button>
@@ -1545,7 +1545,7 @@ td{
                 <div class="form-group"><label>Service (blank = all)</label><select id="smsPriceService"><option value="">All services</option></select></div>
                 <div class="form-group"><label>Server ID (optional)</label><input id="smsPriceServer" placeholder="Exact provider server ID"></div>
                 <div class="form-group"><label>Pricing mode</label><select id="smsPricingMode" onchange="toggleSmsFixedPrice()"><option value="markup">Markup percentage</option><option value="fixed">Fixed NGN price</option></select></div>
-                <div class="form-group" id="smsMarkupField"><label>Markup percentage</label><input id="smsPriceMarkup" type="number" min="0" step="0.01" value="200"></div>
+                <div class="form-group" id="smsMarkupField"><label>Markup percentage</label><input id="smsPriceMarkup" type="number" min="0" step="0.01" placeholder="e.g. 100"></div>
                 <div class="form-group hidden" id="smsFixedField"><label>Fixed selling price (NGN)</label><input id="smsFixedPrice" type="number" min="1" step="1"></div>
               </div>
               <p style="font-size:11px;color:#64748b;margin-bottom:12px">Defaults: USA (country ID 187) = 100% markup for all services; other countries = 200%. A matching custom rule takes priority.</p>
@@ -2323,7 +2323,7 @@ function showPage(
       "Transactions",
 
     markup:
-      "SMSBower Management"
+      "SMSBower Pricing & Controls"
 
   };
 
@@ -2356,7 +2356,7 @@ function showPage(
     loadTransactions();
 
   if(page === "markup")
-    loadMarkupRules();
+    loadSmsAdminData();
 }
 
 
@@ -4019,9 +4019,9 @@ async function loadSmsServices(){try{let d=await smsbowerAdminRequest({action:"a
 async function loadSmsSettings(){try{let [a,b]=await Promise.all([smsbowerAdminRequest({action:"list_server_settings"}),smsbowerAdminRequest({action:"list_display_settings"})]);smsServerSettings=smsRows(a,"settings");smsDisplaySettings=smsRows(b,"settings")}catch(e){console.error(e);showToast("Could not load server display settings: "+e.message,"error")}}
 async function loadSmsPriceRules(){try{let d=await smsbowerAdminRequest({action:"list_price_rules"});smsPriceRules=smsRows(d,"rules");renderSmsPriceRules()}catch(e){document.getElementById("smsPriceRulesBody").innerHTML=`<tr><td colspan="8" class="empty">${escapeHtml(e.message)}</td></tr>`}}
 function renderSmsPriceRules(){let b=document.getElementById("smsPriceRulesBody");if(!b)return;if(!smsPriceRules.length){b.innerHTML='<tr><td colspan="8" class="empty">No custom rules. Defaults: USA 100%, other countries 200%.</td></tr>';return}b.innerHTML=smsPriceRules.map(r=>`<tr><td>${escapeHtml(r.country_key||"All countries")}</td><td>${escapeHtml(r.service_code||"All services")}</td><td>${escapeHtml(r.server_id||"All servers")}</td><td>${escapeHtml(r.pricing_mode||"markup")}</td><td>${r.pricing_mode==="fixed"?"—":escapeHtml(r.markup_percent??0)+"%"}</td><td>${r.fixed_price_ngn==null?"—":formatMoney(r.fixed_price_ngn)}</td><td>${r.is_active===false?'<span class="badge red">Inactive</span>':'<span class="badge green">Active</span>'}</td><td><button class="small-btn blue-btn" onclick="editSmsPriceRule('${escapeJs(r.id)}')">Edit</button> <button class="small-btn red-btn" onclick="deleteSmsPriceRule('${escapeJs(r.id)}')">Delete</button></td></tr>`).join("")}
-function resetSmsPriceForm(){["smsPriceCountry","smsPriceService","smsPriceServer"].forEach(id=>document.getElementById(id).value="");document.getElementById("smsPricingMode").value="markup";document.getElementById("smsPriceMarkup").value="200";document.getElementById("smsFixedPrice").value="";toggleSmsFixedPrice()}
-function editSmsPriceRule(id){let r=smsPriceRules.find(x=>String(x.id)===String(id));if(!r)return;document.getElementById("smsPriceCountry").value=r.country_key||"";document.getElementById("smsPriceService").value=r.service_code||"";document.getElementById("smsPriceServer").value=r.server_id||"";document.getElementById("smsPricingMode").value=r.pricing_mode||"markup";document.getElementById("smsPriceMarkup").value=r.markup_percent??200;document.getElementById("smsFixedPrice").value=r.fixed_price_ngn??"";toggleSmsFixedPrice();showSmsTab("pricing")}
-async function saveSmsPriceRule(){let country_key=document.getElementById("smsPriceCountry").value||null,service_code=document.getElementById("smsPriceService").value||null,server_id=document.getElementById("smsPriceServer").value.trim()||null,pricing_mode=document.getElementById("smsPricingMode").value,markup_percent=Number(document.getElementById("smsPriceMarkup").value),fixed_price_ngn=Number(document.getElementById("smsFixedPrice").value);if(pricing_mode==="markup"&&(!Number.isFinite(markup_percent)||markup_percent<0))return showToast("Enter a valid markup percentage.","error");if(pricing_mode==="fixed"&&(!Number.isFinite(fixed_price_ngn)||fixed_price_ngn<=0))return showToast("Enter a valid fixed NGN price.","error");if(server_id&&(!country_key||!service_code))return showToast("Server rules require country and service.","error");try{await smsbowerAdminRequest({action:"save_price_rule",country_key,service_code,server_id,pricing_mode,markup_percent:pricing_mode==="markup"?markup_percent:0,fixed_price_ngn:pricing_mode==="fixed"?fixed_price_ngn:null});showToast("Pricing rule saved.");await loadSmsPriceRules();resetSmsPriceForm()}catch(e){showToast(e.message,"error")}}
+function resetSmsPriceForm(){["smsPriceCountry","smsPriceService","smsPriceServer"].forEach(id=>document.getElementById(id).value="");document.getElementById("smsPricingMode").value="markup";document.getElementById("smsPriceMarkup").value="";document.getElementById("smsFixedPrice").value="";toggleSmsFixedPrice()}
+function editSmsPriceRule(id){let r=smsPriceRules.find(x=>String(x.id)===String(id));if(!r)return;document.getElementById("smsPriceCountry").value=r.country_key||"";document.getElementById("smsPriceService").value=r.service_code||"";document.getElementById("smsPriceServer").value=r.server_id||"";document.getElementById("smsPricingMode").value=r.pricing_mode||"markup";document.getElementById("smsPriceMarkup").value=r.markup_percent??"";document.getElementById("smsFixedPrice").value=r.fixed_price_ngn??"";toggleSmsFixedPrice();showSmsTab("pricing")}
+async function saveSmsPriceRule(){let country_key=document.getElementById("smsPriceCountry").value||null,service_code=document.getElementById("smsPriceService").value||null,server_id=document.getElementById("smsPriceServer").value.trim()||null,pricing_mode=document.getElementById("smsPricingMode").value,markupRaw=document.getElementById("smsPriceMarkup").value.trim(),fixedRaw=document.getElementById("smsFixedPrice").value.trim(),markup_percent=markupRaw===""?NaN:Number(markupRaw),fixed_price_ngn=fixedRaw===""?NaN:Number(fixedRaw);if(pricing_mode==="markup"&&(!Number.isFinite(markup_percent)||markup_percent<0))return showToast("Enter a valid markup percentage.","error");if(pricing_mode==="fixed"&&(!Number.isFinite(fixed_price_ngn)||fixed_price_ngn<=0))return showToast("Enter a valid fixed NGN price.","error");if(server_id&&(!country_key||!service_code))return showToast("Server rules require country and service.","error");try{await smsbowerAdminRequest({action:"save_price_rule",country_key,service_code,server_id,pricing_mode,markup_percent:pricing_mode==="markup"?markup_percent:0,fixed_price_ngn:pricing_mode==="fixed"?fixed_price_ngn:null});showToast("Pricing rule saved.");await loadSmsPriceRules();resetSmsPriceForm()}catch(e){showToast(e.message,"error")}}
 async function deleteSmsPriceRule(id){if(!confirm("Delete this SMSBower pricing rule?"))return;try{await smsbowerAdminRequest({action:"delete_price_rule",rule_id:id});showToast("Pricing rule deleted.");await loadSmsPriceRules()}catch(e){showToast(e.message,"error")}}
 function renderSmsServices(){let b=document.getElementById("smsServicesBody");if(!b)return;let q=(document.getElementById("smsServiceSearch")?.value||"").toLowerCase(),rows=[];smsCountries.forEach(c=>smsServices.forEach(x=>{let n=cname(c),sn=sname(x),code=scode(x);if(!`${n} ${sn} ${code}`.toLowerCase().includes(q))return;let r=smsServiceSettings.find(z=>String(z.country_id)===cid(c)&&String(z.service_code)===code);rows.push({c,x,n,sn,code,active:r?r.is_active!==false:true})}));if(!rows.length){b.innerHTML='<tr><td colspan="5" class="empty">No services loaded.</td></tr>';return}b.innerHTML=rows.map(r=>`<tr><td>${escapeHtml(r.n)} (${escapeHtml(cid(r.c))})</td><td>${escapeHtml(r.sn)}</td><td>${escapeHtml(r.code)}</td><td>${r.active?'<span class="badge green">Enabled</span>':'<span class="badge red">Disabled</span>'}</td><td><button class="small-btn ${r.active?"red-btn":"green-btn"}" onclick="saveSmsServiceSetting('${escapeJs(cid(r.c))}','${escapeJs(r.n)}','${escapeJs(r.code)}','${escapeJs(r.sn)}',${!r.active})">${r.active?"Disable":"Enable"}</button></td></tr>`).join("")}
 async function saveSmsServiceSetting(country_id,country_name,service_code,service_name,is_active){try{await smsbowerAdminRequest({action:"save_service_setting",country_id,country_name,service_code,service_name,is_active});let d=await smsbowerAdminRequest({action:"list_service_settings"});smsServiceSettings=smsRows(d,"settings");renderSmsServices();showToast("Service setting saved.")}catch(e){showToast(e.message,"error")}}
