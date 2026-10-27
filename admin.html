@@ -1057,13 +1057,9 @@ td{
       💳 Transactions
     </button>
 
-    <button
-      class="nav-btn"
-      data-page="markup"
-      onclick="showPage('markup',this)"
-    >
-      💰 Markup Manager
-    </button>
+    <button class="nav-btn" data-page="sms-price" onclick="showPage('sms-price',this)">💰 SMSBower Price Control</button>
+    <button class="nav-btn" data-page="sms-services" onclick="showPage('sms-services',this)">🧩 SMSBower Services</button>
+    <button class="nav-btn" data-page="sms-servers" onclick="showPage('sms-servers',this)">🖥️ SMSBower Servers</button>
 
     <div class="nav-title">
       Account
@@ -1528,149 +1524,23 @@ td{
     </section>
 
 
-    <!-- =====================================================
-         MARKUP
-    ====================================================== -->
-
-    <section
-      id="page-markup"
-      class="page"
-    >
-
-      <div class="panel">
-
-        <div class="panel-header">
-
-          <div class="panel-title">
-            Markup Manager
-          </div>
-
-          <button
-            class="primary-btn"
-            onclick="resetMarkupForm()"
-          >
-            + Add Markup
-          </button>
-
-        </div>
-
-        <div class="panel-body">
-
-          <div class="markup-form">
-
-            <div
-              class="markup-form-title"
-              id="markupFormTitle"
-            >
-              Add Markup Price
-            </div>
-
-            <div class="form-grid">
-
-              <div class="form-group">
-
-                <label>
-                  Country
-                </label>
-
-                <select id="markupCountry">
-
-                  <option value="">
-                    Overall
-                  </option>
-
-                </select>
-
-              </div>
-
-
-              <div class="form-group">
-
-                <label>
-                  Service
-                </label>
-
-                <select id="markupService">
-
-                  <option value="">
-                    Overall
-                  </option>
-
-                </select>
-
-              </div>
-
-
-              <div class="form-group">
-
-                <label>
-                  Markup Percentage
-                </label>
-
-                <input
-                  id="markupPercent"
-                  type="number"
-                  min="0"
-                  step="0.01"
-                  placeholder="Example: 100"
-                >
-
-              </div>
-
-            </div>
-
-
-            <div class="markup-actions">
-
-              <button
-                id="markupSaveBtn"
-                class="primary-btn"
-                onclick="saveMarkup()"
-              >
-                Save Markup
-              </button>
-
-              <button
-                id="markupCancelBtn"
-                class="small-btn gray-btn hidden"
-                onclick="resetMarkupForm()"
-              >
-                Cancel Edit
-              </button>
-
-            </div>
-
-          </div>
-
-
-          <div class="table-wrap">
-
-            <table>
-
-              <thead>
-
-                <tr>
-                  <th>Country</th>
-                  <th>Service</th>
-                  <th>Markup</th>
-                  <th>Created</th>
-                  <th>Updated</th>
-                  <th>Actions</th>
-                </tr>
-
-              </thead>
-
-              <tbody id="markupBody"></tbody>
-
-            </table>
-
-          </div>
-
-        </div>
-
-      </div>
-
-    </section>
+    <section id="page-sms-price" class="page"><div class="panel"><div class="panel-header"><div class="panel-title">SMSBower Price Control</div><button class="primary-btn" onclick="loadSmsPriceRules()">Refresh</button></div><div class="panel-body">
+<p style="color:#64748b;margin-bottom:14px">Set fixed NGN prices or markup percentages. More specific rules override broader rules; default markup is 100%.</p>
+<div class="markup-form"><div class="form-grid">
+<div class="form-group"><label>Country</label><select id="smsPriceCountry"><option value="">Global / any country</option></select></div>
+<div class="form-group"><label>Service</label><select id="smsPriceService"><option value="">Any service</option></select></div>
+<div class="form-group"><label>Provider server</label><select id="smsPriceServer"><option value="">Any server</option></select></div>
+<div class="form-group"><label>Pricing mode</label><select id="smsPriceMode" onchange="toggleSmsPriceMode()"><option value="markup">Markup percentage</option><option value="fixed">Fixed NGN price</option></select></div>
+<div class="form-group" id="smsMarkupField"><label>Markup (%)</label><input id="smsPriceMarkup" type="number" min="0" step="0.01" value="100"></div>
+<div class="form-group hidden" id="smsFixedField"><label>Fixed selling price (NGN)</label><input id="smsPriceFixed" type="number" min="0.01" step="0.01"></div>
+</div><button class="primary-btn" onclick="saveSmsPriceRule()">Save Price Rule</button><button class="small-btn gray-btn" onclick="resetSmsPriceForm()">Clear</button></div>
+<div class="table-wrap"><table><thead><tr><th>Country</th><th>Service</th><th>Server ID</th><th>Pricing</th><th>Scope</th><th>Actions</th></tr></thead><tbody id="smsPriceRulesBody"></tbody></table></div>
+</div></div></section>
+<section id="page-sms-services" class="page"><div class="panel"><div class="panel-header"><div class="panel-title">SMSBower Service Management</div><div class="toolbar"><input id="smsServiceSearch" class="search" placeholder="Search country/service" oninput="renderSmsServices()"><button class="primary-btn" onclick="loadSmsAdminData()">Refresh</button></div></div><div class="panel-body"><p style="margin-bottom:12px;color:#64748b">Inactive services remain visible to admins but should be hidden from customers.</p><div class="table-wrap"><table><thead><tr><th>Country</th><th>Service</th><th>Code</th><th>Status</th><th>Action</th></tr></thead><tbody id="smsServicesBody"></tbody></table></div></div></div></section>
+<section id="page-sms-servers" class="page"><div class="panel"><div class="panel-header"><div class="panel-title">SMSBower Server Management</div><button class="primary-btn" onclick="loadSmsAdminData()">Refresh</button></div><div class="panel-body">
+<div class="form-grid"><div class="form-group"><label>Country</label><select id="smsServerCountry" onchange="renderSmsServers()"><option value="">Select country</option></select></div><div class="form-group"><label>Service</label><select id="smsServerService" onchange="renderSmsServers()"><option value="">Select service</option></select></div><div class="form-group"><label>Max servers shown to customers</label><input id="smsMaxServers" type="number" min="1" max="100" value="5"></div><div class="form-group"><label>Preferred tier (if provider supplies tiers)</label><select id="smsPreferredTier"><option value="">No preference</option><option value="gold">Gold</option><option value="silver">Silver</option><option value="bronze">Bronze</option></select></div></div><button class="primary-btn" onclick="saveSmsDisplaySettings()">Save display settings</button>
+<div class="table-wrap" style="margin-top:16px"><table><thead><tr><th>Server</th><th>Provider ID</th><th>Provider cost</th><th>Tier</th><th>Status</th><th>Action</th></tr></thead><tbody id="smsServersBody"></tbody></table></div>
+</div></div></section>
 
   </main>
 
@@ -2422,7 +2292,10 @@ function showPage(
       "Transactions",
 
     markup:
-      "Markup Manager"
+      "Markup Manager",
+    "sms-price": "SMSBower Price Control",
+    "sms-services": "SMSBower Service Management",
+    "sms-servers": "SMSBower Server Management"
 
   };
 
@@ -2456,6 +2329,9 @@ function showPage(
 
   if(page === "markup")
     loadMarkupRules();
+  if(page === "sms-price") loadSmsPriceRules();
+  if(page === "sms-services") renderSmsServices();
+  if(page === "sms-servers") renderSmsServers();
 }
 
 
@@ -2473,7 +2349,7 @@ async function loadEverything(){
 
     loadTransactions(),
 
-    loadMarkupData()
+    loadSmsAdminData()
 
   ]);
 
@@ -4949,6 +4825,50 @@ async function deleteMarkup(
   }
 }
 
+
+
+/* SMSBower admin controls */
+const SMSBOWER_URL=SUPABASE_URL+"/functions/v1/smsbower-api";
+let smsCountries=[],smsServices=[],smsServerRows=[],smsPriceRules=[],smsServiceSettings=[],smsServerSettings=[],smsDisplaySettings=[];
+async function smsbowerAdminRequest(payload){
+ const {data:{session},error}=await supabaseClient.auth.getSession();if(error)throw error;if(!session?.access_token)throw Error("Admin session expired. Sign in again.");
+ const res=await fetch(SMSBOWER_URL,{method:"POST",headers:{"Content-Type":"application/json","Authorization":"Bearer "+session.access_token,"apikey":SUPABASE_KEY},body:JSON.stringify(payload)});
+ const txt=await res.text();let d;try{d=JSON.parse(txt)}catch{d={message:txt}}if(!res.ok||d?.error)throw Error(d.message||d.error||`Request failed (${res.status})`);return d;
+}
+function smsArr(d,keys=["countries","services","servers","rules","settings","items","data","results"]){if(Array.isArray(d))return d;for(const k of keys)if(Array.isArray(d?.[k]))return d[k];return []}
+function scid(x){return String(x?.country_id??x?.countryId??x?.id??x?.country??x?.key??"")}
+function scname(x){return String(x?.country_name??x?.countryName??x?.name??x?.title??x?.country??scid(x))}
+function svcode(x){return String(x?.service_code??x?.serviceCode??x?.code??x?.service??x?.key??x?.id??"")}
+function svname(x){return String(x?.service_name??x?.serviceName??x?.name??x?.title??x?.service??svcode(x))}
+function ssid(x){return String(x?.server_id??x?.serverId??x?.provider_id??x?.providerId??x?.id??"")}
+function ssname(x){return String(x?.server_name??x?.serverName??x?.name??x?.title??ssid(x))}
+function smsOpt(id,rows,val,label,first){const e=document.getElementById(id);if(!e)return;const old=e.value;e.innerHTML=`<option value="">${escapeHtml(first)}</option>`+rows.map(x=>`<option value="${escapeHtml(val(x))}">${escapeHtml(label(x))}</option>`).join("");if([...e.options].some(o=>o.value===old))e.value=old}
+function smsSetting(rows,c,s,server=""){return rows.find(x=>String(x.country_id??x.country_key??"")===String(c)&&String(x.service_code??"")===String(s)&&(!server||String(x.server_id??"")===String(server)))}
+async function loadSmsAdminData(){if(!currentUser)return;try{
+ const [a,b,c,d,e]=await Promise.all([smsbowerAdminRequest({action:"admin_countries"}),smsbowerAdminRequest({action:"admin_services"}),smsbowerAdminRequest({action:"list_service_settings"}),smsbowerAdminRequest({action:"list_server_settings"}),smsbowerAdminRequest({action:"list_display_settings"}).catch(()=>({settings:[]}))]);
+ smsCountries=smsArr(a);smsServices=smsArr(b);smsServiceSettings=smsArr(c);smsServerSettings=smsArr(d);smsDisplaySettings=smsArr(e);
+ smsOpt("smsPriceCountry",smsCountries,scid,x=>`${scname(x)} (${scid(x)})`,"Global / any country");smsOpt("smsServerCountry",smsCountries,scid,x=>`${scname(x)} (${scid(x)})`,"Select country");
+ smsOpt("smsPriceService",smsServices,svcode,x=>`${svname(x)} (${svcode(x)})`,"Any service");smsOpt("smsServerService",smsServices,svcode,x=>`${svname(x)} (${svcode(x)})`,"Select service");
+ renderSmsServices();renderSmsServers();await loadSmsPriceRules();
+ }catch(err){console.error(err);showToast(err.message||"Could not load SMSBower controls.","error")}}
+function renderSmsServices(){const body=document.getElementById("smsServicesBody");if(!body)return;const q=(document.getElementById("smsServiceSearch")?.value||"").toLowerCase();let rows=[];
+ for(const c of smsCountries)for(const v of smsServices){const ci=scid(c),co=svcode(v);if(!ci||!co)continue;const saved=smsSetting(smsServiceSettings,ci,co);const r={country_id:ci,country_name:scname(c),service_code:co,service_name:svname(v),is_active:saved?saved.is_active!==false:true};if((r.country_name+" "+r.service_name+" "+co).toLowerCase().includes(q))rows.push(r)}
+ if(!rows.length){body.innerHTML='<tr><td colspan="5" class="empty">No country/service records returned.</td></tr>';return}
+ body.innerHTML=rows.map(r=>`<tr><td>${escapeHtml(r.country_name)} (${escapeHtml(r.country_id)})</td><td>${escapeHtml(r.service_name)}</td><td>${escapeHtml(r.service_code)}</td><td><span class="badge ${r.is_active?"green":"red"}">${r.is_active?"Active":"Inactive"}</span></td><td><button class="small-btn ${r.is_active?"red-btn":"green-btn"}" onclick="toggleSmsService('${escapeJs(r.country_id)}','${escapeJs(r.service_code)}',${!r.is_active})">${r.is_active?"Deactivate":"Activate"}</button></td></tr>`).join("")}
+async function toggleSmsService(c,s,on){const v=smsServices.find(x=>svcode(x)===s),country=smsCountries.find(x=>scid(x)===c);try{await smsbowerAdminRequest({action:"save_service_setting",country_id:c,country_name:scname(country||{}),service_code:s,service_name:svname(v||{}),is_active:on});const old=smsSetting(smsServiceSettings,c,s);if(old)old.is_active=on;else smsServiceSettings.push({country_id:c,service_code:s,is_active:on});renderSmsServices();showToast("Service setting saved")}catch(e){showToast(e.message,"error")}}
+async function renderSmsServers(){const body=document.getElementById("smsServersBody");if(!body)return;const c=document.getElementById("smsServerCountry")?.value||"",s=document.getElementById("smsServerService")?.value||"";if(!c||!s){body.innerHTML='<tr><td colspan="6" class="empty">Select a country and service.</td></tr>';return}body.innerHTML='<tr><td colspan="6" class="loading">Loading servers...</td></tr>';try{
+ const result=await smsbowerAdminRequest({action:"admin_servers",country_id:c,service_code:s});smsServerRows=smsArr(result);const disp=smsDisplaySettings.find(x=>String(x.country_id??x.country_key)===c&&String(x.service_code)===s);document.getElementById("smsMaxServers").value=disp?.max_servers??5;document.getElementById("smsPreferredTier").value=disp?.preferred_tier??"";
+ smsOpt("smsPriceServer",smsServerRows,ssid,x=>`${ssname(x)} (${ssid(x)})`,"Any server");
+ if(!smsServerRows.length){body.innerHTML='<tr><td colspan="6" class="empty">No servers returned for this country/service.</td></tr>';return}
+ body.innerHTML=smsServerRows.map(r=>{const id=ssid(r),saved=smsSetting(smsServerSettings,c,s,id),on=saved?saved.is_active!==false:true,cost=r.cost_usd??r.price_usd??r.cost??r.price??r.rate??"—",tier=saved?.admin_tier??r.tier??r.level??"—";return `<tr><td>${escapeHtml(ssname(r))}</td><td>${escapeHtml(id)}</td><td>${escapeHtml(String(cost))}</td><td>${escapeHtml(String(tier))}</td><td><span class="badge ${on?"green":"red"}">${on?"Active":"Inactive"}</span></td><td><button class="small-btn ${on?"red-btn":"green-btn"}" onclick="toggleSmsServer('${escapeJs(c)}','${escapeJs(s)}','${escapeJs(id)}',${!on})">${on?"Deactivate":"Activate"}</button></td></tr>`}).join("");
+ }catch(e){body.innerHTML=`<tr><td colspan="6" class="empty">${escapeHtml(e.message)}</td></tr>`}}
+async function toggleSmsServer(c,s,id,on){const r=smsServerRows.find(x=>ssid(x)===id)||{};try{await smsbowerAdminRequest({action:"save_server_setting",country_id:c,service_code:s,server_id:id,server_name:ssname(r),is_active:on,admin_tier:r.tier??r.level??null});const old=smsSetting(smsServerSettings,c,s,id);if(old)old.is_active=on;else smsServerSettings.push({country_id:c,service_code:s,server_id:id,is_active:on});await renderSmsServers();showToast("Server setting saved")}catch(e){showToast(e.message,"error")}}
+async function saveSmsDisplaySettings(){const c=document.getElementById("smsServerCountry").value,s=document.getElementById("smsServerService").value,n=Number(document.getElementById("smsMaxServers").value),tier=document.getElementById("smsPreferredTier").value||null;if(!c||!s)return showToast("Select country and service first","error");if(!Number.isInteger(n)||n<1||n>100)return showToast("Maximum must be 1–100","error");try{await smsbowerAdminRequest({action:"save_display_setting",country_id:c,service_code:s,max_servers:n,preferred_tier:tier});const old=smsDisplaySettings.find(x=>String(x.country_id??x.country_key)===c&&String(x.service_code)===s);if(old){old.max_servers=n;old.preferred_tier=tier}else smsDisplaySettings.push({country_id:c,service_code:s,max_servers:n,preferred_tier:tier});showToast("Display settings saved")}catch(e){showToast(e.message,"error")}}
+function toggleSmsPriceMode(){const fixed=document.getElementById("smsPriceMode").value==="fixed";document.getElementById("smsMarkupField").classList.toggle("hidden",fixed);document.getElementById("smsFixedField").classList.toggle("hidden",!fixed)}
+function resetSmsPriceForm(){["smsPriceCountry","smsPriceService","smsPriceServer"].forEach(id=>document.getElementById(id).value="");document.getElementById("smsPriceMode").value="markup";document.getElementById("smsPriceMarkup").value="100";document.getElementById("smsPriceFixed").value="";toggleSmsPriceMode()}
+async function saveSmsPriceRule(){const c=document.getElementById("smsPriceCountry").value||null,s=document.getElementById("smsPriceService").value||null,server=document.getElementById("smsPriceServer").value||null,mode=document.getElementById("smsPriceMode").value,markup=Number(document.getElementById("smsPriceMarkup").value),fixed=Number(document.getElementById("smsPriceFixed").value);if(mode==="markup"&&(!Number.isFinite(markup)||markup<0))return showToast("Enter a valid markup","error");if(mode==="fixed"&&(!Number.isFinite(fixed)||fixed<=0))return showToast("Enter a fixed price above zero","error");try{await smsbowerAdminRequest({action:"save_price_rule",country_key:c,service_code:s,server_id:server,pricing_mode:mode,markup_percent:mode==="markup"?markup:100,fixed_price_ngn:mode==="fixed"?fixed:null});showToast("Price rule saved");resetSmsPriceForm();await loadSmsPriceRules()}catch(e){showToast(e.message,"error")}}
+async function loadSmsPriceRules(){const body=document.getElementById("smsPriceRulesBody");if(!body)return;body.innerHTML='<tr><td colspan="6" class="loading">Loading price rules...</td></tr>';try{const d=await smsbowerAdminRequest({action:"list_price_rules"});smsPriceRules=smsArr(d);if(!smsPriceRules.length){body.innerHTML='<tr><td colspan="6" class="empty">No price rules. Default markup is 100%.</td></tr>';return}body.innerHTML=smsPriceRules.map((r,i)=>{const c=r.country_key||"Global",v=r.service_code||"Any service",price=r.pricing_mode==="fixed"?"Fixed "+formatMoney(r.fixed_price_ngn):formatNumber(r.markup_percent??100)+"% markup";return `<tr><td>${escapeHtml(c)}</td><td>${escapeHtml(v)}</td><td>${escapeHtml(r.server_id||"Any")}</td><td>${escapeHtml(price)}</td><td>${escapeHtml(r.matched_scope||"Rule")}</td><td><button class="small-btn red-btn" onclick="deleteSmsPriceRule(${i})">Delete</button></td></tr>`}).join("")}catch(e){body.innerHTML=`<tr><td colspan="6" class="empty">${escapeHtml(e.message)}</td></tr>`}}
+async function deleteSmsPriceRule(i){const r=smsPriceRules[i];if(!r||!confirm("Delete this SMSBower price rule?"))return;try{const id=r.id??r.rule_id;if(!id)throw Error("The rule response did not include its ID.");const {error}=await supabaseClient.from("virtual_number_markup_rules").delete().eq("id",id).eq("server","smsbower");if(error)throw error;showToast("Rule deleted");await loadSmsPriceRules()}catch(e){showToast(e.message||"Could not delete rule","error")}}
 
 /* =========================================================
    STATS
