@@ -2142,6 +2142,17 @@ a{
 
 
         <button
+            class="menu-item hidden"
+            id="adminDashboardLink"
+            type="button"
+            onclick="location.href='admin.html'"
+        >
+            <span class="menu-item-icon">🛠️</span>
+            Admin Management
+        </button>
+
+
+        <button
             class="menu-item"
             type="button"
             onclick="openSupportChooser()"
@@ -2566,6 +2577,24 @@ const supabaseClient =
     );
 
 
+// Only show the admin entry when the existing is_admin RPC confirms access.
+async function updateAdminDashboardLink(){
+    const link = document.getElementById("adminDashboardLink");
+    if(!link) return;
+
+    link.classList.add("hidden");
+    try{
+        const { data, error } = await supabaseClient.rpc("is_admin");
+        if(!error && data === true){
+            link.classList.remove("hidden");
+        }
+    }catch(error){
+        console.warn("Admin menu visibility could not be checked.", error);
+        link.classList.add("hidden");
+    }
+}
+
+
 /* =========================================================
 EDGE FUNCTION
 ========================================================= */
@@ -2901,6 +2930,7 @@ async function initialize(){
 
 
     updateUserUI();
+    updateAdminDashboardLink();
 
 
     await Promise.allSettled([
@@ -2938,6 +2968,7 @@ supabaseClient.auth.onAuthStateChange(
                 session.user;
 
             updateUserUI();
+            updateAdminDashboardLink();
 
         }
 
