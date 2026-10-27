@@ -1600,6 +1600,7 @@ td{
 <div
   class="modal-overlay"
   id="userModal"
+  onclick="if(event.target===this) closeModal('userModal')"
 >
 
   <div class="modal">
@@ -1780,6 +1781,7 @@ td{
 <div
   class="modal-overlay"
   id="walletModal"
+  onclick="if(event.target===this) closeModal('walletModal')"
 >
 
   <div class="modal small">
@@ -1980,10 +1982,18 @@ function showToast(
 
 function closeModal(id){
 
-  document
-    .getElementById(id)
-    .classList.remove("show");
+  const modal = document.getElementById(id);
+  if(modal) modal.classList.remove("show");
 }
+
+// Allow Android users to dismiss an open modal with the device Back/Escape key.
+document.addEventListener("keydown", event=>{
+  if(event.key === "Escape"){
+    document.querySelectorAll(".modal-overlay.show").forEach(modal=>{
+      modal.classList.remove("show");
+    });
+  }
+});
 
 
 function openModal(id){
@@ -3081,13 +3091,16 @@ async function viewUser(
     "orders"
   );
 
+  // Open immediately; never make the tap wait for network calls.
   openModal(
     "userModal"
   );
 
-  await loadUserOrders();
-
-  await loadUserTransactions();
+  // Load both sections independently so a slow request cannot hold up the other.
+  void Promise.allSettled([
+    loadUserOrders(),
+    loadUserTransactions()
+  ]);
 }
 
 
