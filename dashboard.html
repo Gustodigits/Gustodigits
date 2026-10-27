@@ -1744,7 +1744,7 @@ a{
                 <span id="countryCount">2 options</span>
             </div>
 
-            <div class="provider-choice-grid" id="providerChoiceOptions">
+            <div class="provider-choice-grid hidden" id="providerChoiceOptions">
                 <button type="button" class="provider-choice-card" id="usaProviderCard">
                     <span class="provider-choice-flag">🇺🇸</span>
                     <span class="provider-choice-title">USA</span>
@@ -1757,8 +1757,8 @@ a{
                 </button>
             </div>
 
-            <div id="allCountrySelector" class="hidden" style="margin-top:14px">
-                <div class="back-row">
+            <div id="allCountrySelector" style="margin-top:14px">
+                <div class="back-row hidden">
                     <button class="back-btn" type="button" id="backToProviderCards">← Back</button>
                 </div>
                 <div class="selection-label">
@@ -2599,20 +2599,15 @@ async function updateAdminDashboardLink(){
 EDGE FUNCTION
 ========================================================= */
 
-const TEXT_VERIFIED_FUNCTION_URL =
-    `${SUPABASE_URL}/functions/v1/text-verified-api`;
-
-const VIRTUAL_SMS_FUNCTION_URL =
-    `${SUPABASE_URL}/functions/v1/virtual-sms-api`;
+const SMSBOWER_FUNCTION_URL =
+    `${SUPABASE_URL}/functions/v1/smsbower-api`;
 
 function selectedProvider(){
-    return selectedCountry?.provider || "virtual-sms-api";
+    return "smsbower-api";
 }
 
-function providerFunctionUrl(provider = selectedProvider()){
-    return provider === "text-verified-api"
-        ? TEXT_VERIFIED_FUNCTION_URL
-        : VIRTUAL_SMS_FUNCTION_URL;
+function providerFunctionUrl(){
+    return SMSBOWER_FUNCTION_URL;
 }
 
 
@@ -2793,41 +2788,25 @@ async function callProvider(
         return { ok:true, orders };
     }
 
-    const provider = payload.provider || selectedProvider();
-    const functionUrl = providerFunctionUrl(provider);
-    const requestAction = action === "servers" ? "price" : action;
+    const functionUrl = providerFunctionUrl();
+    const requestAction = action === "servers" ? "prices" : action;
     const requestPayload = { ...payload };
     delete requestPayload.provider;
 
-    // The TextVerified flow expects its service name/code and SMS capability.
-    if(provider === "text-verified-api"){
-        if(action === "services"){
-            requestPayload.country = "USA";
-            requestPayload.country_name = "USA";
+    // SMSBower requires numeric country_id, service_code and the real server_id.
+    requestPayload.version = requestPayload.version || "V1";
+    if(action === "services" || action === "servers" || action === "price"){
+        requestPayload.country_id = requestPayload.country_id ?? countryId(selectedCountry);
+        requestPayload.country_name = requestPayload.country_name || countryName(selectedCountry);
+        if(action === "servers" || action === "price"){
+            requestPayload.service_code = requestPayload.service_code || requestPayload.service || serviceCode(selectedService);
         }
-        if(action === "price" || action === "servers"){
-            requestPayload.country = "USA";
-            requestPayload.country_name = "USA";
-            requestPayload.serviceName = requestPayload.serviceName || requestPayload.service_name || requestPayload.service;
-            requestPayload.serviceCode = requestPayload.serviceCode || requestPayload.service_code || requestPayload.service;
-            requestPayload.capability = "sms";
-        }
-        if(action === "buy"){
-            requestPayload.requestId = requestPayload.requestId || crypto.randomUUID();
-            requestPayload.country = "USA";
-            requestPayload.serviceName = requestPayload.serviceName || requestPayload.service_name || requestPayload.service;
-            requestPayload.serviceCode = requestPayload.serviceCode || requestPayload.service_code || requestPayload.service;
-            requestPayload.capability = "sms";
-        }
-    }else{
-        if(action === "services" || action === "price" || action === "servers"){
-            requestPayload.country = requestPayload.country || "all";
-        }
-        if(action === "buy"){
-            requestPayload.requestId = requestPayload.requestId || crypto.randomUUID();
-            requestPayload.service = requestPayload.service || requestPayload.service_code || requestPayload.product;
-            requestPayload.country = requestPayload.country || "all";
-        }
+    }
+    if(action === "buy"){
+        requestPayload.country_id = requestPayload.country_id ?? countryId(selectedCountry);
+        requestPayload.country_name = requestPayload.country_name || countryName(selectedCountry);
+        requestPayload.service_code = requestPayload.service_code || requestPayload.service || serviceCode(selectedService);
+        requestPayload.server_id = requestPayload.server_id || requestPayload.operator || selectedServer?.id;
     }
 
     const response = await fetch(
@@ -2855,31 +2834,6 @@ async function callProvider(
         const err = new Error(String(error));
         Object.assign(err, data || {});
         throw err;
-    }
-
-    // The provider APIs return a single quote/price, not a legacy server list.
-    if(action === "servers"){
-        const source = data?.data && typeof data.data === "object" ? data.data : data;
-        const price = source?.customer_price_ngn ?? source?.customerPriceNgn ??
-            source?.price_ngn ?? source?.priceNgn ?? source?.price ??
-            source?.amount ?? source?.data?.customer_price_ngn ??
-            source?.data?.price_ngn ?? source?.data?.price;
-        const id = provider === "text-verified-api" ? "textverified" : "virtualsms";
-        if(price === undefined || price === null || !Number.isFinite(Number(price))){
-            return { ...data, servers:[] };
-        }
-        return {
-            ...data,
-            servers:[{
-                id,
-                server_id:id,
-                name:"Available Option",
-                server_name:"Available Option",
-                customer_price_ngn:Number(price),
-                price:Number(price),
-                raw:source
-            }]
-        };
     }
 
     return data;
@@ -3098,11 +3052,14 @@ async function loadCountries(){
     ++countryRequestId;
     countries = [];
     countryLoading = false;
-    $("countryCount").textContent = "2 options";
-    $("providerChoiceOptions").classList.remove("hidden");
-    $("allCountrySelector").classList.add("hidden");
+    $("providerChoiceOptions").classList.add("hidden");
+    $("allCountrySelector").classList.remove("hidden");
+    $("countryCount").textContent = "Loading countries...";
     $("countryHeading").textContent = "Choose destination";
+    $("countrySearch").value = "";
+    $("countryOptions").classList.remove("collapsed");
     showStepPanel(1);
+    await loadProviderCountries();
 }
 
 async function chooseAllCountryProvider(){
@@ -3136,7 +3093,7 @@ async function loadProviderCountries(){
     $("countryOptions").classList.remove("collapsed");
     $("countryOptions").innerHTML = '<div class="loading-state">Loading available countries...</div>';
     try{
-        const data = await callProvider("countries", { provider:"virtual-sms-api" });
+        const data = await callProvider("countries", { version:"V1" });
         if(request !== countryRequestId) return;
         const raw = Array.isArray(data?.data) ? data.data :
             Array.isArray(data?.countries) ? data.countries :
@@ -3146,7 +3103,7 @@ async function loadProviderCountries(){
             Array.isArray(data?.data?.data) ? data.data.data : [];
         countries = raw.map(item => {
             const normalized = normalizeCountry(item);
-            return normalized ? { ...normalized, provider:"virtual-sms-api" } : null;
+            return normalized ? { ...normalized, provider:"smsbower-api" } : null;
         }).filter(Boolean);
         $("allCountryCount").textContent = `${countries.length} available`;
         renderCountries();
@@ -3314,7 +3271,7 @@ function renderCountries(){
             const normalizedSearch = search.replace(/[^a-z0-9]/g, "");
             return terms.some(term => term.includes(search) || term.replace(/[^a-z0-9]/g, "").includes(normalizedSearch));
         });
-    const filtered = search ? matches : matches.slice(0, 5);
+    const filtered = matches;
 
 
     if(
@@ -3457,13 +3414,7 @@ $("countrySearch").addEventListener("input", () => {
     $("countryOptions").classList.remove("collapsed");
     renderCountries();
 });
-$("usaProviderCard").addEventListener("click", () => {
-    const usa = {
-        name:"USA", code:"USA", id:"USA", country_id:"USA",
-        country_key:"USA", country_name:"USA", provider:"text-verified-api"
-    };
-    selectCountry(usa);
-});
+$("usaProviderCard").addEventListener("click", chooseAllCountryProvider);
 $("allCountryProviderCard").addEventListener("click", chooseAllCountryProvider);
 $("backToProviderCards").addEventListener("click", () => {
     countries = [];
@@ -3940,7 +3891,7 @@ function renderServices(){
 
             }
         );
-    const filtered = search ? matches : matches.slice(0, 5);
+    const filtered = matches;
 
 
     if(
@@ -4440,8 +4391,7 @@ async function loadServers(){
                 .map(
                     normalizeServer
                 )
-                .filter(Boolean)
-                .slice(0,5);
+                .filter(Boolean);
 
 
         /*
@@ -4546,8 +4496,8 @@ function normalizeServer(
     }
 
 
-    // Never expose provider/operator branding in the customer dashboard.
-    const name = "Available Option";
+    // Use the server label supplied by SMSBower without exposing provider branding.
+    const name = String(item.label || item.server_name || item.serverName || item.name || "Server");
 
 
     const price =
@@ -4641,7 +4591,7 @@ function renderServers(){
 
                                         <div class="server-name">
                                             ${
-                                                "Available Option"
+                                                escapeHtml(server.name)
                                             }
                                         </div>
 
