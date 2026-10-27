@@ -16,6 +16,15 @@
 
 html{
   font-size:16px;
+  min-height:100%;
+  overflow-y:auto;
+  -webkit-overflow-scrolling:touch;
+}
+
+body{
+  min-height:100%;
+  overflow-y:auto;
+  -webkit-overflow-scrolling:touch;
 }
 
 :root{
@@ -165,6 +174,9 @@ button{
   border-right:1px solid var(--border);
   padding:20px 13px;
   z-index:50;
+  overflow-y:auto;
+  overscroll-behavior:contain;
+  -webkit-overflow-scrolling:touch;
 }
 
 .sidebar-logo{
@@ -609,8 +621,12 @@ td{
 .modal{
   width:100%;
   max-width:850px;
-  max-height:92vh;
-  overflow:auto;
+  max-height:calc(100vh - 32px);
+  max-height:calc(100dvh - 32px);
+  overflow-x:hidden;
+  overflow-y:auto;
+  overscroll-behavior:contain;
+  -webkit-overflow-scrolling:touch;
   background:#fff;
   border-radius:16px;
   box-shadow:0 20px 70px rgba(0,0,0,.2);
@@ -4156,17 +4172,10 @@ document.addEventListener(
             return;
           }
 
-          if(
-            event ===
-            "SIGNED_IN" &&
-            session
-          ){
-
-            currentUser =
-              session.user;
-
-            await checkAdminAccess();
-          }
+          // Do not call Supabase auth/RPC methods from inside this callback.
+          // Supabase can hold its auth lock while firing auth-state events,
+          // so awaiting checkAdminAccess() here can deadlock the dashboard.
+          // login() and the initial session check already handle sign-in.
 
         }
       );
