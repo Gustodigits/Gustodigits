@@ -2751,7 +2751,7 @@ async function callProvider(
                 order.phone_number || order.phoneNumber || order.phone || order.number || ""
             ).trim();
             if (!number || number === "—" || /^(number purchased|pending|unknown)$/i.test(number)) return false;
-            const activation = String(order.provider_activation_id || order.activation_id || order.activationId || "").trim();
+            const activation = String(order.provider_activation_id || order.activation_id || order.activationId || order.numpool_order_id || "").trim().replace(/^smsbower:/i, "");
             if (!activation || activation.startsWith("pending:")) return false;
             return true;
         }).sort((a,b) => {
@@ -2764,7 +2764,7 @@ async function callProvider(
     }
 
     const functionUrl = providerFunctionUrl();
-    const requestAction = action === "servers" ? "prices" : action;
+    const requestAction = action === "servers" ? "prices" : action === "status" ? "check" : action;
     const requestPayload = { ...payload };
     delete requestPayload.provider;
 
@@ -2864,6 +2864,7 @@ await Promise.allSettled([
         loadCountries(),
         loadRecentPurchases()
     ]);
+    startOrderStatusPolling();
 }
 
 
@@ -5518,6 +5519,46 @@ async function loadRecentPurchases(){
     }
 }
 
+let orderStatusPollTimer = null;
+let orderStatusPollBusy = false;
+
+async function pollPendingOrderStatuses(){
+    if(orderStatusPollBusy || !currentSession?.access_token || document.visibilityState !== "visible") return;
+    orderStatusPollBusy = true;
+    let changed = false;
+    try{
+        const pending = (recentOrdersCache || [])
+            .filter(order => order && order.status === "pending" && (order.raw?.id || order.id))
+            .slice(0, 5);
+        for(const order of pending){
+            try{
+                const data = await callProvider("status", {
+                    order_id: order.raw?.id || order.id,
+                    orderId: order.raw?.id || order.id,
+                    activation_id: order.activationId || order.raw?.provider_activation_id || order.raw?.activation_id || order.raw?.numpool_order_id,
+                    activationId: order.activationId || order.raw?.provider_activation_id || order.raw?.activation_id || order.raw?.numpool_order_id
+                });
+                const status = String(data?.status || data?.order?.status || "").toLowerCase();
+                const code = data?.otp_code || data?.sms_code || data?.code || data?.order?.otp_code || data?.order?.sms_code || data?.order?.code;
+                if(code || ["completed","complete","success","successful","received"].includes(status)) changed = true;
+            }catch(error){
+                // Silent background polling: manual Get Code remains available.
+                console.debug("Background SMS status check:", error?.message || error);
+            }
+        }
+        if(changed) await loadRecentPurchases();
+    }finally{
+        orderStatusPollBusy = false;
+    }
+}
+
+function startOrderStatusPolling(){
+    if(orderStatusPollTimer) return;
+    orderStatusPollTimer = setInterval(() => { void pollPendingOrderStatuses(); }, 12000);
+    // Recover immediately after a reload, then continue polling while the page is visible.
+    void pollPendingOrderStatuses();
+}
+
 function isRenderableRealOrder(order){
     if (!order) return false;
 
@@ -5633,9 +5674,7 @@ function normalizeOrder(
             order.activationId,
 
         activationId:
-            order.provider_activation_id ||
-            order.activation_id ||
-            order.activationId,
+            String(order.provider_activation_id || order.activation_id || order.activationId || order.numpool_order_id || "").replace(/^smsbower:/i, ""),
 
         country:
             order.country_name ||
