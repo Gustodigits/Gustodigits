@@ -44,7 +44,7 @@ function normalizeOrder(order){
  const providerActivation=String(order.provider_activation_id??order.providerActivationId??order.activation_id??order.activationId??order.numpool_order_id??order.numpoolOrderId??'').trim();
  // A UUID row ID or pending:<request-id> is not a provider activation ID.
  if(!number||number==='—'||/^(number purchased|pending|unknown)$/i.test(number))return null;
- if(!providerActivation||providerActivation.startsWith('pending:'))return null;
+ if((!providerActivation||providerActivation.startsWith('pending:'))&&!isRejectedStatus(rawStatus)&&!rawStatus.includes('cancel'))return null;
  let status='pending';
  if(rawStatus.includes('cancel'))status='cancelled';
  else if(rawStatus.includes('receive')||rawStatus.includes('success')||rawStatus.includes('complete')||rawStatus==='ok'||rawStatus==='verified'||rawStatus==='delivered')status='received';
@@ -70,7 +70,9 @@ async function callProvider(action,payload={}){
  const functionUrl=(provider==='text-verified-api'||provider==='textverified')?TEXT_VERIFIED_FUNCTION_URL:(provider==='smsbower'||provider==='smsbower-api'||provider==='sms-bower'||provider.startsWith('smsbower_')? `${SUPABASE_URL}/functions/v1/smsbower-api`:VIRTUAL_SMS_FUNCTION_URL);
  const requestPayload={...payload};
  delete requestPayload.provider;
- const response=await fetch(functionUrl,{method:'POST',headers:{'Content-Type':'application/json','Authorization':`Bearer ${currentSession.access_token}`,'apikey':SUPABASE_PUBLISHABLE_KEY},body:JSON.stringify({action,...requestPayload})});
+ const isSmsBower=provider==='smsbower'||provider==='smsbower-api'||provider==='sms-bower'||provider.startsWith('smsbower_');
+ const providerAction=isSmsBower&&action==='status'?'check':action;
+ const response=await fetch(functionUrl,{method:'POST',headers:{'Content-Type':'application/json','Authorization':`Bearer ${currentSession.access_token}`,'apikey':SUPABASE_PUBLISHABLE_KEY},body:JSON.stringify({action:providerAction,...requestPayload})});
  let data;try{data=await response.json();}catch{throw new Error('Invalid server response.');}
  if(!response.ok||data?.ok===false)throw new Error(String(data?.message||data?.error||data?.msg||'Request failed.'));
  return data;
@@ -86,8 +88,29 @@ $('orderList').addEventListener('click',async event=>{const copy=event.target.cl
 async function getCode(order,button){const activationId=order.activationId;if(!activationId||activationId.startsWith('pending:')){showToast('A confirmed provider activation ID was not found.');return;}button.disabled=true;button.textContent='Checking...';try{await callProvider('status',{orderId:order.id,order_id:order.id,activation_id:activationId,activationId,provider:providerFunctionName(order)});await loadOrders();const latest=findOrder(activationId);showToast(latest?.code?'Verification code received.':'Status checked. If the SMS has not arrived, try again shortly.');}catch(error){showToast(error?.message||'Unable to check code right now.');}finally{const current=findOrder(activationId);if(current){const b=[...$('orderList').querySelectorAll('[data-get-code]')].find(x=>x.dataset.getCode===activationId);if(b){b.disabled=false;b.textContent='Get Code';}}}}
 $('cancelNo').addEventListener('click',()=>{$('cancelModal').classList.remove('show');pendingCancelOrder=null;});$('cancelModal').addEventListener('click',event=>{if(event.target===$('cancelModal')){$('cancelModal').classList.remove('show');pendingCancelOrder=null;}});$('cancelYes').addEventListener('click',async()=>{const order=pendingCancelOrder;$('cancelModal').classList.remove('show');pendingCancelOrder=null;if(!order)return;await cancelOrder(order);});
 async function cancelOrder(order){const activationId=order.activationId;if(!activationId||activationId.startsWith('pending:')){showToast('A confirmed provider activation ID was not found.');return;}const button=[...$('orderList').querySelectorAll('[data-cancel]')].find(x=>x.dataset.cancel===activationId);if(button){button.disabled=true;button.textContent='Cancelling...';}try{await callProvider('cancel',{orderId:order.id,order_id:order.id,activation_id:activationId,activationId,provider:providerFunctionName(order)});showToast('Cancellation request submitted.');await loadOrders();}catch(error){showToast(error?.message||'Cancellation unavailable. Please try again.');if(button){button.disabled=false;button.textContent='Cancel';}}}
+let orderPollTimer=null,orderPollBusy=false;
+async function pollPendingOrderCodes(){
+ if(orderPollBusy||!currentSession?.access_token||document.visibilityState!=='visible')return;
+ orderPollBusy=true;
+ try{
+  const pending=currentOrders.filter(o=>o.status==='pending'&&!isRejectedStatus(normalizeStatus(o.raw?.status))&&o.activationId&&!o.activationId.startsWith('pending:')).slice(0,5);
+  let updated=false;
+  for(const order of pending){
+   try{
+    const result=await callProvider('status',{order_id:order.id,orderId:order.id,activation_id:order.activationId,activationId:order.activationId,provider:providerFunctionName(order)});
+    if(result?.code||result?.otp_code||result?.sms_code||result?.order?.otp_code||result?.order?.sms_code)updated=true;
+   }catch(error){console.debug('Order code auto-check:',error?.message||error);}
+  }
+  if(updated)await loadOrders();
+ }finally{orderPollBusy=false;}
+}
+function startOrderCodePolling(){
+ if(orderPollTimer)return;
+ orderPollTimer=setInterval(()=>{void pollPendingOrderCodes();},12000);
+ void pollPendingOrderCodes();
+}
 $('refreshButton').addEventListener('click',async()=>{const button=$('refreshButton');button.disabled=true;button.textContent='…';try{await loadOrders();}finally{button.disabled=false;button.textContent='↻';}});
-async function initialize(){try{const {data,error}=await supabaseClient.auth.getSession();if(error||!data?.session){location.replace('login.html');return;}currentSession=data.session;supabaseClient.auth.onAuthStateChange((event,session)=>{currentSession=session;if(event==='SIGNED_OUT')location.replace('login.html');});await loadOrders();}catch(error){console.error('Orders initialization error:',error);$('orderList').innerHTML=`<div class="error">❌ Unable to open orders.<br><br>${escapeHtml(error?.message||'Request failed.')}</div>`;}}
+async function initialize(){try{const {data,error}=await supabaseClient.auth.getSession();if(error||!data?.session){location.replace('login.html');return;}currentSession=data.session;supabaseClient.auth.onAuthStateChange((event,session)=>{currentSession=session;if(event==='SIGNED_OUT')location.replace('login.html');});await loadOrders();startOrderCodePolling();}catch(error){console.error('Orders initialization error:',error);$('orderList').innerHTML=`<div class="error">❌ Unable to open orders.<br><br>${escapeHtml(error?.message||'Request failed.')}</div>`;}}
 initialize();
 </script>
 </body>
