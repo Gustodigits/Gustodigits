@@ -4364,7 +4364,7 @@ async function loadServers(){
                     Boolean(server) &&
                     server.available !== false &&
                     server.live !== false &&
-                    (server.stock === null || server.stock > 0) &&
+                    server.stock !== null && server.stock > 0 &&
                     Number.isFinite(server.price) &&
                     server.price > 0
                 );
