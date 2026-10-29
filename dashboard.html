@@ -4359,10 +4359,15 @@ async function loadServers(){
 
         servers =
             raw
-                .map(
-                    normalizeServer
-                )
-                .filter(Boolean);
+                .map(normalizeServer)
+                .filter(server =>
+                    Boolean(server) &&
+                    server.available !== false &&
+                    server.live !== false &&
+                    (server.stock === null || server.stock > 0) &&
+                    Number.isFinite(server.price) &&
+                    server.price > 0
+                );
 
 
         /*
@@ -4456,21 +4461,16 @@ function normalizeServer(
         item.operatorId ??
         item.id;
 
+    if(id === undefined || id === null) return null;
 
-    if(
-        id === undefined ||
-        id === null
-    ){
+    // Never display saved/stale or explicitly unavailable provider entries.
+    if(item.available === false || item.live === false || item.is_active === false) return null;
 
-        return null;
+    const stockValue = item.stock ?? item.count ?? item.available_count ?? item.availableCount;
+    const stock = stockValue == null ? null : Number(stockValue);
+    if(stock !== null && (!Number.isFinite(stock) || stock <= 0)) return null;
 
-    }
-
-
-    // Use the server label supplied by SMSBower without exposing provider branding.
     const name = String(item.label || item.server_name || item.serverName || item.name || "Server");
-
-
     const price =
         item.customer_price_ngn ??
         item.customerPriceNgn ??
@@ -4480,22 +4480,14 @@ function normalizeServer(
         item.amount ??
         null;
 
-
     return {
-
-        id:
-            String(id),
-
-        name:
-            String(name),
-
-        price:
-            price === null
-                ? null
-                : Number(price),
-
-        raw:item
-
+        id: String(id),
+        name,
+        price: price === null ? null : Number(price),
+        stock,
+        available: item.available !== false,
+        live: item.live !== false,
+        raw: item
     };
 }
 
@@ -5410,10 +5402,18 @@ async function purchaseNumber(){
             /\b(?:SERVER|PROVIDER)\s+(?:IS\s+)?(?:NOT\s+AVAILABLE|UNAVAILABLE)\b/i.test(errorMessage)
         ){
 
+            // Provider stock can change after the list loads. Remove the stale
+            // selection and fetch fresh stock so unavailable servers disappear.
+            selectedServer = null;
+            $("buyArea").style.display = "none";
+            $("selectedServerName").textContent = "Select a server";
+            $("selectedServerPrice").textContent = "—";
+            await loadServers();
+
             showAlert(
-                "Server Unavailable",
-                "Server not available right now. Please try another server.",
-                "📵"
+                "Availability Refreshed",
+                "That server ran out of stock. The live server list has been refreshed; please choose one of the servers still shown as available.",
+                "📡"
             );
 
             return;
