@@ -5400,6 +5400,8 @@ async function purchaseNumber(){
             normalizedErrorMessage.includes("UNAVAILABLE") ||
             /\b(?:NO|NOT ENOUGH|INSUFFICIENT)\s+(?:AVAILABLE\s+)?(?:NUMBERS?|ACTIVATIONS?|STOCK)\b/i.test(errorMessage) ||
             /\b(?:SERVER|PROVIDER)\s+(?:IS\s+)?(?:NOT\s+AVAILABLE|UNAVAILABLE)\b/i.test(errorMessage)
+            || /^\s*number\s+(?:is\s+)?not\s+available\b/i.test(errorMessage)
+            || /\btry\s+another\s+server\b/i.test(errorMessage)
         ){
 
             // Provider stock can change after the list loads. Remove the stale
