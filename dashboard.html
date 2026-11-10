@@ -1319,6 +1319,10 @@ a{
     background:var(--primary);
     color:#fff;
 }
+.alert-wallet{
+    background:var(--green);
+    color:#fff;
+}
 
 .alert-cancel{
     background:#f0f5f8;
@@ -5286,7 +5290,8 @@ async function purchaseNumber(){
                 () => {
 
                     getOrderStatus({
-
+                        id: purchaseOrder?.id || purchaseOrder?.order_id || data?.order_id || data?.id,
+                        provider: selectedProvider(),
                         activation_id:
                             activationId,
 
@@ -6038,7 +6043,9 @@ async function getOrderStatus(
                     activationId: activationId,
 
                     provider:
-                        order?.raw?.provider === "virtualsms" || order?.raw?.provider === "virtual-sms-api" ? "virtual-sms-api" : "smsbower-api"
+                        order?.provider === "virtualsms" || order?.provider === "virtual-sms-api" ||
+                        order?.raw?.provider === "virtualsms" || order?.raw?.provider === "virtual-sms-api"
+                            ? "virtual-sms-api" : "smsbower-api"
 
                 }
             );
