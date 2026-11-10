@@ -2572,8 +2572,8 @@ let activeNumberProvider="smsbower-api";
 function selectedProvider(){return activeNumberProvider;}
 function providerFunctionUrl(provider){
  const raw=String(provider||activeNumberProvider).toLowerCase();
- const key=raw.includes("fetchsms")?"fetchsms-api":raw.includes("virtualsms")||raw.includes("virtual-sms")?"virtual-sms-api":"smsbower-api";
- return `${SUPABASE_URL}/functions/v1/${PROVIDER_FUNCTIONS[key]}`;
+ const key=raw.includes("textverified")||raw.includes("text-verified")?"text-verified-api":raw.includes("fetchsms")?"fetchsms-api":raw.includes("virtualsms")||raw.includes("virtual-sms")?"virtual-sms-api":"smsbower-api";
+ return `${SUPABASE_URL}/functions/v1/${key}`;
 }
 function renderProviderTabs(){
  [["allCountryProviderCard","smsbower-api"],["usaProviderCard","fetchsms-api"],["allCountry2ProviderCard","virtual-sms-api"]].forEach(([id,key])=>{const b=$(id);if(!b)return;const active=activeNumberProvider===key;b.classList.toggle("active",active);b.setAttribute("aria-selected",active?"true":"false");});
@@ -3041,8 +3041,10 @@ async function chooseProvider(provider){
     servers = [];
     servicesLoaded = false;
     servicesLoading = false;
-    $("providerChoiceOptions").classList.add("hidden");
+    $("providerChoiceOptions").classList.remove("hidden");
     $("allCountrySelector").classList.remove("hidden");
+    countryLoading=false;
+    ++countryRequestId;
     $("countryHeading").textContent = "Select Country";
     $("countrySearch").value = "";
     $("countryOptions").classList.remove("collapsed");
@@ -5544,7 +5546,7 @@ async function pollPendingOrderStatuses(){
         for(const order of pending){
             try{
                 const data = await callProvider("status", {
-                    provider: order.provider==="fetchsms"?"fetchsms-api":order.provider==="virtualsms"?"virtual-sms-api":"smsbower-api",
+                    provider: order.provider==="textverified"?"text-verified-api":order.provider==="fetchsms"?"fetchsms-api":order.provider==="virtualsms"?"virtual-sms-api":"smsbower-api",
                     order_id: order.id || order.order_id,
                     orderId: order.id || order.order_id,
                     activation_id: String(order.provider_activation_id || order.activation_id || order.activationId || order.numpool_order_id || "").replace(/^smsbower:/i, ""),
@@ -6033,11 +6035,9 @@ async function getOrderStatus(
                     activationId: activationId,
 
                     provider:
-                        order?.raw?.provider === "fetchsms" || order?.raw?.provider === "fetchsms-api"
-                            ? "fetchsms-api"
-                            : order?.raw?.provider === "virtualsms" || order?.raw?.provider === "virtual-sms-api"
-                                ? "virtual-sms-api"
-                                : undefined
+                        order?.raw?.provider === "textverified" || order?.raw?.provider === "text-verified-api" ? "text-verified-api"
+                            : order?.raw?.provider === "fetchsms" || order?.raw?.provider === "fetchsms-api" ? "fetchsms-api"
+                            : order?.raw?.provider === "virtualsms" || order?.raw?.provider === "virtual-sms-api" ? "virtual-sms-api" : "smsbower-api"
 
                 }
             );
@@ -6274,11 +6274,9 @@ async function cancelOrder(
                 activationId: activationId,
 
                 provider:
-                    order?.raw?.provider === "fetchsms" || order?.raw?.provider === "fetchsms-api"
-                        ? "fetchsms-api"
-                        : order?.raw?.provider === "virtualsms" || order?.raw?.provider === "virtual-sms-api"
-                            ? "virtual-sms-api"
-                            : undefined
+                    order?.raw?.provider === "textverified" || order?.raw?.provider === "text-verified-api" ? "text-verified-api"
+                        : order?.raw?.provider === "fetchsms" || order?.raw?.provider === "fetchsms-api" ? "fetchsms-api"
+                        : order?.raw?.provider === "virtualsms" || order?.raw?.provider === "virtual-sms-api" ? "virtual-sms-api" : "smsbower-api"
 
             }
         );
