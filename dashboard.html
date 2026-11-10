@@ -2578,7 +2578,7 @@ function providerFunctionUrl(provider){
 function renderProviderTabs(){
  [["allCountryProviderCard","smsbower-api"],["usaProviderCard","fetchsms-api"],["allCountry2ProviderCard","virtual-sms-api"]].forEach(([id,key])=>{const b=$(id);if(!b)return;const active=activeNumberProvider===key;b.classList.toggle("active",active);b.setAttribute("aria-selected",active?"true":"false");});
  const box=$("providerFallback");if(!box)return;
- const choices=activeNumberProvider==="smsbower-api"?[["Please try USA","fetchsms-api"],["All Countries 2","virtual-sms-api"]]:activeNumberProvider==="fetchsms-api"?[["Please try All Countries","smsbower-api"],["All Countries 2","virtual-sms-api"]]:[["Please try USA","fetchsms-api"],["All Countries","smsbower-api"]];
+ const choices=activeNumberProvider==="smsbower-api"?[["USA","fetchsms-api"],["All Countries 2","virtual-sms-api"]]:activeNumberProvider==="fetchsms-api"?[["All Countries","smsbower-api"],["All Countries 2","virtual-sms-api"]]:[["USA","fetchsms-api"],["All Countries","smsbower-api"]];
  const message=activeNumberProvider==="fetchsms-api"?"Number not available. Please try All Countries.":activeNumberProvider==="virtual-sms-api"?"Number not available. Please try USA.":"Number not available. Please try USA.";
  box.innerHTML=`<strong>${message}</strong>${choices.map(([label,key])=>`<button type="button" data-provider-tab="${key}">↗ ${label}</button>`).join("")}`;
  box.querySelectorAll("[data-provider-tab]").forEach(b=>b.addEventListener("click",()=>chooseProvider(b.dataset.providerTab)));
