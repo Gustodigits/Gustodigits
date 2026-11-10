@@ -5095,11 +5095,7 @@ async function purchaseNumber(){
 
 
         const message =
-            balance <= 0
-
-                ? `Insufficient balance. Please add ${formatNaira(needed)} to your wallet.`
-
-                : `Insufficient funds. Please add ${formatNaira(needed)} to your wallet.`;
+            `Insufficient funds. Please add ${formatNaira(needed)} to your wallet.`;
 
 
         showAlert(
