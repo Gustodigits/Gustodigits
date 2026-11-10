@@ -1560,7 +1560,6 @@ td{
     <section id="page-markup" class="page">
       <div class="tabs" style="margin-bottom:14px">
         <button class="tab-btn active" id="providerAdminSmsbowerBtn" onclick="showNumberProviderAdmin('smsbower')">SMSBower</button>
-        <button class="tab-btn" id="providerAdminFetchsmsBtn" onclick="showNumberProviderAdmin('fetchsms')">Fetch SMS</button>
         <button class="tab-btn" id="providerAdminVirtualsmsBtn" onclick="showNumberProviderAdmin('virtualsms')">Virtual SMS</button>
       </div>
       <div id="providerAdminSmsbower">
@@ -1604,27 +1603,6 @@ td{
           </section>
         </div>
       </div>
-      </div>
-      <div id="providerAdminFetchsms" class="hidden">
-        <div class="panel">
-          <div class="panel-header"><div class="panel-title">Fetch SMS Pricing & Service Controls</div><button class="primary-btn" onclick="loadFetchSmsAdminData()">Refresh</button></div>
-          <div class="panel-body">
-            <div class="markup-form"><div class="markup-form-title">Add / Update Fetch SMS Pricing Rule</div>
-              <div class="form-grid">
-                <div class="form-group"><label>Service</label><select id="fetchSmsRuleService"><option value="">All services (default)</option></select></div>
-                <div class="form-group"><label>Pricing mode</label><select id="fetchSmsRuleMode"><option value="markup">Markup percentage</option><option value="fixed">Fixed NGN price</option></select></div>
-                <div class="form-group" id="fetchSmsMarkupField"><label>Markup percentage</label><input id="fetchSmsRuleMarkup" type="number" min="0" step="0.01" value="100"></div>
-                <div class="form-group hidden" id="fetchSmsFixedField"><label>Fixed selling price (NGN)</label><input id="fetchSmsRuleFixed" type="number" min="1" step="1"></div>
-              </div>
-              <p style="font-size:11px;color:#64748b;margin-bottom:12px">Default markup is 100%. Service-specific rules override the default. This provider does not expose separate server IDs.</p>
-              <button class="primary-btn" onclick="saveFetchSmsPriceRule()">Save pricing rule</button>
-            </div>
-            <div class="panel-title" style="margin:12px 0">Service Management</div>
-            <div class="table-wrap"><table><thead><tr><th>Service</th><th>Service ID</th><th>Live stock</th><th>Status</th><th>Action</th></tr></thead><tbody id="fetchSmsServicesBody"></tbody></table></div>
-            <div class="panel-title" style="margin:18px 0 10px">Pricing Rules</div>
-            <div class="table-wrap"><table><thead><tr><th>Service</th><th>Mode</th><th>Markup</th><th>Fixed NGN</th><th>Action</th></tr></thead><tbody id="fetchSmsRulesBody"></tbody></table></div>
-          </div>
-        </div>
       </div>
       <div id="providerAdminVirtualsms" class="hidden">
         <div class="panel">
@@ -4293,40 +4271,19 @@ document.addEventListener(
 async function providerAdminRequest(provider,payload){
  const {data:{session}}=await supabaseClient.auth.getSession();
  if(!session?.access_token)throw new Error("Session expired. Please log in again.");
- const slug=provider==="fetchsms"?"fetchsms-api":"virtual-sms-api";
+ const slug="virtual-sms-api";
  const res=await fetch(SUPABASE_URL+"/functions/v1/"+slug,{method:"POST",headers:{"Content-Type":"application/json","Authorization":"Bearer "+session.access_token,"apikey":SUPABASE_KEY},body:JSON.stringify(payload)});
  const raw=await res.text();let d;try{d=JSON.parse(raw)}catch{d={error:raw}}
  if(!res.ok||d?.ok===false)throw new Error(d?.message||d?.error||"Provider admin request failed.");
  return d;
 }
 function showNumberProviderAdmin(provider){
- ["smsbower","fetchsms","virtualsms"].forEach(k=>{
+ ["smsbower","virtualsms"].forEach(k=>{
   document.getElementById("providerAdmin"+k[0].toUpperCase()+k.slice(1)).classList.toggle("hidden",k!==provider);
   document.getElementById("providerAdmin"+k[0].toUpperCase()+k.slice(1)+"Btn").classList.toggle("active",k===provider);
  });
- if(provider==="fetchsms")loadFetchSmsAdminData();
  if(provider==="virtualsms")loadVirtualSmsAdminData();
 }
-let fetchSmsAdmin={services:[],settings:[],rules:[]};
-async function loadFetchSmsAdminData(){
- try{
-  const [a,b,c]=await Promise.all([providerAdminRequest("fetchsms",{action:"admin_services"}),providerAdminRequest("fetchsms",{action:"list_service_settings"}),providerAdminRequest("fetchsms",{action:"list_price_rules"})]);
-  fetchSmsAdmin.services=smsRows(a,"services");fetchSmsAdmin.settings=smsRows(b,"settings");fetchSmsAdmin.rules=smsRows(c,"rules");
-  const s=document.getElementById("fetchSmsRuleService"),old=s.value;s.innerHTML='<option value="">All services (default)</option>'+fetchSmsAdmin.services.map(x=>'<option value="'+escapeHtml(x.code||x.id)+'">'+escapeHtml(x.name||x.slug||x.code)+'</option>').join("");if([...s.options].some(o=>o.value===old))s.value=old;
-  renderFetchSmsAdmin();
- }catch(e){showToast(e.message,"error");}
-}
-function renderFetchSmsAdmin(){
- document.getElementById("fetchSmsServicesBody").innerHTML=fetchSmsAdmin.services.map(x=>{
-  const code=String(x.code||x.id),s=fetchSmsAdmin.settings.find(z=>String(z.service_code)===code),active=s?s.is_active!==false:true;
-  return '<tr><td>'+escapeHtml(x.name||x.slug||code)+'</td><td>'+escapeHtml(code)+'</td><td>'+Number(x.short_available||0)+'</td><td><span class="badge '+(active?'green':'red')+'">'+(active?'Active':'Disabled')+'</span></td><td><button class="small-btn '+(active?'red-btn':'green-btn')+'" onclick="toggleFetchSmsService(\''+escapeJs(code)+'\',\''+escapeJs(x.name||code)+'\','+(!active)+')">'+(active?'Disable':'Enable')+'</button></td></tr>';
- }).join("")||'<tr><td colspan="5" class="empty">No services returned.</td></tr>';
- document.getElementById("fetchSmsRulesBody").innerHTML=fetchSmsAdmin.rules.map(r=>'<tr><td>'+escapeHtml(r.service_code||"All services")+'</td><td>'+escapeHtml(r.pricing_mode||"markup")+'</td><td>'+(r.pricing_mode==="fixed"?"—":escapeHtml(r.markup_percent??100)+"%")+'</td><td>'+(r.fixed_price_ngn==null?"—":formatMoney(r.fixed_price_ngn))+'</td><td><button class="small-btn red-btn" onclick="deleteFetchSmsPriceRule(\''+escapeJs(r.id)+'\')">Delete</button></td></tr>').join("")||'<tr><td colspan="5" class="empty">No custom rules. Default markup: 100%.</td></tr>';
-}
-async function toggleFetchSmsService(code,name,active){try{await providerAdminRequest("fetchsms",{action:"save_service_setting",service_code:code,service_name:name,is_active:active});await loadFetchSmsAdminData();showToast("Fetch SMS service setting saved.");}catch(e){showToast(e.message,"error");}}
-async function saveFetchSmsPriceRule(){const mode=document.getElementById("fetchSmsRuleMode").value;try{await providerAdminRequest("fetchsms",{action:"save_price_rule",service_code:document.getElementById("fetchSmsRuleService").value||null,pricing_mode:mode,markup_percent:Number(document.getElementById("fetchSmsRuleMarkup").value||100),fixed_price_ngn:Number(document.getElementById("fetchSmsRuleFixed").value||0)});await loadFetchSmsAdminData();showToast("Fetch SMS pricing rule saved.");}catch(e){showToast(e.message,"error");}}
-async function deleteFetchSmsPriceRule(id){if(!confirm("Delete this Fetch SMS pricing rule?"))return;try{await providerAdminRequest("fetchsms",{action:"delete_price_rule",id});await loadFetchSmsAdminData();showToast("Pricing rule deleted.");}catch(e){showToast(e.message,"error");}}
-document.getElementById("fetchSmsRuleMode")?.addEventListener("change",()=>{const f=document.getElementById("fetchSmsRuleMode").value==="fixed";document.getElementById("fetchSmsMarkupField").classList.toggle("hidden",f);document.getElementById("fetchSmsFixedField").classList.toggle("hidden",!f);});
 let virtualSmsAdmin={countries:[],services:[],settings:[],rules:[]};
 async function loadVirtualSmsAdminData(){
  try{
