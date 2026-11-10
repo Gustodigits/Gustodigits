@@ -697,11 +697,10 @@ a{
 }
 
 /* Provider entry cards: two choices shown immediately, side by side. */
-.provider-choice-grid{
-    display:grid;
-    grid-template-columns:repeat(2,minmax(0,1fr));
-    gap:10px;
-}
+.provider-choice-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.provider-choice-card.active{border-color:#2388e8;background:#eaf5ff;box-shadow:0 0 0 2px rgba(35,136,232,.10)}
+.provider-fallback{margin-top:12px;border:1px solid #dbeaf5;background:#f5faff;border-radius:13px;padding:11px;color:#617283;font-size:11px;line-height:1.5}
+.provider-fallback button{display:block;width:100%;text-align:left;color:#176fc3;background:transparent;font-weight:800;padding:6px 0 0}
 .provider-choice-card{
     min-width:0;
     min-height:112px;
@@ -1744,17 +1743,9 @@ a{
                 <span id="countryCount">2 options</span>
             </div>
 
-            <div class="provider-choice-grid hidden" id="providerChoiceOptions">
-                <button type="button" class="provider-choice-card" id="usaProviderCard">
-                    <span class="provider-choice-flag">🇺🇸</span>
-                    <span class="provider-choice-title">USA</span>
-                    <span class="provider-choice-meta">United States numbers</span>
-                </button>
-                <button type="button" class="provider-choice-card" id="allCountryProviderCard">
-                    <span class="provider-choice-flag">🌍</span>
-                    <span class="provider-choice-title">All Countries</span>
-                    <span class="provider-choice-meta">Choose any available country</span>
-                </button>
+            <div class="provider-choice-grid" id="providerChoiceOptions" role="tablist" aria-label="Number providers">
+                <button type="button" class="provider-choice-card active" id="allCountryProviderCard" role="tab" aria-selected="true"><span class="provider-choice-flag">🌍</span><span class="provider-choice-title">All Countries</span><span class="provider-choice-meta">Worldwide numbers</span></button>
+                <button type="button" class="provider-choice-card" id="allCountry2ProviderCard" role="tab" aria-selected="false"><span class="provider-choice-flag">🌐</span><span class="provider-choice-title">All Countries 2</span><span class="provider-choice-meta">More country options</span></button>
             </div>
 
             <div id="allCountrySelector" style="margin-top:14px">
@@ -1774,6 +1765,7 @@ a{
                 </div>
             </div>
         </div>
+        <div id="providerFallback" class="provider-fallback" aria-live="polite"></div>
 
 
         <!-- SERVICE -->
@@ -2574,15 +2566,21 @@ const supabaseClient =
 EDGE FUNCTION
 ========================================================= */
 
-const SMSBOWER_FUNCTION_URL =
-    `${SUPABASE_URL}/functions/v1/smsbower-api`;
-
-function selectedProvider(){
-    return "smsbower-api";
+const PROVIDER_FUNCTIONS={"smsbower-api":"smsbower-api","virtual-sms-api":"virtual-sms-api"};
+let activeNumberProvider="smsbower-api";
+function selectedProvider(){return activeNumberProvider;}
+function providerFunctionUrl(provider){
+ const raw=String(provider||activeNumberProvider).toLowerCase();
+ const key=raw.includes("virtualsms")||raw.includes("virtual-sms")?"virtual-sms-api":"smsbower-api";
+ return `${SUPABASE_URL}/functions/v1/${key}`;
 }
-
-function providerFunctionUrl(){
-    return SMSBOWER_FUNCTION_URL;
+function renderProviderTabs(){
+ [["allCountryProviderCard","smsbower-api"],["allCountry2ProviderCard","virtual-sms-api"]].forEach(([id,key])=>{const b=$(id);if(!b)return;const active=activeNumberProvider===key;b.classList.toggle("active",active);b.setAttribute("aria-selected",active?"true":"false");});
+ const box=$("providerFallback");if(!box)return;
+ const choices=activeNumberProvider==="smsbower-api"?[["All Countries 2","virtual-sms-api"]]:[["All Countries","smsbower-api"]];
+ const message=activeNumberProvider==="virtual-sms-api"?"Number not available. Please try All Countries.":"Number not available. Please try All Countries 2.";
+ box.innerHTML=`<strong>${message}</strong>${choices.map(([label,key])=>`<button type="button" data-provider-tab="${key}">↗ ${label}</button>`).join("")}`;
+ box.querySelectorAll("[data-provider-tab]").forEach(b=>b.addEventListener("click",()=>chooseProvider(b.dataset.providerTab)));
 }
 
 
@@ -2763,13 +2761,11 @@ async function callProvider(
         return { ok:true, orders };
     }
 
-    const functionUrl = providerFunctionUrl();
-    const requestAction = action === "servers" ? "prices" : action === "status" ? "check" : action;
-    const requestPayload = { ...payload };
-    delete requestPayload.provider;
-
-    // SMSBower requires numeric country_id, service_code and the real server_id.
-    requestPayload.version = requestPayload.version || "V1";
+    const providerOverride=payload.provider||activeNumberProvider;
+    const functionUrl=providerFunctionUrl(providerOverride);
+    const requestAction=action==="servers"?(String(providerOverride).includes("virtual-sms")?"price":"prices"):action==="status"&&String(providerOverride).includes("smsbower")?"check":action;
+    const requestPayload={...payload};delete requestPayload.provider;
+    if(String(providerOverride).includes("smsbower"))requestPayload.version=requestPayload.version||"V1";
     if(action === "services" || action === "servers" || action === "price"){
         requestPayload.country_id = requestPayload.country_id ?? countryId(selectedCountry);
         requestPayload.country_name = requestPayload.country_name || countryName(selectedCountry);
@@ -2805,12 +2801,13 @@ async function callProvider(
     }
 
     if(!response.ok || data?.ok === false){
-        const error = data?.message || data?.error || data?.msg || "Request failed.";
-        const err = new Error(String(error));
-        Object.assign(err, data || {});
-        throw err;
+        const error=data?.message||data?.error||data?.msg||"Request failed.";
+        const err=new Error(String(error));Object.assign(err,data||{});throw err;
     }
-
+    if(action==="servers"&&String(providerOverride).includes("virtual-sms")&&data?.customerPriceNgn){
+        const server={id:"virtualsms",server_id:"virtualsms",name:"Available number",server_name:"Available number",price:Number(data.customerPriceNgn),provider_cost_usd:data.providerUsd,stock:1,available:1};
+        return {...data,servers:[server],providers:[server]};
+    }
     return data;
 }
 
@@ -2820,9 +2817,7 @@ INITIALIZE
 ========================================================= */
 
 async function initialize(){
-
-    // Always start on the two provider cards. Country selection is opened
-    // only after the customer taps “All Countries”.
+    activeNumberProvider="smsbower-api";
     countries = [];
     selectedCountry = null;
     selectedService = null;
@@ -2859,6 +2854,7 @@ async function initialize(){
 
 
     updateUserUI();
+    renderProviderTabs();
 await Promise.allSettled([
         loadWalletBalance(),
         loadCountries(),
@@ -3023,7 +3019,7 @@ async function loadCountries(){
     ++countryRequestId;
     countries = [];
     countryLoading = false;
-    $("providerChoiceOptions").classList.add("hidden");
+    $("providerChoiceOptions").classList.remove("hidden");
     $("allCountrySelector").classList.remove("hidden");
     $("countryCount").textContent = "Loading countries...";
     $("countryHeading").textContent = "Choose destination";
@@ -3033,16 +3029,22 @@ async function loadCountries(){
     await loadProviderCountries();
 }
 
-async function chooseAllCountryProvider(){
-    selectedCountry = null;
+async function chooseProvider(provider){
+    activeNumberProvider=provider;
+    renderProviderTabs();
+    $("verificationOverlay").style.display="flex";
+    countries=[];
+    selectedCountry=null;
     selectedService = null;
     selectedServer = null;
     services = [];
     servers = [];
     servicesLoaded = false;
     servicesLoading = false;
-    $("providerChoiceOptions").classList.add("hidden");
+    $("providerChoiceOptions").classList.remove("hidden");
     $("allCountrySelector").classList.remove("hidden");
+    countryLoading=false;
+    ++countryRequestId;
     $("countryHeading").textContent = "Select Country";
     $("countrySearch").value = "";
     $("countryOptions").classList.remove("collapsed");
@@ -3074,7 +3076,7 @@ async function loadProviderCountries(){
             Array.isArray(data?.data?.data) ? data.data.data : [];
         countries = raw.map(item => {
             const normalized = normalizeCountry(item);
-            return normalized ? { ...normalized, provider:"smsbower-api" } : null;
+            return normalized ? { ...normalized, provider:activeNumberProvider } : null;
         }).filter(Boolean);
         $("allCountryCount").textContent = `${countries.length} available`;
         renderCountries();
@@ -3385,8 +3387,8 @@ $("countrySearch").addEventListener("input", () => {
     $("countryOptions").classList.remove("collapsed");
     renderCountries();
 });
-$("usaProviderCard").addEventListener("click", chooseAllCountryProvider);
-$("allCountryProviderCard").addEventListener("click", chooseAllCountryProvider);
+$("allCountryProviderCard").addEventListener("click",()=>chooseProvider("smsbower-api"));
+$("allCountry2ProviderCard").addEventListener("click",()=>chooseProvider("virtual-sms-api"));
 $("backToProviderCards").addEventListener("click", () => {
     countries = [];
     loadCountries();
@@ -5088,11 +5090,7 @@ async function purchaseNumber(){
 
 
         const message =
-            balance <= 0
-
-                ? `Insufficient balance. Please add ${formatNaira(needed)} to your wallet.`
-
-                : `Insufficient funds. Please add ${formatNaira(needed)} to your wallet.`;
+            `Insufficient funds. Please add ${formatNaira(needed)} to your wallet.`;
 
 
         showAlert(
@@ -5543,6 +5541,7 @@ async function pollPendingOrderStatuses(){
         for(const order of pending){
             try{
                 const data = await callProvider("status", {
+                    provider: order.provider==="virtualsms"?"virtual-sms-api":"smsbower-api",
                     order_id: order.id || order.order_id,
                     orderId: order.id || order.order_id,
                     activation_id: String(order.provider_activation_id || order.activation_id || order.activationId || order.numpool_order_id || "").replace(/^smsbower:/i, ""),
@@ -6031,11 +6030,7 @@ async function getOrderStatus(
                     activationId: activationId,
 
                     provider:
-                        order?.raw?.provider === "textverified" || order?.raw?.provider === "text-verified-api"
-                            ? "text-verified-api"
-                            : order?.raw?.provider === "virtualsms" || order?.raw?.provider === "virtual-sms-api"
-                                ? "virtual-sms-api"
-                                : undefined
+                        order?.raw?.provider === "virtualsms" || order?.raw?.provider === "virtual-sms-api" ? "virtual-sms-api" : "smsbower-api"
 
                 }
             );
@@ -6272,11 +6267,7 @@ async function cancelOrder(
                 activationId: activationId,
 
                 provider:
-                    order?.raw?.provider === "textverified" || order?.raw?.provider === "text-verified-api"
-                        ? "text-verified-api"
-                        : order?.raw?.provider === "virtualsms" || order?.raw?.provider === "virtual-sms-api"
-                            ? "virtual-sms-api"
-                            : undefined
+                    order?.raw?.provider === "virtualsms" || order?.raw?.provider === "virtual-sms-api" ? "virtual-sms-api" : "smsbower-api"
 
             }
         );
