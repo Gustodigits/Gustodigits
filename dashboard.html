@@ -1635,7 +1635,7 @@ a{
             </div>
 
             <div class="flow-subtitle">
-                Choose USA or All Countries, then select a service and price.
+                Choose a country, then select a service and price.
             </div>
 
         </div>
@@ -3024,7 +3024,7 @@ async function loadCountries(){
     $("countryCount").textContent = "Loading countries...";
     $("countryHeading").textContent = "Choose destination";
     $("countrySearch").value = "";
-    $("countryOptions").classList.remove("collapsed");
+    $("countryOptions").classList.add("collapsed");
     showStepPanel(1);
     await loadProviderCountries();
 }
@@ -3032,7 +3032,6 @@ async function loadCountries(){
 async function chooseProvider(provider){
     activeNumberProvider=provider;
     renderProviderTabs();
-    $("verificationOverlay").style.display="flex";
     countries=[];
     selectedCountry=null;
     selectedService = null;
@@ -3047,7 +3046,7 @@ async function chooseProvider(provider){
     ++countryRequestId;
     $("countryHeading").textContent = "Select Country";
     $("countrySearch").value = "";
-    $("countryOptions").classList.remove("collapsed");
+    $("countryOptions").classList.add("collapsed");
     $("countryOptions").innerHTML = '<div class="loading-state">Loading available countries...</div>';
     $("allCountryCount").textContent = "Loading...";
     showStepPanel(1);
@@ -3058,12 +3057,12 @@ async function loadProviderCountries(){
     if(countryLoading) return;
     if(countries.length){
         renderCountries();
-        $("countryOptions").classList.remove("collapsed");
+        $("countryOptions").classList.add("collapsed");
         return;
     }
     countryLoading = true;
     const request = ++countryRequestId;
-    $("countryOptions").classList.remove("collapsed");
+    $("countryOptions").classList.add("collapsed");
     $("countryOptions").innerHTML = '<div class="loading-state">Loading available countries...</div>';
     try{
         const data = await callProvider("countries", { version:"V1" });
@@ -3080,7 +3079,7 @@ async function loadProviderCountries(){
         }).filter(Boolean);
         $("allCountryCount").textContent = `${countries.length} available`;
         renderCountries();
-        $("countryOptions").classList.remove("collapsed");
+        $("countryOptions").classList.add("collapsed");
     }catch(error){
         if(request !== countryRequestId) return;
         countries = [];
@@ -3089,7 +3088,7 @@ async function loadProviderCountries(){
             ? "Countries are taking too long to load. Please try again."
             : "Could not load countries. Please try again.";
         $("countryOptions").innerHTML = `<div class="empty-state">${escapeHtml(message)}</div>`;
-        $("countryOptions").classList.remove("collapsed");
+        $("countryOptions").classList.add("collapsed");
     }finally{
         countryLoading = false;
     }
@@ -3376,15 +3375,15 @@ function renderCountries(){
 
 
 $("countrySearch").addEventListener("focus", () => {
-    $("countryOptions").classList.remove("collapsed");
+    $("countryOptions").classList.add("collapsed");
     if(!countries.length && !countryLoading) loadProviderCountries();
 });
 $("countrySearch").addEventListener("click", () => {
-    $("countryOptions").classList.remove("collapsed");
+    $("countryOptions").classList.add("collapsed");
     if(!countries.length && !countryLoading) loadProviderCountries();
 });
 $("countrySearch").addEventListener("input", () => {
-    $("countryOptions").classList.remove("collapsed");
+    $("countryOptions").classList.add("collapsed");
     renderCountries();
 });
 $("allCountryProviderCard").addEventListener("click",()=>chooseProvider("smsbower-api"));
@@ -3509,7 +3508,7 @@ async function loadServices(){
     }
     servicesLoading = true;
     const request = ++serviceRequestId;
-    $("serviceOptions").classList.remove("collapsed");
+    $("serviceOptions").classList.add("collapsed");
     $("serviceOptions").innerHTML = '<div class="loading-state">Loading available services...</div>';
     $("serviceCount").textContent = "Loading...";
 
