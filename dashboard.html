@@ -3375,15 +3375,15 @@ function renderCountries(){
 
 
 $("countrySearch").addEventListener("focus", () => {
-    $("countryOptions").classList.add("collapsed");
+    $("countryOptions").classList.remove("collapsed");
     if(!countries.length && !countryLoading) loadProviderCountries();
 });
 $("countrySearch").addEventListener("click", () => {
-    $("countryOptions").classList.add("collapsed");
+    $("countryOptions").classList.remove("collapsed");
     if(!countries.length && !countryLoading) loadProviderCountries();
 });
 $("countrySearch").addEventListener("input", () => {
-    $("countryOptions").classList.add("collapsed");
+    $("countryOptions").classList.remove("collapsed");
     renderCountries();
 });
 $("allCountryProviderCard").addEventListener("click",()=>chooseProvider("smsbower-api"));
