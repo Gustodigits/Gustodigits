@@ -992,7 +992,7 @@ td{
 .sms-combo-option:hover,.sms-combo-option:focus{background:#293548;outline:none}
 .sms-combo-empty{padding:10px;color:#94a3b8;font-size:13px}
 
-</style>
+\n.virtual-sms-panel .sms-combo input{background:#fff;color:var(--text);border:1px solid var(--border)}\n.virtual-sms-panel .sms-combo-options{background:#fff;border-color:var(--border)}\n.virtual-sms-panel .sms-combo-option{color:var(--text)}\n.virtual-sms-panel .sms-combo-option:hover{background:#eef6ff}\n</style>
 </head>
 
 <body>
@@ -1090,7 +1090,7 @@ td{
       data-page="markup"
       onclick="showPage('markup',this)"
     >
-      💰 Pricing & SMSBower
+      💰 SMSBower & Virtual SMS
     </button>
 
     <div class="nav-title">
@@ -1265,11 +1265,11 @@ td{
             <div class="quick-info">
 
               <div class="quick-name">
-                SMSBower Management
+                SMSBower & Virtual SMS
               </div>
 
               <div class="quick-desc">
-                Pricing, services and servers
+                Manage both number providers
               </div>
 
             </div>
@@ -1604,26 +1604,39 @@ td{
         </div>
       </div>
       </div>
-      <div id="providerAdminVirtualsms" class="hidden">
+      <div id="providerAdminVirtualsms" class="hidden virtual-sms-panel">
         <div class="panel">
-          <div class="panel-header"><div class="panel-title">Virtual SMS Pricing & Service Controls</div><button class="primary-btn" onclick="loadVirtualSmsAdminData()">Refresh</button></div>
+          <div class="panel-header"><div class="panel-title">Virtual SMS Controls</div><button class="primary-btn" onclick="loadVirtualSmsAdminData(true)">Refresh</button></div>
           <div class="panel-body">
-            <div class="markup-form"><div class="markup-form-title">Add / Update Virtual SMS Pricing Rule</div>
+            <div class="tabs">
+              <button class="tab-btn active" id="virtualSmsTabListingBtn" onclick="showVirtualSmsTab('listing')">Service Listing</button>
+              <button class="tab-btn" id="virtualSmsTabPricingBtn" onclick="showVirtualSmsTab('pricing')">Pricing</button>
+              <button class="tab-btn" id="virtualSmsTabManagementBtn" onclick="showVirtualSmsTab('management')">Service Management</button>
+            </div>
+            <section id="virtualSmsTabListing">
               <div class="form-grid">
-                <div class="form-group"><label>Country (optional)</label><select id="virtualSmsRuleCountry"><option value="">All countries</option></select></div>
-                <div class="form-group"><label>Service (optional)</label><select id="virtualSmsRuleService"><option value="">All services</option></select></div>
-                <div class="form-group"><label>Pricing mode</label><select id="virtualSmsRuleMode"><option value="markup">Markup percentage</option><option value="fixed">Fixed NGN price</option></select></div>
+                <div class="form-group"><label>Country</label><div class="sms-combo"><input id="virtualSmsListingCountrySearch" type="search" placeholder="Search or select country…" autocomplete="off" onfocus="openSmsCombo('virtualSmsListingCountry')" oninput="filterSmsCombo('virtualSmsListingCountry')"><div id="virtualSmsListingCountryOptions" class="sms-combo-options hidden"></div><select id="virtualSmsListingCountry" class="sms-combo-native" onchange="syncSmsCombo('virtualSmsListingCountry');loadVirtualSmsServices('listing')"><option value="">Choose country</option></select></div></div>
+                <div class="form-group"><label>Service</label><div class="sms-combo"><input id="virtualSmsListingServiceSearch" type="search" placeholder="Search or select service…" autocomplete="off" onfocus="openSmsCombo('virtualSmsListingService')" oninput="filterSmsCombo('virtualSmsListingService')"><div id="virtualSmsListingServiceOptions" class="sms-combo-options hidden"></div><select id="virtualSmsListingService" class="sms-combo-native" onchange="syncSmsCombo('virtualSmsListingService');renderVirtualSmsListing()"><option value="">All services</option></select></div></div>
+              </div>
+              <div class="table-wrap"><table><thead><tr><th>Country</th><th>Service</th><th>Service code</th><th>Status</th></tr></thead><tbody id="virtualSmsListingBody"><tr><td colspan="4" class="empty">Choose a country to load services.</td></tr></tbody></table></div>
+            </section>
+            <section id="virtualSmsTabPricing" class="hidden">
+              <div class="markup-form"><div class="markup-form-title">Add / Update Virtual SMS Pricing Rule</div><div class="form-grid">
+                <div class="form-group"><label>Country</label><div class="sms-combo"><input id="virtualSmsPriceCountrySearch" type="search" placeholder="Search or select country…" autocomplete="off" onfocus="openSmsCombo('virtualSmsPriceCountry')" oninput="filterSmsCombo('virtualSmsPriceCountry')"><div id="virtualSmsPriceCountryOptions" class="sms-combo-options hidden"></div><select id="virtualSmsPriceCountry" class="sms-combo-native" onchange="syncSmsCombo('virtualSmsPriceCountry');loadVirtualSmsServices('pricing')"><option value="">All countries</option></select></div></div>
+                <div class="form-group"><label>Service</label><div class="sms-combo"><input id="virtualSmsPriceServiceSearch" type="search" placeholder="Search or select service…" autocomplete="off" onfocus="openSmsCombo('virtualSmsPriceService')" oninput="filterSmsCombo('virtualSmsPriceService')"><div id="virtualSmsPriceServiceOptions" class="sms-combo-options hidden"></div><select id="virtualSmsPriceService" class="sms-combo-native" onchange="syncSmsCombo('virtualSmsPriceService')"><option value="">All services</option></select></div></div>
+                <div class="form-group"><label>Pricing mode</label><select id="virtualSmsRuleMode" onchange="toggleVirtualSmsPricingMode()"><option value="markup">Markup percentage</option><option value="fixed">Fixed NGN price</option></select></div>
                 <div class="form-group" id="virtualSmsMarkupField"><label>Markup percentage</label><input id="virtualSmsRuleMarkup" type="number" min="0" step="0.01" value="100"></div>
                 <div class="form-group hidden" id="virtualSmsFixedField"><label>Fixed selling price (NGN)</label><input id="virtualSmsRuleFixed" type="number" min="1" step="1"></div>
+              </div><p style="font-size:11px;color:#64748b;margin-bottom:12px">Default markup is 100%. Country/service-specific rules override the default.</p><button class="primary-btn" onclick="saveVirtualSmsPriceRule()">Save pricing rule</button></div>
+              <div class="panel-title" style="margin:16px 0 10px">Saved Pricing Rules</div><div class="table-wrap"><table><thead><tr><th>Country</th><th>Service</th><th>Mode</th><th>Markup</th><th>Fixed NGN</th><th>Action</th></tr></thead><tbody id="virtualSmsRulesBody"></tbody></table></div>
+            </section>
+            <section id="virtualSmsTabManagement" class="hidden">
+              <div class="form-grid">
+                <div class="form-group"><label>Country</label><div class="sms-combo"><input id="virtualSmsManageCountrySearch" type="search" placeholder="Search or select country…" autocomplete="off" onfocus="openSmsCombo('virtualSmsManageCountry')" oninput="filterSmsCombo('virtualSmsManageCountry')"><div id="virtualSmsManageCountryOptions" class="sms-combo-options hidden"></div><select id="virtualSmsManageCountry" class="sms-combo-native" onchange="syncSmsCombo('virtualSmsManageCountry');loadVirtualSmsServices('management')"><option value="">Choose country</option></select></div></div>
+                <div class="form-group"><label>Service</label><div class="sms-combo"><input id="virtualSmsManageServiceSearch" type="search" placeholder="Search or select service…" autocomplete="off" onfocus="openSmsCombo('virtualSmsManageService')" oninput="filterSmsCombo('virtualSmsManageService')"><div id="virtualSmsManageServiceOptions" class="sms-combo-options hidden"></div><select id="virtualSmsManageService" class="sms-combo-native" onchange="syncSmsCombo('virtualSmsManageService');renderVirtualSmsManagement()"><option value="">All services</option></select></div></div>
               </div>
-              <p style="font-size:11px;color:#64748b;margin-bottom:12px">Default markup is 100%. Country/service-specific rules override the default.</p>
-              <button class="primary-btn" onclick="saveVirtualSmsPriceRule()">Save pricing rule</button>
-            </div>
-            <div class="form-grid" style="margin:16px 0 12px"><div class="form-group"><label>Country for service controls</label><select id="virtualSmsAdminCountry" onchange="loadVirtualSmsServices()"><option value="">Choose country</option></select></div></div>
-            <div class="panel-title" style="margin:10px 0">Service Management</div>
-            <div class="table-wrap"><table><thead><tr><th>Country</th><th>Service</th><th>Service code</th><th>Status</th><th>Action</th></tr></thead><tbody id="virtualSmsServicesBody"></tbody></table></div>
-            <div class="panel-title" style="margin:18px 0 10px">Pricing Rules</div>
-            <div class="table-wrap"><table><thead><tr><th>Country</th><th>Service</th><th>Mode</th><th>Markup</th><th>Fixed NGN</th><th>Action</th></tr></thead><tbody id="virtualSmsRulesBody"></tbody></table></div>
+              <div class="table-wrap"><table><thead><tr><th>Country</th><th>Service</th><th>Service code</th><th>Status</th><th>Action</th></tr></thead><tbody id="virtualSmsManagementBody"><tr><td colspan="5" class="empty">Choose a country to manage services.</td></tr></tbody></table></div>
+            </section>
           </div>
         </div>
       </div>
@@ -4284,36 +4297,80 @@ function showNumberProviderAdmin(provider){
  });
  if(provider==="virtualsms")loadVirtualSmsAdminData();
 }
-let virtualSmsAdmin={countries:[],services:[],settings:[],rules:[]};
-async function loadVirtualSmsAdminData(){
+let virtualSmsAdmin={countries:[],services:[],cache:{},settings:[],rules:[],request:0,loaded:false};
+function virtualSmsCid(x){return String(x?.id??x?.country_id??x?.countryId??x?.country_key??x?.key??"")}
+function virtualSmsCname(x){return String(x?.name??x?.country_name??x?.country??virtualSmsCid(x))}
+function virtualSmsCode(x){return String(x?.id??x?.code??x?.service_code??x?.serviceCode??x?.key??"")}
+function virtualSmsName(x){return String(x?.name??x?.service_name??x?.title??virtualSmsCode(x))}
+function showNumberProviderAdmin(provider){
+ ["smsbower","virtualsms"].forEach(k=>{document.getElementById("providerAdmin"+k[0].toUpperCase()+k.slice(1)).classList.toggle("hidden",k!==provider);document.getElementById("providerAdmin"+k[0].toUpperCase()+k.slice(1)+"Btn").classList.toggle("active",k===provider)});
+ if(provider==="virtualsms"){showVirtualSmsTab("listing");loadVirtualSmsAdminData();}
+}
+function showVirtualSmsTab(tab){
+ ["listing","pricing","management"].forEach(k=>{document.getElementById("virtualSmsTab"+k[0].toUpperCase()+k.slice(1)).classList.toggle("hidden",k!==tab);document.getElementById("virtualSmsTab"+k[0].toUpperCase()+k.slice(1)+"Btn").classList.toggle("active",k===tab)});
+ const id=tab==="listing"?"virtualSmsListingCountry":tab==="pricing"?"virtualSmsPriceCountry":"virtualSmsManageCountry";
+ if(document.getElementById(id).value)loadVirtualSmsServices(tab);
+}
+function fillVirtualSmsCountries(){
+ [["virtualSmsListingCountry","Choose country"],["virtualSmsManageCountry","Choose country"],["virtualSmsPriceCountry","All countries"]].forEach(([id,first])=>fillSmsSelect(id,virtualSmsAdmin.countries,virtualSmsCid,x=>virtualSmsCname(x)+" ("+virtualSmsCid(x)+")",first));
+}
+async function loadVirtualSmsAdminData(force=false){
+ if(virtualSmsAdmin.loading||(!force&&virtualSmsAdmin.loaded))return;
+ virtualSmsAdmin.loading=true;
  try{
   const [a,b,c]=await Promise.all([providerAdminRequest("virtualsms",{action:"admin_countries"}),providerAdminRequest("virtualsms",{action:"list_service_settings"}),providerAdminRequest("virtualsms",{action:"list_price_rules"})]);
-  virtualSmsAdmin.countries=smsRows(a,"countries");virtualSmsAdmin.settings=smsRows(b,"settings");virtualSmsAdmin.rules=smsRows(c,"rules");
-  const opts=virtualSmsAdmin.countries.map(x=>({id:String(x.id||x.country_id||x.countryKey||x.country_key||""),name:String(x.name||x.country_name||x.country||"")}));
-  ["virtualSmsRuleCountry","virtualSmsAdminCountry"].forEach(id=>{const e=document.getElementById(id),old=e.value,all=id==="virtualSmsRuleCountry";e.innerHTML=(all?'<option value="">All countries</option>':'<option value="">Choose country</option>')+opts.map(x=>'<option value="'+escapeHtml(x.id)+'">'+escapeHtml(x.name||x.id)+'</option>').join("");if([...e.options].some(o=>o.value===old))e.value=old;});
-  await loadVirtualSmsServices();renderVirtualSmsRules();
- }catch(e){showToast(e.message,"error");}
+  virtualSmsAdmin.countries=smsRows(a,"countries").map(x=>typeof x==="string"?{id:x,name:x}:x);
+  virtualSmsAdmin.settings=smsRows(b,"settings");virtualSmsAdmin.rules=smsRows(c,"rules");
+  fillVirtualSmsCountries();renderVirtualSmsRules();virtualSmsAdmin.loaded=true;
+ }catch(e){showToast(e.message,"error")}finally{virtualSmsAdmin.loading=false}
 }
-async function loadVirtualSmsServices(){
- const country=document.getElementById("virtualSmsAdminCountry").value;if(!country){document.getElementById("virtualSmsServicesBody").innerHTML='<tr><td colspan="5" class="empty">Choose a country.</td></tr>';return;}
+async function loadVirtualSmsServices(section){
+ const countryId=section==="listing"?"virtualSmsListingCountry":section==="pricing"?"virtualSmsPriceCountry":"virtualSmsManageCountry";
+ const serviceId=section==="listing"?"virtualSmsListingService":section==="pricing"?"virtualSmsPriceService":"virtualSmsManageService";
+ const country=document.getElementById(countryId).value;
+ if(!country){
+  fillSmsSelect(serviceId,[],virtualSmsCode,virtualSmsName,"All services");
+  if(section==="listing")document.getElementById("virtualSmsListingBody").innerHTML='<tr><td colspan="4" class="empty">Choose a country to load services.</td></tr>';
+  if(section==="management")document.getElementById("virtualSmsManagementBody").innerHTML='<tr><td colspan="5" class="empty">Choose a country to manage services.</td></tr>';
+  return;
+ }
+ const request=++virtualSmsAdmin.request;
  try{
-  const d=await providerAdminRequest("virtualsms",{action:"admin_services",country_id:country});virtualSmsAdmin.services=smsRows(d,"services");
-  renderVirtualSmsServices(country);
-  const s=document.getElementById("virtualSmsRuleService"),old=s.value;s.innerHTML='<option value="">All services</option>'+virtualSmsAdmin.services.map(x=>'<option value="'+escapeHtml(x.id||x.code||x.service_code)+'">'+escapeHtml(x.name||x.service_name||x.id)+'</option>').join("");if([...s.options].some(o=>o.value===old))s.value=old;
- }catch(e){showToast(e.message,"error");}
+  let rows=virtualSmsAdmin.cache[country];
+  if(!rows){const d=await providerAdminRequest("virtualsms",{action:"admin_services",country_id:country});rows=smsRows(d,"services");virtualSmsAdmin.cache[country]=rows}
+  if(request!==virtualSmsAdmin.request)return;
+  virtualSmsAdmin.services=rows;
+  fillSmsSelect(serviceId,rows,virtualSmsCode,x=>virtualSmsName(x)+" ("+virtualSmsCode(x)+")","All services");
+  if(section==="listing")renderVirtualSmsListing();
+  if(section==="management")renderVirtualSmsManagement();
+ }catch(e){showToast(e.message,"error")}
 }
-function renderVirtualSmsServices(country){
- document.getElementById("virtualSmsServicesBody").innerHTML=virtualSmsAdmin.services.map(x=>{
-  const code=String(x.id||x.code||x.service_code),s=virtualSmsAdmin.settings.find(z=>String(z.country_key)===String(country)&&String(z.service_code)===code),active=s?s.is_active!==false:true;
-  return '<tr><td>'+escapeHtml(country)+'</td><td>'+escapeHtml(x.name||x.service_name||code)+'</td><td>'+escapeHtml(code)+'</td><td><span class="badge '+(active?'green':'red')+'">'+(active?'Active':'Disabled')+'</span></td><td><button class="small-btn '+(active?'red-btn':'green-btn')+'" onclick="toggleVirtualSmsService(\''+escapeJs(country)+'\',\''+escapeJs(code)+'\',\''+escapeJs(x.name||code)+'\','+(!active)+')">'+(active?'Disable':'Enable')+'</button></td></tr>';
- }).join("")||'<tr><td colspan="5" class="empty">No services returned.</td></tr>';
+function virtualSmsActive(country,code){const r=virtualSmsAdmin.settings.find(z=>String(z.country_key??z.country_id??z.countryId??"")===String(country)&&String(z.service_code)===String(code));return r?r.is_active!==false:true}
+function renderVirtualSmsListing(){
+ const country=document.getElementById("virtualSmsListingCountry").value,selected=document.getElementById("virtualSmsListingService").value,b=document.getElementById("virtualSmsListingBody");
+ if(!country){b.innerHTML='<tr><td colspan="4" class="empty">Choose a country to load services.</td></tr>';return}
+ const rows=virtualSmsAdmin.services.filter(x=>!selected||virtualSmsCode(x)===selected);
+ b.innerHTML=rows.map(x=>{const code=virtualSmsCode(x),active=virtualSmsActive(country,code);return '<tr><td>'+escapeHtml(country)+'</td><td>'+escapeHtml(virtualSmsName(x))+'</td><td>'+escapeHtml(code)+'</td><td><span class="badge '+(active?'green':'red')+'">'+(active?'Enabled':'Disabled')+'</span></td></tr>'}).join("")||'<tr><td colspan="4" class="empty">No services match your search.</td></tr>';
 }
-async function toggleVirtualSmsService(country,code,name,active){try{await providerAdminRequest("virtualsms",{action:"save_service_setting",country_id:country,service_code:code,service_name:name,is_active:active});await loadVirtualSmsAdminData();showToast("Virtual SMS service setting saved.");}catch(e){showToast(e.message,"error");}}
-async function saveVirtualSmsPriceRule(){const mode=document.getElementById("virtualSmsRuleMode").value;try{await providerAdminRequest("virtualsms",{action:"save_price_rule",country_key:document.getElementById("virtualSmsRuleCountry").value||null,service_code:document.getElementById("virtualSmsRuleService").value||null,pricing_mode:mode,markup_percent:Number(document.getElementById("virtualSmsRuleMarkup").value||100),fixed_price_ngn:Number(document.getElementById("virtualSmsRuleFixed").value||0)});await loadVirtualSmsAdminData();showToast("Virtual SMS pricing rule saved.");}catch(e){showToast(e.message,"error");}}
-function renderVirtualSmsRules(){document.getElementById("virtualSmsRulesBody").innerHTML=virtualSmsAdmin.rules.map(r=>'<tr><td>'+escapeHtml(r.country_key||"All countries")+'</td><td>'+escapeHtml(r.service_code||"All services")+'</td><td>'+escapeHtml(r.pricing_mode||"markup")+'</td><td>'+(r.pricing_mode==="fixed"?"—":escapeHtml(r.markup_percent??100)+"%")+'</td><td>'+(r.fixed_price_ngn==null?"—":formatMoney(r.fixed_price_ngn))+'</td><td><button class="small-btn red-btn" onclick="deleteVirtualSmsPriceRule(\''+escapeJs(r.id)+'\')">Delete</button></td></tr>').join("")||'<tr><td colspan="6" class="empty">No custom rules. Default markup: 100%.</td></tr>';}
-async function deleteVirtualSmsPriceRule(id){if(!confirm("Delete this Virtual SMS pricing rule?"))return;try{await providerAdminRequest("virtualsms",{action:"delete_price_rule",id});await loadVirtualSmsAdminData();showToast("Pricing rule deleted.");}catch(e){showToast(e.message,"error");}}
-document.getElementById("virtualSmsRuleMode")?.addEventListener("change",()=>{const f=document.getElementById("virtualSmsRuleMode").value==="fixed";document.getElementById("virtualSmsMarkupField").classList.toggle("hidden",f);document.getElementById("virtualSmsFixedField").classList.toggle("hidden",!f);});
-
+function renderVirtualSmsManagement(){
+ const country=document.getElementById("virtualSmsManageCountry").value,selected=document.getElementById("virtualSmsManageService").value,b=document.getElementById("virtualSmsManagementBody");
+ if(!country){b.innerHTML='<tr><td colspan="5" class="empty">Choose a country to manage services.</td></tr>';return}
+ const rows=virtualSmsAdmin.services.filter(x=>!selected||virtualSmsCode(x)===selected);
+ b.innerHTML=rows.map(x=>{const code=virtualSmsCode(x),name=virtualSmsName(x),active=virtualSmsActive(country,code);return '<tr><td>'+escapeHtml(country)+'</td><td>'+escapeHtml(name)+'</td><td>'+escapeHtml(code)+'</td><td><span class="badge '+(active?'green':'red')+'">'+(active?'Enabled':'Disabled')+'</span></td><td><button class="small-btn '+(active?'red-btn':'green-btn')+'" onclick="toggleVirtualSmsService(\\''+escapeJs(country)+'\\',\\''+escapeJs(code)+'\\',\\''+escapeJs(name)+'\\','+(!active)+')">'+(active?'Disable':'Enable')+'</button></td></tr>'}).join("")||'<tr><td colspan="5" class="empty">No services match your search.</td></tr>';
+}
+async function toggleVirtualSmsService(country,code,name,active){
+ try{await providerAdminRequest("virtualsms",{action:"save_service_setting",country_id:country,service_code:code,service_name:name,is_active:active});const d=await providerAdminRequest("virtualsms",{action:"list_service_settings"});virtualSmsAdmin.settings=smsRows(d,"settings");renderVirtualSmsManagement();renderVirtualSmsListing();showToast("Virtual SMS service setting saved.")}catch(e){showToast(e.message,"error")}
+}
+function toggleVirtualSmsPricingMode(){const fixed=document.getElementById("virtualSmsRuleMode").value==="fixed";document.getElementById("virtualSmsMarkupField").classList.toggle("hidden",fixed);document.getElementById("virtualSmsFixedField").classList.toggle("hidden",!fixed)}
+async function saveVirtualSmsPriceRule(){
+ const country_key=document.getElementById("virtualSmsPriceCountry").value||null,service_code=document.getElementById("virtualSmsPriceService").value||null,mode=document.getElementById("virtualSmsRuleMode").value,markup=Number(document.getElementById("virtualSmsRuleMarkup").value),fixed=Number(document.getElementById("virtualSmsRuleFixed").value);
+ if(mode==="markup"&&(!Number.isFinite(markup)||markup<0))return showToast("Enter a valid markup percentage.","error");
+ if(mode==="fixed"&&(!Number.isFinite(fixed)||fixed<=0))return showToast("Enter a valid fixed NGN price.","error");
+ try{await providerAdminRequest("virtualsms",{action:"save_price_rule",country_key,service_code,pricing_mode:mode,markup_percent:mode==="markup"?markup:0,fixed_price_ngn:mode==="fixed"?fixed:null});const d=await providerAdminRequest("virtualsms",{action:"list_price_rules"});virtualSmsAdmin.rules=smsRows(d,"rules");renderVirtualSmsRules();showToast("Virtual SMS pricing rule saved.")}catch(e){showToast(e.message,"error")}
+}
+function renderVirtualSmsRules(){const b=document.getElementById("virtualSmsRulesBody");if(!b)return;b.innerHTML=virtualSmsAdmin.rules.map(r=>'<tr><td>'+escapeHtml(r.country_key||"All countries")+'</td><td>'+escapeHtml(r.service_code||"All services")+'</td><td>'+escapeHtml(r.pricing_mode||"markup")+'</td><td>'+(r.pricing_mode==="fixed"?"—":escapeHtml(r.markup_percent??100)+"%")+'</td><td>'+(r.fixed_price_ngn==null?"—":formatMoney(r.fixed_price_ngn))+'</td><td><button class="small-btn red-btn" onclick="deleteVirtualSmsPriceRule(\\''+escapeJs(r.id)+'\\')">Delete</button></td></tr>').join("")||'<tr><td colspan="6" class="empty">No custom rules. Default markup: 100%.</td></tr>'}
+async function deleteVirtualSmsPriceRule(id){if(!confirm("Delete this Virtual SMS pricing rule?"))return;try{await providerAdminRequest("virtualsms",{action:"delete_price_rule",id});const d=await providerAdminRequest("virtualsms",{action:"list_price_rules"});virtualSmsAdmin.rules=smsRows(d,"rules");renderVirtualSmsRules();showToast("Pricing rule deleted.")}catch(e){showToast(e.message,"error")}}
+document.getElementById("virtualSmsRuleMode")?.addEventListener("change",toggleVirtualSmsPricingMode);
 </script>
 
 </body>
