@@ -697,8 +697,8 @@ a{
 }
 
 /* Provider entry cards: two choices shown immediately, side by side. */
-.provider-choice-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
-.provider-choice-card.active{border-color:#2388e8;background:#eaf5ff;box-shadow:0 0 0 2px rgba(35,136,232,.10)}
+.provider-choice-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin:0 0 16px;padding:10px;border:1px solid #dce8f2;border-radius:17px;background:linear-gradient(135deg,#f7fbff,#edf6ff);box-shadow:0 5px 16px rgba(26,82,125,.07)}
+.provider-choice-card.active{border-color:#2388e8;background:#eaf5ff;box-shadow:0 0 0 2px rgba(35,136,232,.13),0 5px 12px rgba(35,136,232,.09)}
 .provider-fallback{margin-top:12px;border:1px solid #dbeaf5;background:#f5faff;border-radius:13px;padding:11px;color:#617283;font-size:11px;line-height:1.5}
 .provider-fallback button{display:block;width:100%;text-align:left;color:#176fc3;background:transparent;font-weight:800;padding:6px 0 0}
 .provider-choice-card{
@@ -1641,6 +1641,11 @@ a{
         </div>
 
 
+        <div class="provider-choice-grid" id="providerChoiceOptions" role="tablist" aria-label="Number providers">
+                <button type="button" class="provider-choice-card active" id="allCountryProviderCard" role="tab" aria-selected="true"><span class="provider-choice-flag">🌍</span><span class="provider-choice-title">All Countries</span><span class="provider-choice-meta">Worldwide numbers</span></button>
+                <button type="button" class="provider-choice-card" id="allCountry2ProviderCard" role="tab" aria-selected="false"><span class="provider-choice-flag">🌐</span><span class="provider-choice-title">All Countries 2</span><span class="provider-choice-meta">More country options</span></button>
+            </div>
+
         <div class="stepper">
 
             <div
@@ -1743,11 +1748,7 @@ a{
                 <span id="countryCount">2 options</span>
             </div>
 
-            <div class="provider-choice-grid" id="providerChoiceOptions" role="tablist" aria-label="Number providers">
-                <button type="button" class="provider-choice-card active" id="allCountryProviderCard" role="tab" aria-selected="true"><span class="provider-choice-flag">🌍</span><span class="provider-choice-title">All Countries</span><span class="provider-choice-meta">Worldwide numbers</span></button>
-                <button type="button" class="provider-choice-card" id="allCountry2ProviderCard" role="tab" aria-selected="false"><span class="provider-choice-flag">🌐</span><span class="provider-choice-title">All Countries 2</span><span class="provider-choice-meta">More country options</span></button>
-            </div>
-
+            
             <div id="allCountrySelector" style="margin-top:14px">
                 <div class="back-row hidden">
                     <button class="back-btn" type="button" id="backToProviderCards">← Back</button>
@@ -2578,7 +2579,7 @@ function renderProviderTabs(){
  [["allCountryProviderCard","smsbower-api"],["allCountry2ProviderCard","virtual-sms-api"]].forEach(([id,key])=>{const b=$(id);if(!b)return;const active=activeNumberProvider===key;b.classList.toggle("active",active);b.setAttribute("aria-selected",active?"true":"false");});
  const box=$("providerFallback");if(!box)return;
  const choices=activeNumberProvider==="smsbower-api"?[["All Countries 2","virtual-sms-api"]]:[["All Countries","smsbower-api"]];
- const message=activeNumberProvider==="virtual-sms-api"?"Number not available. Please try All Countries.":"Number not available. Please try All Countries 2.";
+ const message=activeNumberProvider==="virtual-sms-api"?"Number not available. Please try All Countries?":"Number not available. Please try All Countries 2?";
  box.innerHTML=`<strong>${message}</strong>${choices.map(([label,key])=>`<button type="button" data-provider-tab="${key}">↗ ${label}</button>`).join("")}`;
  box.querySelectorAll("[data-provider-tab]").forEach(b=>b.addEventListener("click",()=>chooseProvider(b.dataset.providerTab)));
 }
