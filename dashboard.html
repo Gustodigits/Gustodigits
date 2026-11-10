@@ -5541,7 +5541,7 @@ async function pollPendingOrderStatuses(){
         for(const order of pending){
             try{
                 const data = await callProvider("status", {
-                    provider: order.provider==="textverified"?"text-verified-api":order.provider==="fetchsms"?"fetchsms-api":order.provider==="virtualsms"?"virtual-sms-api":"smsbower-api",
+                    provider: order.provider==="virtualsms"?"virtual-sms-api":"smsbower-api",
                     order_id: order.id || order.order_id,
                     orderId: order.id || order.order_id,
                     activation_id: String(order.provider_activation_id || order.activation_id || order.activationId || order.numpool_order_id || "").replace(/^smsbower:/i, ""),
@@ -6030,9 +6030,7 @@ async function getOrderStatus(
                     activationId: activationId,
 
                     provider:
-                        order?.raw?.provider === "textverified" || order?.raw?.provider === "text-verified-api" ? "text-verified-api"
-                            : order?.raw?.provider === "fetchsms" || order?.raw?.provider === "fetchsms-api" ? "fetchsms-api"
-                            : order?.raw?.provider === "virtualsms" || order?.raw?.provider === "virtual-sms-api" ? "virtual-sms-api" : "smsbower-api"
+                        order?.raw?.provider === "virtualsms" || order?.raw?.provider === "virtual-sms-api" ? "virtual-sms-api" : "smsbower-api"
 
                 }
             );
@@ -6269,9 +6267,7 @@ async function cancelOrder(
                 activationId: activationId,
 
                 provider:
-                    order?.raw?.provider === "textverified" || order?.raw?.provider === "text-verified-api" ? "text-verified-api"
-                        : order?.raw?.provider === "fetchsms" || order?.raw?.provider === "fetchsms-api" ? "fetchsms-api"
-                        : order?.raw?.provider === "virtualsms" || order?.raw?.provider === "virtual-sms-api" ? "virtual-sms-api" : "smsbower-api"
+                    order?.raw?.provider === "virtualsms" || order?.raw?.provider === "virtual-sms-api" ? "virtual-sms-api" : "smsbower-api"
 
             }
         );
