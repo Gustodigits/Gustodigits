@@ -992,7 +992,12 @@ td{
 .sms-combo-option:hover,.sms-combo-option:focus{background:#293548;outline:none}
 .sms-combo-empty{padding:10px;color:#94a3b8;font-size:13px}
 
-\n.virtual-sms-panel .sms-combo input{background:#fff;color:var(--text);border:1px solid var(--border)}\n.virtual-sms-panel .sms-combo-options{background:#fff;border-color:var(--border)}\n.virtual-sms-panel .sms-combo-option{color:var(--text)}\n.virtual-sms-panel .sms-combo-option:hover{background:#eef6ff}\n</style>
+
+.virtual-sms-panel .sms-combo input{background:#fff;color:var(--text);border:1px solid var(--border)}
+.virtual-sms-panel .sms-combo-options{background:#fff;border-color:var(--border)}
+.virtual-sms-panel .sms-combo-option{color:var(--text)}
+.virtual-sms-panel .sms-combo-option:hover{background:#eef6ff}
+</style>
 </head>
 
 <body>
@@ -4298,7 +4303,7 @@ function showNumberProviderAdmin(provider){
  if(provider==="virtualsms")loadVirtualSmsAdminData();
 }
 let virtualSmsAdmin={countries:[],services:[],cache:{},settings:[],rules:[],request:0,loaded:false};
-function virtualSmsCid(x){return String(x?.id??x?.country_id??x?.countryId??x?.country_key??x?.key??"")}
+function virtualSmsCid(x){return String(x?.id??x?.country_id??x?.countryId??x?.countryKey??x?.country_key??x?.key??"")}
 function virtualSmsCname(x){return String(x?.name??x?.country_name??x?.country??virtualSmsCid(x))}
 function virtualSmsCode(x){return String(x?.id??x?.code??x?.service_code??x?.serviceCode??x?.key??"")}
 function virtualSmsName(x){return String(x?.name??x?.service_name??x?.title??virtualSmsCode(x))}
