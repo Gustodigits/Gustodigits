@@ -805,6 +805,19 @@ a{
     font-size:11px;
 }
 
+.load-more-services{
+    display:block;
+    width:calc(100% - 16px);
+    min-height:40px;
+    margin:8px;
+    border:1px solid #dceaf5;
+    border-radius:11px;
+    background:#f0f8ff;
+    color:#176fc3;
+    font-size:11px;
+    font-weight:800;
+}
+
 .loading-state{
     padding:22px;
     text-align:center;
@@ -2616,6 +2629,7 @@ let serverRequestId = 0;
 let countryLoading = false;
 let servicesLoading = false;
 let servicesLoaded = false;
+let serviceRenderLimit = 50;
 
 
 /* =========================================================
@@ -3039,6 +3053,7 @@ async function chooseProvider(provider){
     servers = [];
     servicesLoaded = false;
     servicesLoading = false;
+    serviceRenderLimit = 50;
     ++serviceRequestId;
     $("providerChoiceOptions").classList.remove("hidden");
     $("allCountrySelector").classList.remove("hidden");
@@ -3477,6 +3492,7 @@ async function selectCountry(
     $("serviceCount").textContent = "Select service";
     servicesLoaded = false;
     servicesLoading = false;
+    serviceRenderLimit = 50;
 
 
     markCountryComplete();
@@ -3838,177 +3854,59 @@ async function retryLoadServices(){
 
 function renderServices(){
 
-    const search =
-        $("serviceSearch")
-            .value
-            .trim()
-            .toLowerCase();
+    const search = $("serviceSearch").value.trim().toLowerCase();
+    const filtered = services.filter(service => {
+        if(!search) return true;
+        return serviceName(service).toLowerCase().includes(search) ||
+            serviceCode(service).toLowerCase().includes(search);
+    });
 
-
-    const matches =
-        services.filter(
-            service => {
-
-                if(!search){
-                    return true;
-                }
-
-
-                return (
-
-                    serviceName(
-                        service
-                    )
-                        .toLowerCase()
-                        .includes(
-                            search
-                        )
-
-                    ||
-
-                    serviceCode(
-                        service
-                    )
-                        .toLowerCase()
-                        .includes(
-                            search
-                        )
-
-                );
-
-            }
-        );
-    const filtered = matches;
-
-
-    if(
-        filtered.length === 0
-    ){
-
-        $("serviceOptions").innerHTML =
-            `
-            <div class="empty-state">
-                No services available for this selection.
-            </div>
-            `;
-
+    if(filtered.length === 0){
+        $("serviceOptions").innerHTML = `
+            <div class="empty-state">No services available for this selection.</div>`;
         return;
     }
 
+    // Render a small first batch so large catalogues stay responsive on phones.
+    // Search still checks every service; more results are added only on demand.
+    const visible = filtered.slice(0, serviceRenderLimit);
 
-    $("serviceOptions").innerHTML =
-        filtered
-            .map(
-                service => {
+    $("serviceOptions").innerHTML = visible.map(service => {
+        const selected = selectedService &&
+            serviceCode(selectedService) === serviceCode(service);
+        return `
+            <button type="button"
+                class="option ${selected ? "selected" : ""}"
+                data-service-code="${escapeHtml(serviceCode(service))}">
+                <span class="option-left">
+                    <span class="option-icon">📱</span>
+                    <span><span class="option-name">${escapeHtml(serviceName(service) || "Service")}</span></span>
+                </span>
+                ${selected ? '<span class="option-check">✓</span>' : ""}
+            </button>`;
+    }).join("");
 
-                    const selected =
-                        selectedService &&
-                        serviceCode(
-                            selectedService
-                        ) ===
-                        serviceCode(
-                            service
-                        );
+    if(visible.length < filtered.length){
+        const remaining = filtered.length - visible.length;
+        const more = document.createElement("button");
+        more.type = "button";
+        more.className = "load-more-services";
+        more.textContent = `Show more services (${remaining} remaining)`;
+        more.addEventListener("click", () => {
+            serviceRenderLimit += 50;
+            renderServices();
+        });
+        $("serviceOptions").appendChild(more);
+    }
 
-
-                    return `
-                        <button
-                            type="button"
-                            class="option ${
-                                selected
-                                    ? "selected"
-                                    : ""
-                            }"
-                            data-service-code="${
-                                escapeHtml(
-                                    serviceCode(
-                                        service
-                                    )
-                                )
-                            }"
-                        >
-
-                            <span class="option-left">
-
-                                <span class="option-icon">
-                                    📱
-                                </span>
-
-                                <span>
-
-                                    <span class="option-name">
-                                        ${
-                                            escapeHtml(
-                                                serviceName(
-                                                    service
-                                                ) ||
-                                                "Service"
-                                            )
-                                        }
-                                    </span>
-
-
-
-                                </span>
-
-                            </span>
-
-                            ${
-                                selected
-                                    ? `
-                                        <span class="option-check">
-                                            ✓
-                                        </span>
-                                      `
-                                    : ""
-                            }
-
-                        </button>
-                    `;
-
-                }
-            )
-            .join("");
-
-
-    $("serviceOptions")
-        .querySelectorAll(
-            "[data-service-code]"
-        )
-        .forEach(
-            element => {
-
-                element.onclick =
-                    () => {
-
-                        const code =
-                            element.dataset
-                                .serviceCode;
-
-
-                        const service =
-                            services.find(
-                                item =>
-                                    serviceCode(
-                                        item
-                                    ) === code
-                            );
-
-
-                        if(service){
-
-                            selectService(
-                                service
-                            );
-
-                        }
-
-                    };
-
-            }
-        );
+    $("serviceOptions").querySelectorAll("[data-service-code]").forEach(element => {
+        element.onclick = () => {
+            const code = element.dataset.serviceCode;
+            const service = services.find(item => serviceCode(item) === code);
+            if(service) selectService(service);
+        };
+    });
 }
-
 
 $("serviceSearch").addEventListener("focus", () => {
     $("serviceOptions").classList.remove("collapsed");
@@ -4021,6 +3919,7 @@ $("serviceSearch").addEventListener("click", () => {
     else renderServices();
 });
 $("serviceSearch").addEventListener("input", () => {
+    serviceRenderLimit = 50;
     $("serviceOptions").classList.remove("collapsed");
     if(!servicesLoaded) loadServices();
     else renderServices();
