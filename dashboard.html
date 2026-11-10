@@ -2787,7 +2787,8 @@ async function callProvider(
                 "Authorization":`Bearer ${currentSession.access_token}`,
                 "apikey":SUPABASE_PUBLISHABLE_KEY
             },
-            body:JSON.stringify({ action:requestAction, ...requestPayload })
+            body:JSON.stringify({ action:requestAction, ...requestPayload }),
+            signal:AbortSignal.timeout(35000)
         }
     );
 
@@ -3038,6 +3039,7 @@ async function chooseProvider(provider){
     servers = [];
     servicesLoaded = false;
     servicesLoading = false;
+    ++serviceRequestId;
     $("providerChoiceOptions").classList.remove("hidden");
     $("allCountrySelector").classList.remove("hidden");
     countryLoading=false;
@@ -3585,6 +3587,7 @@ async function loadServices(){
 
 
     }catch(error){
+        if(request !== serviceRequestId) return;
         const message = /504|timeout|timed out/i.test(String(error?.message || error))
             ? "Services are taking too long to load."
             : "Services are temporarily unavailable.";
@@ -3597,7 +3600,7 @@ async function loadServices(){
         $("serviceCount").textContent = "Unavailable";
         servicesLoaded = false;
     }finally{
-        servicesLoading = false;
+        if(request === serviceRequestId) servicesLoading = false;
     }
 }
 
