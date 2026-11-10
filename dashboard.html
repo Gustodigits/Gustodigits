@@ -3052,6 +3052,10 @@ async function chooseProvider(provider){
     $("allCountryCount").textContent = "Loading...";
     showStepPanel(1);
     await loadProviderCountries();
+    if(activeNumberProvider==="fetchsms-api" && countries.length){
+        await selectCountry(countries[0]);
+        await loadServices();
+    }
 }
 
 async function loadProviderCountries(){
