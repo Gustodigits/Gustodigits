@@ -1319,6 +1319,10 @@ a{
     background:var(--primary);
     color:#fff;
 }
+.alert-wallet{
+    background:var(--green);
+    color:#fff;
+}
 
 .alert-cancel{
     background:#f0f5f8;
@@ -2457,6 +2461,8 @@ a{
 
         <div class="alert-buttons">
 
+            <button class="alert-wallet hidden" id="alertWallet" type="button">Go to Wallet</button>
+
             <button
                 class="alert-ok"
                 id="alertOk"
@@ -2579,7 +2585,7 @@ function renderProviderTabs(){
  [["allCountryProviderCard","smsbower-api"],["allCountry2ProviderCard","virtual-sms-api"]].forEach(([id,key])=>{const b=$(id);if(!b)return;const active=activeNumberProvider===key;b.classList.toggle("active",active);b.setAttribute("aria-selected",active?"true":"false");});
  const box=$("providerFallback");if(!box)return;
  const choices=activeNumberProvider==="smsbower-api"?[["All Countries 2","virtual-sms-api"]]:[["All Countries","smsbower-api"]];
- const message=activeNumberProvider==="virtual-sms-api"?"Number not available. Please try All Countries?":"Number not available. Please try All Countries 2?";
+ const message=activeNumberProvider==="virtual-sms-api"?"Number Not available? Pls try All Countries.":"Number Not available? Pls try All Countries 2.";
  box.innerHTML=`<strong>${message}</strong>${choices.map(([label,key])=>`<button type="button" data-provider-tab="${key}">↗ ${label}</button>`).join("")}`;
  box.querySelectorAll("[data-provider-tab]").forEach(b=>b.addEventListener("click",()=>chooseProvider(b.dataset.providerTab)));
 }
@@ -2649,24 +2655,15 @@ function hideLoading(){
 ALERT
 ========================================================= */
 
-function showAlert(
-    title,
-    message,
-    icon = "ℹ️"
-){
-
-    $("alertTitle").textContent =
-        title;
-
-    $("alertMessage").textContent =
-        message;
-
-    $("alertIcon").textContent =
-        icon;
-
-    $("alertOverlay")
-        .classList
-        .add("show");
+function showAlert(title, message, icon = "ℹ️", actionLabel = ""){
+    $("alertTitle").textContent = title;
+    $("alertMessage").textContent = message;
+    $("alertIcon").textContent = icon;
+    const walletAction = $("alertWallet");
+    walletAction.classList.toggle("hidden", !actionLabel);
+    walletAction.textContent = actionLabel || "Go to Wallet";
+    walletAction.onclick = actionLabel ? () => location.href = "wallet.html" : null;
+    $("alertOverlay").classList.add("show");
 }
 
 
@@ -3589,9 +3586,14 @@ async function loadServices(){
 
     }catch(error){
         const message = /504|timeout|timed out/i.test(String(error?.message || error))
-            ? "Services are taking too long to load. Please tap / Select Service to try again."
-            : "Services are temporarily unavailable. Please try again.";
-        $("serviceOptions").innerHTML = `<div class="error-state">${escapeHtml(message)}</div>`;
+            ? "Services are taking too long to load."
+            : "Services are temporarily unavailable.";
+        $("serviceOptions").innerHTML = `
+            <div class="error-state">
+                ${escapeHtml(message)} Please try again.
+                <button type="button" class="small-action get-code-btn" style="margin-top:10px;padding:0 14px" onclick="retryLoadServices()">Try Again</button>
+            </div>`;
+        $("serviceOptions").classList.remove("collapsed");
         $("serviceCount").textContent = "Unavailable";
         servicesLoaded = false;
     }finally{
@@ -3821,6 +3823,15 @@ function serviceName(
 /* =========================================================
 RENDER SERVICES
 ========================================================= */
+
+async function retryLoadServices(){
+    servicesLoaded = false;
+    servicesLoading = false;
+    $("serviceOptions").classList.remove("collapsed");
+    $("serviceOptions").innerHTML = '<div class="loading-state">Retrying available services...</div>';
+    $("serviceCount").textContent = "Loading...";
+    await loadServices();
+}
 
 function renderServices(){
 
@@ -5173,12 +5184,18 @@ async function purchaseNumber(){
         hideLoading();
 
 
+        const purchaseOrder = data?.order || data?.data?.order || {};
         const activationId =
             data?.activation_id ??
             data?.activationId ??
             data?.id ??
             data?.order_id ??
             data?.orderId ??
+            purchaseOrder?.provider_activation_id ??
+            purchaseOrder?.activation_id ??
+            purchaseOrder?.activationId ??
+            purchaseOrder?.orderId ??
+            purchaseOrder?.id ??
             data?.data?.activation_id ??
             data?.data?.activationId ??
             data?.data?.id ??
@@ -5195,10 +5212,10 @@ async function purchaseNumber(){
             data?.data?.phoneNumber ??
             data?.data?.phone ??
             data?.data?.number ??
-            data?.order?.phone_number ??
-            data?.order?.phoneNumber ??
-            data?.order?.phone ??
-            data?.order?.number ??
+            purchaseOrder?.phone_number ??
+            purchaseOrder?.phoneNumber ??
+            purchaseOrder?.phone ??
+            purchaseOrder?.number ??
             "";
 
 
@@ -5273,7 +5290,8 @@ async function purchaseNumber(){
                 () => {
 
                     getOrderStatus({
-
+                        id: purchaseOrder?.id || purchaseOrder?.order_id || data?.order_id || data?.id,
+                        provider: selectedProvider(),
                         activation_id:
                             activationId,
 
@@ -5319,7 +5337,7 @@ async function purchaseNumber(){
             error || {};
 
         const errorCode =
-            String(data.error || "").trim().toUpperCase();
+            String(data.error || data.code || "").trim().toUpperCase();
 
         const errorMessage =
             String(
@@ -5349,24 +5367,29 @@ async function purchaseNumber(){
                 0
             );
 
-        const neededValue =
-            Number(
-                data.needed ??
-                data.shortfall ??
-                Math.max(0, Number(data.requiredAmount ?? priceValue) - balanceValue)
-            );
+        const parsedShortfall = Number(
+            String(errorMessage).match(/₦\s*([\d,]+(?:\.\d{1,2})?)/)?.[1]?.replace(/,/g, "") || 0
+        );
+        const neededValue = Number(
+            data.needed ??
+            data.shortfall ??
+            (parsedShortfall || Math.max(0, Number(data.requiredAmount ?? priceValue) - balanceValue))
+        );
 
         if(
             errorCode === "INSUFFICIENT_FUNDS" ||
             errorCode === "INSUFFICIENT_WALLET" ||
             errorCode === "WALLET_INSUFFICIENT" ||
-            errorCode === "INSUFFICIENT_BALANCE"
+            errorCode === "INSUFFICIENT_BALANCE" ||
+            /insufficient funds.*(?:add|wallet|₦)/i.test(errorMessage) ||
+            /please add ₦/i.test(errorMessage)
         ){
 
             showAlert(
                 "Insufficient Wallet Balance",
-                (data.message || errorMessage) || `Insufficient wallet balance. Please add ${formatNaira(neededValue || priceValue)} to continue.`,
-                "💳"
+                data.message || errorMessage || `Please add ${formatNaira(neededValue || priceValue)} to your wallet to continue.`,
+                "💳",
+                "Go to Wallet"
             );
 
             return;
@@ -5376,7 +5399,8 @@ async function purchaseNumber(){
             errorCode === "PROVIDER_BALANCE" ||
             errorCode === "PROVIDER_INSUFFICIENT_FUNDS" ||
             errorCode === "INSUFFICIENT_PROVIDER_FUNDS" ||
-            /provider.*(insufficient funds|insufficient balance|low balance|out of funds|not enough credits)/i.test(errorMessage)
+            /provider.*(insufficient funds|insufficient balance|low balance|out of funds|not enough credits)/i.test(errorMessage) ||
+            /insufficient funds\. please contact support/i.test(errorMessage)
         ){
             showAlert(
                 "Purchase Unavailable",
@@ -5410,26 +5434,8 @@ async function purchaseNumber(){
             $("selectedServerPrice").textContent = "—";
             await loadServers();
 
-            showAlert(
-                "Availability Refreshed",
-                "That server ran out of stock. The live server list has been refreshed; please choose one of the servers still shown as available.",
-                "📡"
-            );
-
-            return;
-        }
-
-        if(
-            errorCode === "INSUFFICIENT_WALLET" ||
-            errorCode === "INSUFFICIENT_BALANCE" ||
-            errorCode === "WALLET_INSUFFICIENT"
-        ){
-
-            showAlert(
-                "Insufficient Wallet Balance",
-                `Insufficient wallet balance. Please add ${formatNaira(neededValue || priceValue)} to continue.`,
-                "💳"
-            );
+            const otherProviderLabel = selectedProvider() === "smsbower-api" ? "All Countries 2" : "All Countries";
+            showAlert("Number Not available?", `Pls try ${otherProviderLabel}.`, "📡");
 
             return;
         }
@@ -5547,8 +5553,10 @@ async function pollPendingOrderStatuses(){
                     activation_id: String(order.provider_activation_id || order.activation_id || order.activationId || order.numpool_order_id || "").replace(/^smsbower:/i, ""),
                     activationId: String(order.provider_activation_id || order.activation_id || order.activationId || order.numpool_order_id || "").replace(/^smsbower:/i, "")
                 });
-                const status = String(data?.status || data?.order?.status || "").toLowerCase();
-                const code = data?.otp_code || data?.sms_code || data?.code || data?.order?.otp_code || data?.order?.sms_code || data?.order?.code;
+                const status = String(data?.status || data?.order?.status || data?.order?.order_status || "").toLowerCase();
+                const code = data?.otp_code || data?.sms_code || data?.code ||
+                    data?.order?.otp_code || data?.order?.otpCode ||
+                    data?.order?.sms_code || data?.order?.smsCode || data?.order?.code;
                 if(code || ["completed","complete","success","successful","received"].includes(status)) changed = true;
             }catch(error){
                 // Silent background polling: manual Get Code remains available.
@@ -5702,6 +5710,8 @@ function normalizeOrder(
             order.phoneNumber ||
             order.phone ||
             order.number ||
+            order.order?.phone_number ||
+            order.order?.phoneNumber ||
             "—",
 
         code:
@@ -5710,6 +5720,9 @@ function normalizeOrder(
             order.sms_code ||
             order.smsCode ||
             order.code ||
+            order.order?.otp_code ||
+            order.order?.sms_code ||
+            order.order?.code ||
             "",
 
         status
@@ -6030,7 +6043,9 @@ async function getOrderStatus(
                     activationId: activationId,
 
                     provider:
-                        order?.raw?.provider === "virtualsms" || order?.raw?.provider === "virtual-sms-api" ? "virtual-sms-api" : "smsbower-api"
+                        order?.provider === "virtualsms" || order?.provider === "virtual-sms-api" ||
+                        order?.raw?.provider === "virtualsms" || order?.raw?.provider === "virtual-sms-api"
+                            ? "virtual-sms-api" : "smsbower-api"
 
                 }
             );
@@ -6044,6 +6059,8 @@ async function getOrderStatus(
 
                 data?.status ||
                 data?.data?.status ||
+                data?.order?.status ||
+                data?.order?.order_status ||
                 ""
 
             ).toLowerCase();
@@ -6056,6 +6073,11 @@ async function getOrderStatus(
             data?.data?.otp_code ||
             data?.data?.sms_code ||
             data?.data?.code ||
+            data?.order?.otp_code ||
+            data?.order?.otpCode ||
+            data?.order?.sms_code ||
+            data?.order?.smsCode ||
+            data?.order?.code ||
             "";
 
 
