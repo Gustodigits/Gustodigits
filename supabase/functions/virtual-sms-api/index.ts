@@ -1071,11 +1071,23 @@ async function cancelOrder(body: Obj, userId: string): Promise<Obj> {
   const order = await findOrder(userId, orderId);
 
   if (["cancelled", "canceled", "refunded"].includes(norm(order.status))) {
+    // A cancelled status alone is not proof that the wallet refund was recorded.
+    // The database RPC checks all legacy reference formats and is idempotent.
+    const refund = await refundOrder(
+      userId,
+      order.id,
+      "Refund recovery for previously cancelled VirtualSMS number.",
+    );
+    const saved = await updateOrder(order.id, { status: "cancelled" });
+
     return {
       ok: true,
-      alreadyRefunded: true,
-      order: publicOrder(order),
-      message: "This order has already been cancelled or refunded.",
+      success: true,
+      alreadyRefunded: Boolean(refund.already_refunded),
+      order: publicOrder(saved),
+      message: refund.already_refunded
+        ? "This order was already refunded."
+        : "The cancelled order's missing wallet refund has now been issued.",
     };
   }
 
